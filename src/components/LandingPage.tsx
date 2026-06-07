@@ -142,7 +142,7 @@ function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4 }}
-          className="font-serif-display text-6xl sm:text-7xl md:text-8xl lg:text-[8.5rem] text-foreground leading-[0.95]"
+          className="font-serif-display text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] text-foreground leading-[1.05] sm:leading-[0.95] break-words"
         >
           Transforme seu corpo com a{" "}
           <span className="text-gradient-gold italic">Personal Lindy</span>
