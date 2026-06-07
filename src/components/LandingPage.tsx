@@ -472,7 +472,7 @@ function Plans() {
                   </li>
                 ))}
               </ul>
-              <WhatsAppButton className="w-full">
+              <WhatsAppButton className="w-full" message={p.ctaMessage}>
                 Quero esse plano
                 <ArrowRight size={16} />
               </WhatsAppButton>
