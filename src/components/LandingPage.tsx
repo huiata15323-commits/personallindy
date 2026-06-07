@@ -95,7 +95,7 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
       variants={fadeInUp}
       className="text-center mb-12 md:mb-16"
     >
-      <h2 className="font-serif-display text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.05]">
+      <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.1]">
         {title}
       </h2>
       <div className="divider-gold w-24 mx-auto mt-5" />
@@ -142,7 +142,7 @@ function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4 }}
-          className="font-serif-display text-6xl sm:text-7xl md:text-8xl lg:text-[8.5rem] text-foreground leading-[0.95]"
+          className="font-serif-display text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] text-foreground leading-[1.05] sm:leading-[0.95] break-words"
         >
           Transforme seu corpo com a{" "}
           <span className="text-gradient-gold italic">Personal Lindy</span>
@@ -216,7 +216,7 @@ function About() {
             <span className="text-gold text-sm font-semibold uppercase tracking-widest">
               Sobre a Personal
             </span>
-            <h2 className="font-serif-display text-5xl md:text-6xl text-foreground mt-2 mb-6 leading-[1.05]">
+            <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl text-foreground mt-2 mb-6 leading-[1.1]">
               Lindyara <span className="text-gradient-gold italic">Ribeiro</span>
             </h2>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
