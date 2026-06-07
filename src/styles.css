@@ -40,6 +40,7 @@
   --color-dark-elevated: var(--dark-elevated);
 
   --font-display: "Bebas Neue", sans-serif;
+  --font-serif: "Cormorant Garamond", "Playfair Display", serif;
   --font-body: "Inter", sans-serif;
 }
 
@@ -90,6 +91,33 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    position: relative;
+  }
+
+  /* Subtle film grain across the whole page */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0 0.55  0 0 0 0.55 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    background-size: 220px 220px;
+  }
+
+  /* Soft radial gold glow vignette */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    mix-blend-mode: screen;
+    background:
+      radial-gradient(ellipse 50% 35% at 10% 0%, oklch(0.72 0.12 85 / 0.12), transparent 70%),
+      radial-gradient(ellipse 50% 35% at 90% 100%, oklch(0.72 0.12 85 / 0.08), transparent 70%);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -99,14 +127,28 @@
 }
 
 @utility text-gradient-gold {
-  background: linear-gradient(135deg, oklch(0.82 0.1 85), oklch(0.72 0.12 85), oklch(0.58 0.1 85));
+  background: linear-gradient(135deg, oklch(0.92 0.08 88) 0%, oklch(0.82 0.12 85) 30%, oklch(0.65 0.13 80) 55%, oklch(0.88 0.1 88) 75%, oklch(0.55 0.1 78) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 1px 0 oklch(0.3 0.05 80 / 0.4));
 }
 
 @utility bg-gradient-gold {
-  background: linear-gradient(135deg, oklch(0.82 0.1 85), oklch(0.72 0.12 85), oklch(0.58 0.1 85));
+  background:
+    linear-gradient(135deg, oklch(0.92 0.08 88) 0%, oklch(0.78 0.12 85) 35%, oklch(0.58 0.11 80) 65%, oklch(0.82 0.11 85) 100%);
+}
+
+@utility font-serif-display {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+@utility divider-gold {
+  height: 1px;
+  background: linear-gradient(to right, transparent, oklch(0.72 0.12 85 / 0.5), transparent);
 }
 
 @utility bg-hero-overlay {
