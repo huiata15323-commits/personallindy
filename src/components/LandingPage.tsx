@@ -199,7 +199,7 @@ function About() {
             <div className="relative overflow-hidden rounded-2xl border-gold-subtle">
               <img
                 src={lindyProfile}
-                alt="Lindyara Rodrigues - Personal Trainer"
+                alt="Lindyara Ribeiro - Personal Trainer"
                 className="w-full h-auto object-cover"
                 loading="lazy"
               />
@@ -230,6 +230,20 @@ function About() {
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
               Meu acompanhamento é próximo, estratégico e feito para você evoluir de verdade. Cada treino é pensado exclusivamente para o seu corpo e suas metas.
             </p>
+            <div className="grid grid-cols-3 gap-3 mb-8">
+              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+                <ShieldCheck size={20} className="text-gold mx-auto mb-1" />
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">CREF Ativo</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+                <Users size={20} className="text-gold mx-auto mb-1" />
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">+500 alunos</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+                <Zap size={20} className="text-gold mx-auto mb-1" />
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">5+ anos</p>
+              </div>
+            </div>
             <WhatsAppButton>
               Quero treinar com a Lindy
               <ArrowRight size={18} />
