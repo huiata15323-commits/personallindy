@@ -19,7 +19,7 @@ import {
   Zap,
 } from "lucide-react";
 import heroBg from "../assets/hero-coach.png.asset.json";
-import lindyProfile from "../assets/lindy-profile.jpg";
+import lindyProfile from "../assets/about-coach.png.asset.json";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -198,7 +198,7 @@ function About() {
           >
             <div className="relative overflow-hidden rounded-2xl border-gold-subtle">
               <img
-                src={lindyProfile}
+                src={lindyProfile.url}
                 alt="Lindyara Ribeiro - Personal Trainer"
                 className="w-full h-auto object-cover"
                 loading="lazy"
