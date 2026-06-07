@@ -18,7 +18,7 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
-import heroBg from "../assets/hero-bg.jpg";
+import heroBg from "../assets/hero-coach.png.asset.json";
 import lindyProfile from "../assets/lindy-profile.jpg";
 
 const fadeInUp: Variants = {
