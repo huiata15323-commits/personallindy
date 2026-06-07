@@ -493,18 +493,6 @@ function Plans() {
         "Resultados com constância",
       ],
     },
-    {
-      name: "Semestral",
-      price: "R$ 897",
-      period: "/6 meses",
-      highlight: false,
-      features: [
-        "Tudo do plano Trimestral",
-        "Economia de R$ 285",
-        "Acompanhamento VIP",
-        "Avaliação física detalhada",
-      ],
-    },
   ];
 
   return (
