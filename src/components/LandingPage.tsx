@@ -493,18 +493,6 @@ function Plans() {
         "Resultados com constância",
       ],
     },
-    {
-      name: "Semestral",
-      price: "R$ 897",
-      period: "/6 meses",
-      highlight: false,
-      features: [
-        "Tudo do plano Trimestral",
-        "Economia de R$ 285",
-        "Acompanhamento VIP",
-        "Avaliação física detalhada",
-      ],
-    },
   ];
 
   return (
@@ -520,7 +508,7 @@ function Plans() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={staggerContainer}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid sm:grid-cols-2 gap-6"
         >
           {plans.map((p, i) => (
             <motion.div
