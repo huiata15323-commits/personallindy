@@ -549,15 +549,19 @@ function Footer() {
 
 export default function LandingPage() {
   return (
-    <main className="bg-background">
-      <Hero />
-      <About />
-      <HowItWorks />
-      <Benefits />
-      <ForWho />
-      <Testimonials />
-      <CTA />
-      <Footer />
-    </main>
+    <>
+      <Header />
+      <main id="top" className="bg-background pt-16">
+        <Hero />
+        <About />
+        <HowItWorks />
+        <Benefits />
+        <ForWho />
+        <Plans />
+        <Testimonials />
+        <CTA />
+        <Footer />
+      </main>
+    </>
   );
 }
