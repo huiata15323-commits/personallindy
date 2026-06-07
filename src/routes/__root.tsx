@@ -88,13 +88,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Personal Lindy | Transforme Seu Corpo" },
       { name: "twitter:description", content: "Consultoria fitness online com treinos personalizados e acompanhamento direto com Lindyara Ribeiro, Personal Trainer. Resultados reais garantidos." },
-      { property: "og:image", content: "https://personallindy.lovable.app/og-image.jpg?v=2" },
-      { property: "og:image:secure_url", content: "https://personallindy.lovable.app/og-image.jpg?v=2" },
-      { property: "og:image:type", content: "image/jpeg" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Personal Lindy - Consultoria Fitness Online com Lindyara Ribeiro" },
-      { name: "twitter:image", content: "https://personallindy.lovable.app/og-image.jpg?v=2" },
     ],
     links: [
       { rel: "icon", type: "image/png", href: "/favicon.png" },
