@@ -381,7 +381,7 @@ function ForWho() {
                 <a.icon size={20} className="text-gold" />
               </div>
               <div>
-                <h4 className="text-foreground font-semibold text-base uppercase tracking-wide">{a.label}</h4>
+                <h3 className="text-foreground font-semibold text-base uppercase tracking-wide">{a.label}</h3>
                 <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{a.desc}</p>
               </div>
             </motion.div>
