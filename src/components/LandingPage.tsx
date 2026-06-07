@@ -482,15 +482,15 @@ function Plans() {
     },
     {
       name: "Trimestral",
-      price: "R$ 497",
-      period: "/3 meses",
+      price: "3x R$ 95",
+      period: "/trimestral",
       badge: "Mais escolhido",
       highlight: true,
       features: [
-        "Tudo do plano Mensal",
-        "Economia de R$ 94",
-        "Plano alimentar básico",
-        "Acompanhamento prioritário",
+        "Consultoria online individualizada",
+        "Acesso à ficha por 90 dias",
+        "Treinos atualizados na plataforma",
+        "Resultados com constância",
       ],
     },
     {
