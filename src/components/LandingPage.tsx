@@ -405,6 +405,7 @@ function Plans() {
       price: "R$ 100",
       period: "/mês",
       highlight: false,
+      ctaMessage: "Olá Lindy! Quero começar com o Plano Mensal.",
       features: [
         "Treino 100% personalizado",
         "Suporte via WhatsApp",
@@ -418,6 +419,7 @@ function Plans() {
       period: "/trimestral",
       badge: "Mais escolhido",
       highlight: true,
+      ctaMessage: "Olá Lindy! Quero começar com o Plano Trimestral.",
       features: [
         "Consultoria online individualizada",
         "Acesso à ficha por 90 dias",
