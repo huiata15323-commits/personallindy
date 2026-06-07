@@ -581,7 +581,6 @@ export default function LandingPage() {
         <Benefits />
         <ForWho />
         <Plans />
-        <Testimonials />
         <CTA />
         <Footer />
       </main>
