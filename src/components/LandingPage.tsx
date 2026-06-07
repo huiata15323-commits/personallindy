@@ -470,7 +470,7 @@ function Plans() {
   const plans = [
     {
       name: "Mensal",
-      price: "R$ 197",
+      price: "R$ 100",
       period: "/mês",
       highlight: false,
       features: [
