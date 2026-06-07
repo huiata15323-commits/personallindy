@@ -446,9 +446,14 @@ function Testimonials() {
               <p className="text-muted-foreground leading-relaxed text-sm flex-1 mb-6">
                 &ldquo;{t.text}&rdquo;
               </p>
-              <div className="border-t border-border pt-4">
-                <p className="text-foreground font-semibold text-sm uppercase tracking-wide">{t.name}</p>
-                <p className="text-gold text-xs font-medium mt-1 uppercase tracking-wider">{t.result}</p>
+              <div className="border-t border-border pt-4 flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-gradient-gold flex items-center justify-center text-background font-bold text-sm shrink-0">
+                  {t.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+                </div>
+                <div>
+                  <p className="text-foreground font-semibold text-sm uppercase tracking-wide">{t.name}</p>
+                  <p className="text-gold text-xs font-medium mt-0.5 uppercase tracking-wider">{t.result}</p>
+                </div>
               </div>
             </motion.div>
           ))}
