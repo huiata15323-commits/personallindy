@@ -95,7 +95,7 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
       variants={fadeInUp}
       className="text-center mb-12 md:mb-16"
     >
-      <h2 className="font-serif-display text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.05]">
+      <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.1]">
         {title}
       </h2>
       <div className="divider-gold w-24 mx-auto mt-5" />
@@ -216,7 +216,7 @@ function About() {
             <span className="text-gold text-sm font-semibold uppercase tracking-widest">
               Sobre a Personal
             </span>
-            <h2 className="font-serif-display text-5xl md:text-6xl text-foreground mt-2 mb-6 leading-[1.05]">
+            <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl text-foreground mt-2 mb-6 leading-[1.1]">
               Lindyara <span className="text-gradient-gold italic">Ribeiro</span>
             </h2>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
