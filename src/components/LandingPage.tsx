@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, type Variants } from "framer-motion";
 import {
   Dumbbell,
   Target,
@@ -14,18 +14,17 @@ import {
   Phone,
   Instagram,
   ArrowRight,
-  CheckCircle,
   ChevronDown,
 } from "lucide-react";
 import heroBg from "../assets/hero-bg.jpg";
 import lindyProfile from "../assets/lindy-profile.jpg";
 
-const fadeInUp = {
+const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.15 } },
 };
