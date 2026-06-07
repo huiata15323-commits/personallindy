@@ -14,7 +14,9 @@ import {
   Phone,
   Instagram,
   ArrowRight,
-  ChevronDown,
+  Check,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
 import heroBg from "../assets/hero-bg.jpg";
 import lindyProfile from "../assets/lindy-profile.jpg";
@@ -56,6 +58,27 @@ function WhatsAppButton({
     >
       {children}
     </a>
+  );
+}
+
+function Header() {
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+        <a href="#top" className="font-display text-xl sm:text-2xl text-foreground uppercase tracking-widest">
+          Personal <span className="text-gradient-gold">Lindy</span>
+        </a>
+        <a
+          href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <MessageCircle size={16} />
+          <span className="hidden xs:inline sm:inline">WhatsApp</span>
+        </a>
+      </div>
+    </header>
   );
 }
 
@@ -119,17 +142,17 @@ function Hero() {
           transition={{ duration: 0.9, delay: 0.4 }}
           className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-foreground uppercase leading-[0.95] tracking-wide"
         >
-          Transforme seu corpo com acompanhamento{" "}
-          <span className="text-gradient-gold">profissional</span> da Personal Lindy
+          Transforme seu corpo com a{" "}
+          <span className="text-gradient-gold">Personal Lindy</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-6 md:mt-8 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 md:mt-8 text-base md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
-          Treinos personalizados e acompanhamento direto para você conquistar resultados reais
+          Treinos personalizados e acompanhamento direto para você conquistar resultados reais.
         </motion.p>
 
         <motion.div
@@ -145,15 +168,14 @@ function Hero() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.1 }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs sm:text-sm text-muted-foreground"
         >
-          <a href="#sobre" className="flex flex-col items-center text-muted-foreground hover:text-gold transition-colors">
-            <span className="text-xs uppercase tracking-widest mb-2">Scroll</span>
-            <ChevronDown size={20} className="animate-bounce" />
-          </a>
+          <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> +500 alunos</span>
+          <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> Suporte direto</span>
+          <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> 100% online</span>
         </motion.div>
       </motion.div>
     </section>
@@ -177,7 +199,7 @@ function About() {
             <div className="relative overflow-hidden rounded-2xl border-gold-subtle">
               <img
                 src={lindyProfile}
-                alt="Lindyara Rodrigues - Personal Trainer"
+                alt="Lindyara Ribeiro - Personal Trainer"
                 className="w-full h-auto object-cover"
                 loading="lazy"
               />
@@ -208,6 +230,20 @@ function About() {
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
               Meu acompanhamento é próximo, estratégico e feito para você evoluir de verdade. Cada treino é pensado exclusivamente para o seu corpo e suas metas.
             </p>
+            <div className="grid grid-cols-3 gap-3 mb-8">
+              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+                <ShieldCheck size={20} className="text-gold mx-auto mb-1" />
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">CREF Ativo</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+                <Users size={20} className="text-gold mx-auto mb-1" />
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">+500 alunos</p>
+              </div>
+              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+                <Zap size={20} className="text-gold mx-auto mb-1" />
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">5+ anos</p>
+              </div>
+            </div>
             <WhatsAppButton>
               Quero treinar com a Lindy
               <ArrowRight size={18} />
@@ -410,13 +446,121 @@ function Testimonials() {
               <p className="text-muted-foreground leading-relaxed text-sm flex-1 mb-6">
                 &ldquo;{t.text}&rdquo;
               </p>
-              <div className="border-t border-border pt-4">
-                <p className="text-foreground font-semibold text-sm uppercase tracking-wide">{t.name}</p>
-                <p className="text-gold text-xs font-medium mt-1 uppercase tracking-wider">{t.result}</p>
+              <div className="border-t border-border pt-4 flex items-center gap-3">
+                <div className="w-11 h-11 rounded-full bg-gradient-gold flex items-center justify-center text-background font-bold text-sm shrink-0">
+                  {t.name.split(" ").map(n => n[0]).slice(0, 2).join("")}
+                </div>
+                <div>
+                  <p className="text-foreground font-semibold text-sm uppercase tracking-wide">{t.name}</p>
+                  <p className="text-gold text-xs font-medium mt-0.5 uppercase tracking-wider">{t.result}</p>
+                </div>
               </div>
             </motion.div>
           ))}
         </motion.div>
+      </div>
+    </section>
+  );
+}
+
+function Plans() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  const plans = [
+    {
+      name: "Mensal",
+      price: "R$ 197",
+      period: "/mês",
+      highlight: false,
+      features: [
+        "Treino 100% personalizado",
+        "Suporte via WhatsApp",
+        "Reavaliação mensal",
+        "Ajustes ilimitados",
+      ],
+    },
+    {
+      name: "Trimestral",
+      price: "R$ 497",
+      period: "/3 meses",
+      badge: "Mais escolhido",
+      highlight: true,
+      features: [
+        "Tudo do plano Mensal",
+        "Economia de R$ 94",
+        "Plano alimentar básico",
+        "Acompanhamento prioritário",
+      ],
+    },
+    {
+      name: "Semestral",
+      price: "R$ 897",
+      period: "/6 meses",
+      highlight: false,
+      features: [
+        "Tudo do plano Trimestral",
+        "Economia de R$ 285",
+        "Acompanhamento VIP",
+        "Avaliação física detalhada",
+      ],
+    },
+  ];
+
+  return (
+    <section className="py-20 md:py-28 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
+        <SectionHeading
+          title="Investimento"
+          subtitle="Escolha o plano que mais combina com o seu momento. Todos com acompanhamento direto comigo."
+        />
+
+        <motion.div
+          ref={ref}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={staggerContainer}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {plans.map((p, i) => (
+            <motion.div
+              key={i}
+              variants={fadeInUp}
+              className={`relative p-6 md:p-8 rounded-2xl flex flex-col ${
+                p.highlight
+                  ? "bg-dark-elevated border-2 border-gold/60 shadow-[0_0_40px_-10px_var(--color-gold)]"
+                  : "bg-dark-surface border-gold-subtle"
+              }`}
+            >
+              {p.badge && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider px-4 py-1 rounded-full whitespace-nowrap">
+                  {p.badge}
+                </span>
+              )}
+              <h3 className="text-2xl text-foreground uppercase tracking-wide">{p.name}</h3>
+              <div className="mt-4 mb-6 flex items-baseline gap-1">
+                <span className="text-4xl md:text-5xl font-bold text-gradient-gold">{p.price}</span>
+                <span className="text-sm text-muted-foreground">{p.period}</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1">
+                {p.features.map((f, j) => (
+                  <li key={j} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <Check size={16} className="text-gold mt-0.5 shrink-0" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <WhatsAppButton className="w-full">
+                Quero esse plano
+                <ArrowRight size={16} />
+              </WhatsAppButton>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <p className="text-center text-xs text-muted-foreground mt-8">
+          Valores ilustrativos. Confirme condições atualizadas pelo WhatsApp.
+        </p>
       </div>
     </section>
   );
@@ -508,15 +652,19 @@ function Footer() {
 
 export default function LandingPage() {
   return (
-    <main className="bg-background">
-      <Hero />
-      <About />
-      <HowItWorks />
-      <Benefits />
-      <ForWho />
-      <Testimonials />
-      <CTA />
-      <Footer />
-    </main>
+    <>
+      <Header />
+      <main id="top" className="bg-background pt-16">
+        <Hero />
+        <About />
+        <HowItWorks />
+        <Benefits />
+        <ForWho />
+        <Plans />
+        <Testimonials />
+        <CTA />
+        <Footer />
+      </main>
+    </>
   );
 }
