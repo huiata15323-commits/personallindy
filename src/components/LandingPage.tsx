@@ -14,7 +14,9 @@ import {
   Phone,
   Instagram,
   ArrowRight,
-  ChevronDown,
+  Check,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
 import heroBg from "../assets/hero-bg.jpg";
 import lindyProfile from "../assets/lindy-profile.jpg";
@@ -56,6 +58,27 @@ function WhatsAppButton({
     >
       {children}
     </a>
+  );
+}
+
+function Header() {
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+        <a href="#top" className="font-display text-xl sm:text-2xl text-foreground uppercase tracking-widest">
+          Personal <span className="text-gradient-gold">Lindy</span>
+        </a>
+        <a
+          href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
+        >
+          <MessageCircle size={16} />
+          <span className="hidden xs:inline sm:inline">WhatsApp</span>
+        </a>
+      </div>
+    </header>
   );
 }
 
