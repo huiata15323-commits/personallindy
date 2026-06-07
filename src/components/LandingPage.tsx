@@ -173,7 +173,6 @@ function Hero() {
           transition={{ duration: 0.8, delay: 1.1 }}
           className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs sm:text-sm text-muted-foreground"
         >
-          <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> +500 alunos</span>
           <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> Suporte direto</span>
           <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> 100% online</span>
         </motion.div>
@@ -224,18 +223,14 @@ function About() {
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
               Meu acompanhamento é próximo, estratégico e feito para você evoluir de verdade. Cada treino é pensado exclusivamente para o seu corpo e suas metas.
             </p>
-            <div className="grid grid-cols-3 gap-3 mb-8">
+            <div className="grid grid-cols-2 gap-3 mb-8">
               <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
                 <ShieldCheck size={20} className="text-gold mx-auto mb-1" />
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">CREF Ativo</p>
-              </div>
-              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
-                <Users size={20} className="text-gold mx-auto mb-1" />
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">+500 alunos</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">CREF 010437/GO</p>
               </div>
               <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
                 <Zap size={20} className="text-gold mx-auto mb-1" />
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">5+ anos</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">9+ anos</p>
               </div>
             </div>
             <WhatsAppButton>
