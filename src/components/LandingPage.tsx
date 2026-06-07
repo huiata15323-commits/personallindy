@@ -498,7 +498,7 @@ function Footer() {
             Seu resultado começa com uma decisão.
           </p>
           <p className="mt-4 text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Lindyara Rodrigues Cavalcante. Todos os direitos reservados.
+            &copy; {new Date().getFullYear()} Lindyara Ribeiro. Todos os direitos reservados.
           </p>
         </div>
       </div>
