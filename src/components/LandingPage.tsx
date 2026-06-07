@@ -115,7 +115,7 @@ function Hero() {
         <img
           src={heroBg.url}
           alt="Treino na academia"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-top"
         />
         <div className="absolute inset-0 bg-hero-overlay" />
       </div>
