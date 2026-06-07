@@ -65,8 +65,9 @@ function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-        <a href="#top" className="font-display text-xl sm:text-2xl text-foreground uppercase tracking-widest">
-          Personal <span className="text-gradient-gold">Lindy</span>
+        <a href="#top" className="text-xl sm:text-2xl text-foreground tracking-widest flex items-baseline gap-2">
+          <span className="font-display uppercase">Personal</span>
+          <span className="font-serif-display italic text-gradient-gold text-2xl sm:text-3xl">Lindy</span>
         </a>
         <a
           href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
