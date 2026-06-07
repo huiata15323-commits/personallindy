@@ -200,7 +200,7 @@ function About() {
               Sobre a Personal
             </span>
             <h2 className="text-4xl md:text-5xl text-foreground uppercase mt-2 mb-6">
-              Lindyara Rodrigues
+              Lindyara Ribeiro
             </h2>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-6">
               Sou Personal Trainer dedicada a transformar vidas através do treino. Trabalho com foco em resultados reais, respeitando o seu nível, sua rotina e seus objetivos.
