@@ -1,29 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
+import LandingPage from "../components/LandingPage";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Personal Lindy | Transforme Seu Corpo" },
+      { name: "description", content: "Treinos personalizados e acompanhamento direto com Lindyara Rodrigues (Lindy). Conquiste resultados reais com uma Personal Trainer dedicada." },
+      { property: "og:title", content: "Personal Lindy | Transforme Seu Corpo" },
+      { property: "og:description", content: "Treinos personalizados e acompanhamento direto com Lindyara Rodrigues (Lindy). Conquiste resultados reais." },
+      { property: "og:type", content: "website" },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
+  return <LandingPage />;
 }
