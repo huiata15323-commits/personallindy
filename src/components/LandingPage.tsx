@@ -205,12 +205,6 @@ function About() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
             </div>
-            <div className="absolute -bottom-4 -right-4 md:-bottom-6 md:-right-6 bg-dark-surface border-gold-subtle rounded-xl px-5 py-3">
-              <div className="flex items-center gap-2">
-                <Star size={18} className="text-gold fill-gold" />
-                <span className="text-foreground font-semibold text-sm">+500 alunos transformados</span>
-              </div>
-            </div>
           </motion.div>
 
           <motion.div
