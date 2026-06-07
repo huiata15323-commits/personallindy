@@ -217,11 +217,17 @@ function About() {
             <h2 className="text-4xl md:text-5xl text-foreground uppercase mt-2 mb-6">
               Lindyara Ribeiro
             </h2>
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-6">
-              Sou Personal Trainer dedicada a transformar vidas através do treino. Trabalho com foco em resultados reais, respeitando o seu nível, sua rotina e seus objetivos.
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
+              Atuo há mais de 9 anos no mercado fitness, ajudando pessoas a conquistarem saúde, qualidade de vida e resultados reais por meio de um treinamento físico estratégico e personalizado.
+            </p>
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
+              Sou especializada em Treinamento para Grupos Especiais, com capacitação para atender gestantes, idosos, pessoas com patologias e outros perfis que exigem um acompanhamento individualizado, seguro e eficiente.
+            </p>
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
+              Ao longo da minha trajetória, também me especializei em emagrecimento, hipertrofia e recomposição corporal. Acredito que a atualização constante é essencial para entregar um atendimento de excelência, baseado em conhecimento técnico, estratégia e eficiência.
             </p>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
-              Meu acompanhamento é próximo, estratégico e feito para você evoluir de verdade. Cada treino é pensado exclusivamente para o seu corpo e suas metas.
+              Meu objetivo é proporcionar os melhores resultados no menor tempo possível, sempre respeitando a individualidade, os limites e as metas de cada aluno.
             </p>
             <div className="grid grid-cols-2 gap-3 mb-8">
               <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
