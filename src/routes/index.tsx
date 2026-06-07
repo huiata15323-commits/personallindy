@@ -5,9 +5,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Personal Lindy | Transforme Seu Corpo" },
-      { name: "description", content: "Treinos personalizados e acompanhamento direto com Lindyara Rodrigues (Lindy). Conquiste resultados reais com uma Personal Trainer dedicada." },
+      { name: "description", content: "Consultoria fitness online com treinos personalizados e acompanhamento direto com Lindyara Ribeiro, Personal Trainer. Resultados reais garantidos." },
       { property: "og:title", content: "Personal Lindy | Transforme Seu Corpo" },
-      { property: "og:description", content: "Treinos personalizados e acompanhamento direto com Lindyara Rodrigues (Lindy). Conquiste resultados reais." },
+      { property: "og:description", content: "Consultoria fitness online com treinos personalizados e acompanhamento direto com Lindyara Ribeiro, Personal Trainer. Resultados reais garantidos." },
       { property: "og:type", content: "website" },
     ],
   }),
