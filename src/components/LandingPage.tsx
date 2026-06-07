@@ -35,14 +35,17 @@ function WhatsAppButton({
   children,
   className = "",
   large = false,
+  message = "Olá Lindy! Quero começar minha transformação.",
 }: {
   children: React.ReactNode;
   className?: string;
   large?: boolean;
+  message?: string;
 }) {
+  const encoded = encodeURIComponent(message);
   return (
     <a
-      href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
+      href={`https://wa.me/5562984811499?text=${encoded}`}
       target="_blank"
       rel="noopener noreferrer"
       className={`
