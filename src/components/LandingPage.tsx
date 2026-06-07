@@ -111,7 +111,7 @@ function Hero() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img
-          src={heroBg}
+          src={heroBg.url}
           alt="Treino na academia"
           className="w-full h-full object-cover"
         />
