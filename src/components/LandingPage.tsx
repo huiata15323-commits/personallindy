@@ -463,18 +463,110 @@ function Testimonials() {
   );
 }
 
-function CTA() {
+function Plans() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
+  const plans = [
+    {
+      name: "Mensal",
+      price: "R$ 197",
+      period: "/mês",
+      highlight: false,
+      features: [
+        "Treino 100% personalizado",
+        "Suporte via WhatsApp",
+        "Reavaliação mensal",
+        "Ajustes ilimitados",
+      ],
+    },
+    {
+      name: "Trimestral",
+      price: "R$ 497",
+      period: "/3 meses",
+      badge: "Mais escolhido",
+      highlight: true,
+      features: [
+        "Tudo do plano Mensal",
+        "Economia de R$ 94",
+        "Plano alimentar básico",
+        "Acompanhamento prioritário",
+      ],
+    },
+    {
+      name: "Semestral",
+      price: "R$ 897",
+      period: "/6 meses",
+      highlight: false,
+      features: [
+        "Tudo do plano Trimestral",
+        "Economia de R$ 285",
+        "Acompanhamento VIP",
+        "Avaliação física detalhada",
+      ],
+    },
+  ];
+
   return (
-    <CTAInner refProp={ref} isInView={isInView} />
+    <section className="py-20 md:py-28 px-4 sm:px-6">
+      <div className="max-w-6xl mx-auto">
+        <SectionHeading
+          title="Investimento"
+          subtitle="Escolha o plano que mais combina com o seu momento. Todos com acompanhamento direto comigo."
+        />
+
+        <motion.div
+          ref={ref}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={staggerContainer}
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {plans.map((p, i) => (
+            <motion.div
+              key={i}
+              variants={fadeInUp}
+              className={`relative p-6 md:p-8 rounded-2xl flex flex-col ${
+                p.highlight
+                  ? "bg-dark-elevated border-2 border-gold/60 shadow-[0_0_40px_-10px_var(--color-gold)]"
+                  : "bg-dark-surface border-gold-subtle"
+              }`}
+            >
+              {p.badge && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider px-4 py-1 rounded-full whitespace-nowrap">
+                  {p.badge}
+                </span>
+              )}
+              <h3 className="text-2xl text-foreground uppercase tracking-wide">{p.name}</h3>
+              <div className="mt-4 mb-6 flex items-baseline gap-1">
+                <span className="text-4xl md:text-5xl font-bold text-gradient-gold">{p.price}</span>
+                <span className="text-sm text-muted-foreground">{p.period}</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1">
+                {p.features.map((f, j) => (
+                  <li key={j} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <Check size={16} className="text-gold mt-0.5 shrink-0" />
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <WhatsAppButton className="w-full">
+                Quero esse plano
+                <ArrowRight size={16} />
+              </WhatsAppButton>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        <p className="text-center text-xs text-muted-foreground mt-8">
+          Valores ilustrativos. Confirme condições atualizadas pelo WhatsApp.
+        </p>
+      </div>
+    </section>
   );
 }
 
-function CTAInner({ refProp, isInView }: { refProp: React.RefObject<HTMLDivElement | null>; isInView: boolean }) {
-  return null as never;
-}
+function CTA() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
