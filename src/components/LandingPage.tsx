@@ -468,6 +468,17 @@ function CTA() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
+    <CTAInner refProp={ref} isInView={isInView} />
+  );
+}
+
+function CTAInner({ refProp, isInView }: { refProp: React.RefObject<HTMLDivElement | null>; isInView: boolean }) {
+  return null as never;
+}
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
     <section className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
       <div className="max-w-4xl mx-auto">
         <motion.div
