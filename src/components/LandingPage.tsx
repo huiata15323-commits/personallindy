@@ -142,17 +142,17 @@ function Hero() {
           transition={{ duration: 0.9, delay: 0.4 }}
           className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-foreground uppercase leading-[0.95] tracking-wide"
         >
-          Transforme seu corpo com acompanhamento{" "}
-          <span className="text-gradient-gold">profissional</span> da Personal Lindy
+          Transforme seu corpo com a{" "}
+          <span className="text-gradient-gold">Personal Lindy</span>
         </motion.h1>
 
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-6 md:mt-8 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 md:mt-8 text-base md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
         >
-          Treinos personalizados e acompanhamento direto para você conquistar resultados reais
+          Treinos personalizados e acompanhamento direto para você conquistar resultados reais.
         </motion.p>
 
         <motion.div
@@ -168,15 +168,14 @@ function Hero() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.1 }}
+          className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs sm:text-sm text-muted-foreground"
         >
-          <a href="#sobre" className="flex flex-col items-center text-muted-foreground hover:text-gold transition-colors">
-            <span className="text-xs uppercase tracking-widest mb-2">Scroll</span>
-            <ChevronDown size={20} className="animate-bounce" />
-          </a>
+          <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> +500 alunos</span>
+          <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> Suporte direto</span>
+          <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> 100% online</span>
         </motion.div>
       </motion.div>
     </section>
