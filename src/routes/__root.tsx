@@ -102,6 +102,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         async: true,
         crossOrigin: "anonymous",
       },
+      {
+        src: "https://www.googletagmanager.com/gtag/js?id=AW-972549241",
+        async: true,
+      },
+      {
+        type: "text/javascript",
+        children: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-972549241');`,
+      },
     ],
   }),
   shellComponent: RootShell,
