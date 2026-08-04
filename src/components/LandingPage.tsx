@@ -156,9 +156,6 @@ function Hero() {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2 }}
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto pt-20"
       >
@@ -323,7 +320,7 @@ function HowItWorks() {
                 <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
                   {i + 1}
                 </div>
-                <step.icon size={32} className="text-gold mb-4" />
+                <step.icon size={32} className="text-gold mb-4 icon-lift" />
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
               </Tilt3D>
@@ -369,7 +366,7 @@ function Benefits() {
                 className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
               >
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                  <b.icon size={24} className="text-gold" />
+                  <b.icon size={24} className="text-gold icon-lift" />
                 </div>
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{b.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
