@@ -137,21 +137,29 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
 }
 
 function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 70]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 z-0">
+    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <motion.div style={{ y: bgY, scale: bgScale }} className="absolute inset-0 z-0 will-change-transform">
         <RevealImage
           src={heroBg.url}
           alt="Treino na academia"
           className="w-full h-full object-cover object-top"
         />
         <div className="absolute inset-0 bg-hero-overlay" />
-      </div>
+      </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
+        style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto pt-20"
       >
         <motion.div
