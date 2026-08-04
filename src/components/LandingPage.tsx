@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import heroBg from "../assets/hero-coach.png.asset.json";
 import lindyProfile from "../assets/about-coach.png.asset.json";
+import RevealImage from "./RevealImage";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -115,7 +116,7 @@ function Hero() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0 z-0">
-        <img
+        <RevealImage
           src={heroBg.url}
           alt="Treino na academia"
           className="w-full h-full object-cover object-top"
@@ -201,7 +202,7 @@ function About() {
             className="relative"
           >
             <div className="relative overflow-hidden rounded-2xl border-gold-subtle">
-              <img
+              <RevealImage
                 src={lindyProfile.url}
                 alt="Lindyara Ribeiro - Personal Trainer"
                 className="w-full h-auto object-cover"
