@@ -21,6 +21,7 @@ import {
 import heroBg from "../assets/hero-coach.png.asset.json";
 import lindyProfile from "../assets/about-coach.png.asset.json";
 import RevealImage from "./RevealImage";
+import Tilt3D from "./Tilt3D";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -201,7 +202,7 @@ function About() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative overflow-hidden rounded-2xl border-gold-subtle">
+            <Tilt3D max={10} className="relative overflow-hidden rounded-2xl border-gold-subtle">
               <RevealImage
                 src={lindyProfile.url}
                 alt="Lindyara Ribeiro - Personal Trainer"
@@ -209,7 +210,7 @@ function About() {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-            </div>
+            </Tilt3D>
           </motion.div>
 
           <motion.div
@@ -283,17 +284,18 @@ function HowItWorks() {
           className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
         >
           {steps.map((step, i) => (
-            <motion.div
-              key={i}
-              variants={fadeInUp}
-              className="group relative p-6 md:p-8 rounded-2xl bg-dark-elevated border-gold-subtle hover:border-gold/40 transition-all duration-300"
-            >
-              <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
-                {i + 1}
-              </div>
-              <step.icon size={32} className="text-gold mb-4" />
-              <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+            <motion.div key={i} variants={fadeInUp} className="h-full">
+              <Tilt3D
+                max={7}
+                className="group relative h-full p-6 md:p-8 rounded-2xl bg-dark-elevated border-gold-subtle hover:border-gold/40"
+              >
+                <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                  {i + 1}
+                </div>
+                <step.icon size={32} className="text-gold mb-4" />
+                <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{step.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
+              </Tilt3D>
             </motion.div>
           ))}
         </motion.div>
@@ -330,16 +332,17 @@ function Benefits() {
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {benefits.map((b, i) => (
-            <motion.div
-              key={i}
-              variants={fadeInUp}
-              className="p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated transition-all duration-300 group"
-            >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                <b.icon size={24} className="text-gold" />
-              </div>
-              <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{b.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
+            <motion.div key={i} variants={fadeInUp} className="h-full">
+              <Tilt3D
+                max={7}
+                className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
+                  <b.icon size={24} className="text-gold" />
+                </div>
+                <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{b.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
+              </Tilt3D>
             </motion.div>
           ))}
         </motion.div>
@@ -446,15 +449,15 @@ function Plans() {
           className="grid sm:grid-cols-2 gap-6"
         >
           {plans.map((p, i) => (
-            <motion.div
-              key={i}
-              variants={fadeInUp}
-              className={`relative p-6 md:p-8 rounded-2xl flex flex-col ${
+            <motion.div key={i} variants={fadeInUp} className="h-full">
+              <Tilt3D
+                max={6}
+                className={`relative h-full p-6 md:p-8 rounded-2xl flex flex-col ${
                 p.highlight
                   ? "bg-dark-elevated border-2 border-gold/60 shadow-[0_0_40px_-10px_var(--color-gold)]"
                   : "bg-dark-surface border-gold-subtle"
               }`}
-            >
+              >
               {p.badge && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider px-4 py-1 rounded-full whitespace-nowrap">
                   {p.badge}
@@ -477,6 +480,7 @@ function Plans() {
                 Quero esse plano
                 <ArrowRight size={16} />
               </WhatsAppButton>
+              </Tilt3D>
             </motion.div>
           ))}
         </motion.div>
