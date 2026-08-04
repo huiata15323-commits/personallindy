@@ -22,6 +22,8 @@ import heroBg from "../assets/hero-coach.png.asset.json";
 import lindyProfile from "../assets/about-coach.png.asset.json";
 import RevealImage from "./RevealImage";
 import Tilt3D from "./Tilt3D";
+import WordReveal from "./WordReveal";
+import CountUp from "./CountUp";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -30,7 +32,7 @@ const fadeInUp: Variants = {
 
 const staggerContainer: Variants = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.15 } },
+  visible: { transition: { staggerChildren: 0.14, delayChildren: 0.1 } },
 };
 
 function WhatsAppButton({
@@ -124,7 +126,7 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
       className="text-center mb-12 md:mb-16"
     >
       <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.1]">
-        {title}
+        <WordReveal text={title} />
       </h2>
       <div className="divider-gold w-24 mx-auto mt-5" />
       {subtitle && (
@@ -271,7 +273,9 @@ function About() {
               </div>
               <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
                 <Zap size={20} className="text-gold mx-auto mb-1" />
-                <p className="text-xs text-muted-foreground uppercase tracking-wide">9+ anos</p>
+                <p className="text-xs text-muted-foreground uppercase tracking-wide">
+                  <CountUp to={9} suffix="+" /> anos
+                </p>
               </div>
             </div>
             <WhatsAppButton>
