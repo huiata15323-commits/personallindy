@@ -1,4 +1,6 @@
-import { useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
+
+const REST = "perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)";
 
 export default function Tilt3D({
   children,
@@ -12,41 +14,77 @@ export default function Tilt3D({
   scale?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [transform, setTransform] = useState("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
-  const [active, setActive] = useState(false);
+  const rect = useRef<DOMRect | null>(null);
+  const frame = useRef<number | null>(null);
+  const pending = useRef<{ x: number; y: number } | null>(null);
+  const enabled = useRef(false);
 
-  const reduced = () =>
-    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  useEffect(() => {
+    // Disable entirely on touch/coarse pointers and when motion is reduced:
+    // no listeners, no transforms, zero cost on phones.
+    enabled.current =
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    return () => {
+      if (frame.current !== null) cancelAnimationFrame(frame.current);
+    };
+  }, []);
+
+  const flush = useCallback(() => {
+    frame.current = null;
     const el = ref.current;
-    if (!el || reduced()) return;
-    const rect = el.getBoundingClientRect();
-    const px = (e.clientX - rect.left) / rect.width - 0.5;
-    const py = (e.clientY - rect.top) / rect.height - 0.5;
-    setTransform(
-      `perspective(1000px) rotateX(${(-py * max).toFixed(2)}deg) rotateY(${(px * max).toFixed(2)}deg) scale(${scale})`,
-    );
-  };
+    const r = rect.current;
+    const p = pending.current;
+    if (!el || !r || !p) return;
 
-  const reset = () => {
-    setActive(false);
-    setTransform("perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)");
-  };
+    const px = (p.x - r.left) / r.width - 0.5;
+    const py = (p.y - r.top) / r.height - 0.5;
+    // Single style write per animation frame — caps updates at the display
+    // refresh rate and avoids React re-renders on every mousemove.
+    el.style.transform = `perspective(1000px) rotateX(${(-py * max).toFixed(2)}deg) rotateY(${(px * max).toFixed(2)}deg) scale(${scale})`;
+  }, [max, scale]);
+
+  const handleEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!enabled.current) return;
+    const el = ref.current;
+    if (!el) return;
+    // Measure once per hover instead of on every move (avoids layout thrash).
+    rect.current = el.getBoundingClientRect();
+    el.style.willChange = "transform";
+    el.style.transition = "transform 120ms ease-out";
+    pending.current = { x: e.clientX, y: e.clientY };
+    if (frame.current === null) frame.current = requestAnimationFrame(flush);
+  }, [flush]);
+
+  const handleMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!enabled.current || !rect.current) return;
+    pending.current = { x: e.clientX, y: e.clientY };
+    if (frame.current === null) frame.current = requestAnimationFrame(flush);
+  }, [flush]);
+
+  const handleLeave = useCallback(() => {
+    if (frame.current !== null) {
+      cancelAnimationFrame(frame.current);
+      frame.current = null;
+    }
+    rect.current = null;
+    pending.current = null;
+    const el = ref.current;
+    if (!el) return;
+    el.style.transition = "transform 600ms cubic-bezier(0.22, 1, 0.36, 1)";
+    el.style.transform = REST;
+    el.style.willChange = "auto";
+  }, []);
 
   return (
     <div
       ref={ref}
-      onMouseEnter={() => setActive(true)}
+      onMouseEnter={handleEnter}
       onMouseMove={handleMove}
-      onMouseLeave={reset}
+      onMouseLeave={handleLeave}
       className={className}
-      style={{
-        transform,
-        transformStyle: "preserve-3d",
-        transition: active ? "transform 120ms ease-out" : "transform 600ms cubic-bezier(0.22, 1, 0.36, 1)",
-        willChange: "transform",
-      }}
+      style={{ transform: REST, transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
     >
       {children}
     </div>
