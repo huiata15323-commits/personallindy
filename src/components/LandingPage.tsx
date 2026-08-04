@@ -449,15 +449,15 @@ function Plans() {
           className="grid sm:grid-cols-2 gap-6"
         >
           {plans.map((p, i) => (
-            <motion.div
-              key={i}
-              variants={fadeInUp}
-              className={`relative p-6 md:p-8 rounded-2xl flex flex-col ${
+            <motion.div key={i} variants={fadeInUp} className="h-full">
+              <Tilt3D
+                max={6}
+                className={`relative h-full p-6 md:p-8 rounded-2xl flex flex-col ${
                 p.highlight
                   ? "bg-dark-elevated border-2 border-gold/60 shadow-[0_0_40px_-10px_var(--color-gold)]"
                   : "bg-dark-surface border-gold-subtle"
               }`}
-            >
+              >
               {p.badge && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold uppercase tracking-wider px-4 py-1 rounded-full whitespace-nowrap">
                   {p.badge}
@@ -480,6 +480,7 @@ function Plans() {
                 Quero esse plano
                 <ArrowRight size={16} />
               </WhatsAppButton>
+              </Tilt3D>
             </motion.div>
           ))}
         </motion.div>
