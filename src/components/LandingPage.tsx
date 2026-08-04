@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { motion, useInView, type Variants } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
   Dumbbell,
   Target,
@@ -51,7 +51,7 @@ function WhatsAppButton({
       target="_blank"
       rel="noopener noreferrer"
       className={`
-        inline-flex items-center justify-center gap-2
+        btn-shine inline-flex items-center justify-center gap-2
         bg-primary text-primary-foreground
         font-semibold tracking-wide uppercase
         transition-all duration-300
@@ -67,9 +67,28 @@ function WhatsAppButton({
 }
 
 function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-all duration-500 ${
+        scrolled ? "bg-background/90 border-border shadow-[0_8px_30px_-15px_rgba(0,0,0,0.9)]" : "bg-background/60 border-border/40"
+      }`}
+    >
+      <div
+        className={`max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4 transition-all duration-500 ${
+          scrolled ? "py-2" : "py-3"
+        }`}
+      >
         <a href="#top" className="text-xl sm:text-2xl text-foreground tracking-widest flex items-baseline gap-2">
           <span className="font-display uppercase">Personal</span>
           <span className="font-serif-display italic text-gradient-gold text-2xl sm:text-3xl">Lindy</span>
@@ -78,12 +97,16 @@ function Header() {
           href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
+          className="btn-shine inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
         >
           <MessageCircle size={16} />
           <span className="hidden xs:inline sm:inline">WhatsApp</span>
         </a>
       </div>
+      <motion.div
+        style={{ scaleX: progress }}
+        className="origin-left h-[2px] w-full bg-gradient-gold"
+      />
     </header>
   );
 }
@@ -114,21 +137,26 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
 }
 
 function Hero() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 70]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 z-0">
+    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <motion.div style={{ y: bgY, scale: bgScale }} className="absolute inset-0 z-0 will-change-transform">
         <RevealImage
           src={heroBg.url}
           alt="Treino na academia"
           className="w-full h-full object-cover object-top"
         />
         <div className="absolute inset-0 bg-hero-overlay" />
-      </div>
+      </motion.div>
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.2 }}
+        style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto pt-20"
       >
         <motion.div
@@ -292,7 +320,7 @@ function HowItWorks() {
                 <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
                   {i + 1}
                 </div>
-                <step.icon size={32} className="text-gold mb-4" />
+                <step.icon size={32} className="text-gold mb-4 icon-lift" />
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
               </Tilt3D>
@@ -338,7 +366,7 @@ function Benefits() {
                 className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
               >
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                  <b.icon size={24} className="text-gold" />
+                  <b.icon size={24} className="text-gold icon-lift" />
                 </div>
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{b.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
