@@ -40,6 +40,8 @@ export default function Tilt3D({
 
     const px = (p.x - r.left) / r.width - 0.5;
     const py = (p.y - r.top) / r.height - 0.5;
+    el.style.setProperty("--glow-x", `${(((p.x - r.left) / r.width) * 100).toFixed(1)}%`);
+    el.style.setProperty("--glow-y", `${(((p.y - r.top) / r.height) * 100).toFixed(1)}%`);
     // Single style write per animation frame — caps updates at the display
     // refresh rate and avoids React re-renders on every mousemove.
     el.style.transform = `perspective(1000px) rotateX(${(-py * max).toFixed(2)}deg) rotateY(${(px * max).toFixed(2)}deg) scale(${scale})`;
@@ -53,6 +55,7 @@ export default function Tilt3D({
     rect.current = el.getBoundingClientRect();
     el.style.willChange = "transform";
     el.style.transition = "transform 120ms ease-out";
+    el.style.setProperty("--glow-opacity", "1");
     pending.current = { x: e.clientX, y: e.clientY };
     if (frame.current === null) frame.current = requestAnimationFrame(flush);
   }, [flush]);
@@ -75,6 +78,7 @@ export default function Tilt3D({
     el.style.transition = "transform 600ms cubic-bezier(0.22, 1, 0.36, 1)";
     el.style.transform = REST;
     el.style.willChange = "auto";
+    el.style.setProperty("--glow-opacity", "0");
   }, []);
 
   return (
@@ -83,7 +87,7 @@ export default function Tilt3D({
       onMouseEnter={handleEnter}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      className={className}
+      className={`tilt-glow ${className}`}
       style={{ transform: REST, transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
     >
       {children}
