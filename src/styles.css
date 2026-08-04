@@ -241,3 +241,29 @@ img, video {
 .group:hover .icon-lift {
   transform: translateY(-4px) scale(1.08);
 }
+
+/* Gold halo that follows the cursor over 3D-tilted cards */
+.tilt-glow {
+  position: relative;
+  isolation: isolate;
+}
+
+.tilt-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--glow-opacity, 0);
+  transition: opacity 400ms ease-out;
+  background: radial-gradient(
+    260px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    oklch(0.72 0.12 85 / 0.16),
+    transparent 70%
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilt-glow::before { display: none; }
+}
