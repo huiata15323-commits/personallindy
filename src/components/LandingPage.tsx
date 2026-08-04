@@ -21,6 +21,7 @@ import {
 import heroBg from "../assets/hero-coach.png.asset.json";
 import lindyProfile from "../assets/about-coach.png.asset.json";
 import RevealImage from "./RevealImage";
+import Tilt3D from "./Tilt3D";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -201,7 +202,7 @@ function About() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <div className="relative overflow-hidden rounded-2xl border-gold-subtle">
+            <Tilt3D max={10} className="relative overflow-hidden rounded-2xl border-gold-subtle">
               <RevealImage
                 src={lindyProfile.url}
                 alt="Lindyara Ribeiro - Personal Trainer"
@@ -209,7 +210,7 @@ function About() {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-            </div>
+            </Tilt3D>
           </motion.div>
 
           <motion.div
