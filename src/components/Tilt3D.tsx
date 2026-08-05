@@ -18,18 +18,42 @@ export default function Tilt3D({
   const frame = useRef<number | null>(null);
   const pending = useRef<{ x: number; y: number } | null>(null);
   const enabled = useRef(false);
+  const touchMode = useRef(false);
+  const orientRef = useRef<((e: DeviceOrientationEvent) => void) | null>(null);
 
   useEffect(() => {
-    // Disable entirely on touch/coarse pointers and when motion is reduced:
-    // no listeners, no transforms, zero cost on phones.
-    enabled.current =
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches &&
-      !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    enabled.current = !reduced;
+    touchMode.current = !reduced && !fine;
+
+    // Ambient tilt from device orientation on phones/tablets (when the sensor
+    // is available without an explicit permission prompt). Passive, rAF-capped.
+    if (touchMode.current && typeof window.DeviceOrientationEvent !== "undefined") {
+      const clamp = (v: number, l: number) => Math.max(-l, Math.min(l, v));
+      const onOrient = (e: DeviceOrientationEvent) => {
+        const el = ref.current;
+        if (!el || rect.current) return; // finger drag takes priority
+        const gamma = e.gamma ?? 0; // left/right
+        const beta = e.beta ?? 0; // front/back
+        const ry = clamp(gamma / 4, max);
+        const rx = clamp((beta - 45) / 6, max);
+        if (frame.current !== null) return;
+        frame.current = requestAnimationFrame(() => {
+          frame.current = null;
+          el.style.transition = "transform 220ms ease-out";
+          el.style.transform = `perspective(1000px) rotateX(${(-rx).toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(1)`;
+        });
+      };
+      orientRef.current = onOrient;
+      window.addEventListener("deviceorientation", onOrient, { passive: true });
+    }
 
     return () => {
+      if (orientRef.current) window.removeEventListener("deviceorientation", orientRef.current);
       if (frame.current !== null) cancelAnimationFrame(frame.current);
     };
-  }, []);
+  }, [max]);
 
   const flush = useCallback(() => {
     frame.current = null;
@@ -47,7 +71,7 @@ export default function Tilt3D({
     el.style.transform = `perspective(1000px) rotateX(${(-py * max).toFixed(2)}deg) rotateY(${(px * max).toFixed(2)}deg) scale(${scale})`;
   }, [max, scale]);
 
-  const handleEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const start = useCallback((x: number, y: number) => {
     if (!enabled.current) return;
     const el = ref.current;
     if (!el) return;
@@ -56,15 +80,39 @@ export default function Tilt3D({
     el.style.willChange = "transform";
     el.style.transition = "transform 120ms ease-out";
     el.style.setProperty("--glow-opacity", "1");
-    pending.current = { x: e.clientX, y: e.clientY };
+    pending.current = { x, y };
     if (frame.current === null) frame.current = requestAnimationFrame(flush);
   }, [flush]);
 
-  const handleMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+  const move = useCallback((x: number, y: number) => {
     if (!enabled.current || !rect.current) return;
-    pending.current = { x: e.clientX, y: e.clientY };
+    pending.current = { x, y };
     if (frame.current === null) frame.current = requestAnimationFrame(flush);
   }, [flush]);
+
+  const handleEnter = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => start(e.clientX, e.clientY),
+    [start],
+  );
+  const handleMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => move(e.clientX, e.clientY),
+    [move],
+  );
+  // Touch: never calls preventDefault, so scrolling and assistive tech stay intact.
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      const t = e.touches[0];
+      if (t) start(t.clientX, t.clientY);
+    },
+    [start],
+  );
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      const t = e.touches[0];
+      if (t) move(t.clientX, t.clientY);
+    },
+    [move],
+  );
 
   const handleLeave = useCallback(() => {
     if (frame.current !== null) {
@@ -87,6 +135,10 @@ export default function Tilt3D({
       onMouseEnter={handleEnter}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleLeave}
+      onTouchCancel={handleLeave}
       className={`tilt-glow ${className}`}
       style={{ transform: REST, transformStyle: "preserve-3d", backfaceVisibility: "hidden" }}
     >
