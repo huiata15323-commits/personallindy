@@ -337,7 +337,7 @@ function HowItWorks() {
           className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
         >
           {steps.map((step, i) => (
-            <motion.div key={i} variants={fadeInUp} className="h-full">
+            <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
               <Tilt3D
                 max={7}
                 className="group relative h-full p-6 md:p-8 rounded-2xl bg-dark-elevated border-gold-subtle hover:border-gold/40"
@@ -385,7 +385,7 @@ function Benefits() {
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {benefits.map((b, i) => (
-            <motion.div key={i} variants={fadeInUp} className="h-full">
+            <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
               <Tilt3D
                 max={7}
                 className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
@@ -502,7 +502,7 @@ function Plans() {
           className="grid sm:grid-cols-2 gap-6"
         >
           {plans.map((p, i) => (
-            <motion.div key={i} variants={fadeInUp} className="h-full">
+            <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
               <Tilt3D
                 max={6}
                 className={`relative h-full p-6 md:p-8 rounded-2xl flex flex-col ${
