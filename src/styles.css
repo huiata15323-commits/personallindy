@@ -267,3 +267,60 @@ img, video {
 @media (prefers-reduced-motion: reduce) {
   .tilt-glow::before { display: none; }
 }
+
+/* Halo dourado que segue o cursor (desktop) */
+.gold-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 280px;
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+  mix-blend-mode: screen;
+  background: radial-gradient(
+    circle,
+    oklch(0.78 0.13 85 / 0.16),
+    oklch(0.78 0.13 85 / 0.06) 45%,
+    transparent 70%
+  );
+}
+
+/* Poeira dourada do hero */
+@keyframes gold-float {
+  0% { transform: translate3d(0, 110%, 0) scale(0.8); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translate3d(var(--drift, 0px), -20%, 0) scale(1.1); opacity: 0; }
+}
+
+.gold-particle {
+  position: absolute;
+  bottom: 0;
+  border-radius: 9999px;
+  background: oklch(0.85 0.12 85);
+  box-shadow: 0 0 8px oklch(0.8 0.13 85 / 0.7);
+  animation-name: gold-float;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+/* Pulso suave em selos e destaques */
+@keyframes soft-gold-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.78 0.13 85 / 0.18); }
+  50% { box-shadow: 0 0 18px 3px oklch(0.78 0.13 85 / 0.22); }
+}
+
+@utility pulse-badge {
+  animation: soft-gold-pulse 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gold-cursor { display: none; }
+  .gold-particle { animation: none; opacity: 0 !important; }
+  .pulse-badge { animation: none; }
+}
