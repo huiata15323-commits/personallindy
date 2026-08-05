@@ -434,7 +434,8 @@ function ForWho() {
           {audiences.map((a, i) => (
             <motion.div
               key={i}
-              variants={fadeInUp}
+              variants={depthIn}
+              style={{ transformStyle: "preserve-3d" }}
               className="flex items-start gap-4 p-5 md:p-6 rounded-xl bg-dark-elevated border-gold-subtle"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
