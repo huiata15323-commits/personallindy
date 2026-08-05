@@ -24,6 +24,9 @@ import RevealImage from "./RevealImage";
 import Tilt3D from "./Tilt3D";
 import WordReveal from "./WordReveal";
 import CountUp from "./CountUp";
+import GoldCursor from "./GoldCursor";
+import GoldParticles from "./GoldParticles";
+import GoldDivider from "./GoldDivider";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -197,6 +200,8 @@ function Hero() {
         <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay" />
       </motion.div>
 
+      <GoldParticles />
+
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto pt-20"
@@ -307,11 +312,11 @@ function About() {
               Meu objetivo é proporcionar os melhores resultados no menor tempo possível, sempre respeitando a individualidade, os limites e as metas de cada aluno.
             </p>
             <div className="grid grid-cols-2 gap-3 mb-8">
-              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+              <div className="pulse-badge text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
                 <ShieldCheck size={20} className="text-gold mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">CREF 010437/GO</p>
               </div>
-              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+              <div className="pulse-badge text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
                 <Zap size={20} className="text-gold mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
                   <CountUp to={9} suffix="+" /> anos
@@ -654,12 +659,17 @@ export default function LandingPage() {
   return (
     <>
       <Header />
+      <GoldCursor />
       <main id="top" className="bg-background pt-16">
         <Hero />
         <About />
+        <GoldDivider />
         <HowItWorks />
+        <GoldDivider />
         <Benefits />
+        <GoldDivider />
         <ForWho />
+        <GoldDivider />
         <Plans />
         <CTA />
         <Footer />
