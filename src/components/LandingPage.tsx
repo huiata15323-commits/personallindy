@@ -35,6 +35,27 @@ const staggerContainer: Variants = {
   visible: { transition: { staggerChildren: 0.14, delayChildren: 0.1 } },
 };
 
+// Entrada com profundidade real (perspectiva + Z/scale + leve rotateX)
+const depthIn: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 36,
+    z: -120,
+    scale: 0.96,
+    rotateX: 8,
+    transformPerspective: 1000,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    z: 0,
+    scale: 1,
+    rotateX: 0,
+    transformPerspective: 1000,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 function WhatsAppButton({
   children,
   className = "",
@@ -316,7 +337,7 @@ function HowItWorks() {
           className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
         >
           {steps.map((step, i) => (
-            <motion.div key={i} variants={fadeInUp} className="h-full">
+            <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
               <Tilt3D
                 max={7}
                 className="group relative h-full p-6 md:p-8 rounded-2xl bg-dark-elevated border-gold-subtle hover:border-gold/40"
@@ -364,7 +385,7 @@ function Benefits() {
           className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
           {benefits.map((b, i) => (
-            <motion.div key={i} variants={fadeInUp} className="h-full">
+            <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
               <Tilt3D
                 max={7}
                 className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
@@ -413,7 +434,8 @@ function ForWho() {
           {audiences.map((a, i) => (
             <motion.div
               key={i}
-              variants={fadeInUp}
+              variants={depthIn}
+              style={{ transformStyle: "preserve-3d" }}
               className="flex items-start gap-4 p-5 md:p-6 rounded-xl bg-dark-elevated border-gold-subtle"
             >
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
@@ -481,7 +503,7 @@ function Plans() {
           className="grid sm:grid-cols-2 gap-6"
         >
           {plans.map((p, i) => (
-            <motion.div key={i} variants={fadeInUp} className="h-full">
+            <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
               <Tilt3D
                 max={6}
                 className={`relative h-full p-6 md:p-8 rounded-2xl flex flex-col ${
