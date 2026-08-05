@@ -46,7 +46,11 @@ export default function RevealImage({ className = "", style, delay = 0, ...props
           ? {}
           : {
               opacity: visible ? 1 : 0,
-              transform: visible ? "translateY(0) scale(1)" : "translateY(30px) scale(0.97)",
+              transform: visible
+                ? "perspective(1200px) translate3d(0, 0, 0) rotateX(0deg) scale(1)"
+                : "perspective(1200px) translate3d(0, 30px, -90px) rotateX(6deg) scale(0.97)",
+              transformOrigin: "center 60%",
+              backfaceVisibility: "hidden",
               transition:
                 "opacity 800ms cubic-bezier(0.22, 1, 0.36, 1), transform 800ms cubic-bezier(0.22, 1, 0.36, 1)",
               transitionDelay: `${delay}ms`,
