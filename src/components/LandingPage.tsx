@@ -162,20 +162,39 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
 function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
+  const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.35 });
+  const bgY = useTransform(smooth, [0, 1], ["0%", "14%"]);
+  const bgScale = useTransform(smooth, [0, 1], [1, 1.08]);
+  // Profundidade 3D sutil: o fundo recua no eixo Z e inclina levemente ao rolar.
+  const bgZ = useTransform(smooth, [0, 1], [0, -140]);
+  const bgRotateX = useTransform(smooth, [0, 1], [0, 4]);
+  const overlayOpacity = useTransform(smooth, [0, 1], [1, 1.25]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, 70]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
 
   return (
-    <section ref={ref} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <motion.div style={{ y: bgY, scale: bgScale }} className="absolute inset-0 z-0 will-change-transform">
+    <section
+      ref={ref}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ perspective: "1200px", perspectiveOrigin: "50% 40%" }}
+    >
+      <motion.div
+        style={{
+          y: bgY,
+          scale: bgScale,
+          z: bgZ,
+          rotateX: bgRotateX,
+          transformStyle: "preserve-3d",
+          transformOrigin: "50% 0%",
+        }}
+        className="absolute inset-0 z-0 will-change-transform"
+      >
         <RevealImage
           src={heroBg.url}
           alt="Treino na academia"
           className="w-full h-full object-cover object-top"
         />
-        <div className="absolute inset-0 bg-hero-overlay" />
+        <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay" />
       </motion.div>
 
       <motion.div
