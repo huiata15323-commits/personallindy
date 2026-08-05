@@ -35,6 +35,27 @@ const staggerContainer: Variants = {
   visible: { transition: { staggerChildren: 0.14, delayChildren: 0.1 } },
 };
 
+// Entrada com profundidade real (perspectiva + Z/scale + leve rotateX)
+const depthIn: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 36,
+    z: -120,
+    scale: 0.96,
+    rotateX: 8,
+    transformPerspective: 1000,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    z: 0,
+    scale: 1,
+    rotateX: 0,
+    transformPerspective: 1000,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
 function WhatsAppButton({
   children,
   className = "",
