@@ -529,7 +529,8 @@ function Plans() {
       price: "R$ 100",
       period: "/mês",
       highlight: false,
-      ctaMessage: "Olá Lindy! Quero começar com o Plano Mensal.",
+      ctaMessage:
+        "Olá Lindy! 💪 Quero começar com o *Plano MENSAL* (R$ 100/mês). Como faço para iniciar?",
       features: [
         "Treino 100% personalizado",
         "Suporte via WhatsApp",
@@ -543,7 +544,8 @@ function Plans() {
       period: "/trimestral",
       badge: "Mais escolhido",
       highlight: true,
-      ctaMessage: "Olá Lindy! Quero começar com o Plano Trimestral.",
+      ctaMessage:
+        "Olá Lindy! 💪 Quero começar com o *Plano TRIMESTRAL* (3x R$ 95 - 90 dias). Como faço para iniciar?",
       features: [
         "Consultoria online individualizada",
         "Acesso à ficha por 90 dias",
@@ -596,7 +598,11 @@ function Plans() {
                   </li>
                 ))}
               </ul>
-              <WhatsAppButton className="w-full" message={p.ctaMessage}>
+              <WhatsAppButton
+                className="w-full"
+                message={p.ctaMessage}
+                launchLabel={`Plano ${p.name} — abrindo o WhatsApp da Lindy...`}
+              >
                 Quero esse plano
                 <ArrowRight size={16} />
               </WhatsAppButton>
