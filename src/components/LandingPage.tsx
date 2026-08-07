@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { createPortal, flushSync } from "react-dom";
 import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
   Dumbbell,
@@ -80,25 +80,31 @@ function WhatsAppButton({
   const href = `https://wa.me/5562984811499?text=${encoded}`;
   const [launching, setLaunching] = useState(false);
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!launchLabel || launching) return;
-    e.preventDefault();
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.(18);
-    setLaunching(true);
-    setTimeout(() => {
-      const win = window.open(href, "_blank", "noopener,noreferrer");
-      if (!win) window.location.href = href;
-      setLaunching(false);
-    }, 1350);
+  const handleClick = () => {
+    if (launching) return;
+
+    if (!launchLabel) {
+      window.open(href, "_blank", "noopener,noreferrer");
+      return;
+    }
+
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.([20, 45, 30]);
+
+    // Force the launch screen into the DOM before starting the redirect timer.
+    // This avoids the native link navigation winning the race on touch browsers.
+    flushSync(() => setLaunching(true));
+    window.setTimeout(() => {
+      window.location.assign(href);
+    }, 1600);
   };
 
   return (
     <>
-    <a
-      href={href}
+    <button
+      type="button"
       onClick={handleClick}
-      target="_blank"
-      rel="noopener noreferrer"
+      disabled={launching}
+      aria-label={launchLabel ? `${children?.toString() ?? "Escolher plano"}: ${launchLabel}` : undefined}
       className={`
         btn-shine inline-flex items-center justify-center gap-2
         bg-primary text-primary-foreground
@@ -106,12 +112,13 @@ function WhatsAppButton({
         transition-all duration-300
         hover:brightness-110 hover:scale-[1.02]
         active:scale-[0.98]
+        disabled:pointer-events-none
         ${large ? "px-8 py-4 text-lg rounded-xl animate-pulse-gold" : "px-6 py-3 text-sm rounded-lg"}
         ${className}
       `}
     >
       {children}
-    </a>
+    </button>
     {typeof document !== "undefined"
       ? createPortal(
           <AnimatePresence>
