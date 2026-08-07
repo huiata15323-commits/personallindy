@@ -324,3 +324,33 @@ img, video {
   .gold-particle { animation: none; opacity: 0 !important; }
   .pulse-badge { animation: none; }
 }
+
+/* Premium: gold light sweeping across display headings */
+@keyframes title-sheen {
+  0% { background-position: -160% 0; }
+  55%, 100% { background-position: 260% 0; }
+}
+
+.title-sheen {
+  background-image: linear-gradient(
+    100deg,
+    var(--foreground) 0%,
+    var(--foreground) 38%,
+    oklch(0.86 0.13 88) 48%,
+    oklch(0.96 0.06 92) 52%,
+    oklch(0.86 0.13 88) 56%,
+    var(--foreground) 66%,
+    var(--foreground) 100%
+  );
+  background-size: 260% 100%;
+  background-position: -160% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: title-sheen 6.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-sheen { animation: none; }
+}
