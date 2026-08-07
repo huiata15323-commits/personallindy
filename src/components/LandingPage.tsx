@@ -27,6 +27,8 @@ import CountUp from "./CountUp";
 import GoldCursor from "./GoldCursor";
 import GoldParticles from "./GoldParticles";
 import GoldDivider from "./GoldDivider";
+import FAQ from "./FAQ";
+import MobileCTA from "./MobileCTA";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -259,6 +261,24 @@ function Hero() {
           <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> 100% online</span>
         </motion.div>
       </motion.div>
+
+      <motion.a
+        href="#sobre"
+        aria-label="Rolar para a próxima seção"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.6, duration: 0.8 }}
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2"
+      >
+        <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Role</span>
+        <span className="relative h-10 w-6 rounded-full border border-gold/50 overflow-hidden">
+          <motion.span
+            animate={{ y: [4, 18, 4], opacity: [1, 0.2, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute left-1/2 -translate-x-1/2 h-2 w-1 rounded-full bg-gold"
+          />
+        </span>
+      </motion.a>
     </section>
   );
 }
@@ -671,9 +691,12 @@ export default function LandingPage() {
         <ForWho />
         <GoldDivider />
         <Plans />
+        <GoldDivider />
+        <FAQ />
         <CTA />
         <Footer />
       </main>
+      <MobileCTA />
     </>
   );
 }
