@@ -67,16 +67,33 @@ function WhatsAppButton({
   className = "",
   large = false,
   message = "Olá Lindy! Quero começar minha transformação.",
+  launchLabel,
 }: {
   children: React.ReactNode;
   className?: string;
   large?: boolean;
   message?: string;
+  launchLabel?: string;
 }) {
   const encoded = encodeURIComponent(message);
+  const href = `https://wa.me/5562984811499?text=${encoded}`;
+  const [launching, setLaunching] = useState(false);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!launchLabel || launching) return;
+    e.preventDefault();
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.(18);
+    setLaunching(true);
+    setTimeout(() => {
+      window.location.href = href;
+    }, 1350);
+  };
+
   return (
+    <>
     <a
-      href={`https://wa.me/5562984811499?text=${encoded}`}
+      href={href}
+      onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
       className={`
@@ -92,6 +109,10 @@ function WhatsAppButton({
     >
       {children}
     </a>
+    <AnimatePresence>
+      {launching && launchLabel ? <PlanLaunch label={launchLabel} /> : null}
+    </AnimatePresence>
+    </>
   );
 }
 
