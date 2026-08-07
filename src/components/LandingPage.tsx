@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
@@ -34,7 +34,11 @@ import FAQ from "./FAQ";
 import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
 import Magnetic from "./Magnetic";
+import ProgressRing from "./ProgressRing";
 import { useSheenVisible } from "../hooks/use-sheen-visible";
+
+// Cena 3D (three.js) em chunk separado — só baixa/roda no cliente (desktop capaz).
+const Hero3D = lazy(() => import("./Hero3D"));
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -120,7 +124,7 @@ function WhatsAppButton({
         hover:brightness-110 hover:scale-[1.02]
         active:scale-[0.98]
         disabled:pointer-events-none
-        ${large ? "px-8 py-4 text-lg rounded-xl animate-pulse-gold" : "px-6 py-3 text-sm rounded-lg"}
+        ${large ? "px-8 py-4 text-lg rounded-xl animate-ember" : "px-6 py-3 text-sm rounded-lg"}
         ${className}
       `}
     >
@@ -217,6 +221,8 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
 
 function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.35 });
   const bgY = useTransform(smooth, [0, 1], ["0%", "14%"]);
@@ -254,6 +260,15 @@ function Hero() {
       </motion.div>
 
       <GoldParticles />
+
+      {/* Cena 3D ambiente (desktop capaz) — atrás do texto, nunca bloqueia toque/scroll */}
+      {mounted && (
+        <div className="hidden lg:block absolute inset-0 z-[2] pointer-events-none" aria-hidden="true">
+          <Suspense fallback={null}>
+            <Hero3D />
+          </Suspense>
+        </div>
+      )}
 
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
@@ -394,7 +409,7 @@ function About() {
               <div className="pulse-badge text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
                 <Zap size={20} className="text-gold mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                  <CountUp to={9} suffix="+" /> anos
+                  <CountUp to={9} suffix="+" className="text-ember font-bold" /> anos
                 </p>
               </div>
             </div>
@@ -441,10 +456,12 @@ function HowItWorks() {
                 max={7}
                 className="group relative h-full p-6 md:p-8 rounded-2xl bg-dark-elevated border-gold-subtle hover:border-gold/40"
               >
-                <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold">
+                <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold z-10">
                   {i + 1}
                 </div>
-                <step.icon size={32} className="text-gold mb-4 icon-lift" />
+                <ProgressRing className="mb-4">
+                  <step.icon size={30} className="text-gold icon-lift" />
+                </ProgressRing>
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
               </Tilt3D>

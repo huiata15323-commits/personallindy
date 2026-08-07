@@ -387,3 +387,23 @@ img, video {
 @media (prefers-reduced-motion: reduce) {
   .cta-aurora { animation: none; opacity: 0.4; }
 }
+
+/* Acento de "energia" (âmbar, mais quente que o ouro base) nos pontos de conversão:
+   botão principal e números de resultado. Injeta intensidade sem trocar a paleta. */
+@keyframes ember-pulse {
+  0%, 100% { box-shadow: 0 0 18px oklch(0.72 0.16 60 / 0.35), 0 0 4px oklch(0.82 0.14 70 / 0.45); }
+  50%      { box-shadow: 0 0 44px oklch(0.72 0.18 58 / 0.6), 0 0 12px oklch(0.84 0.15 68 / 0.5); }
+}
+
+@utility animate-ember {
+  animation: ember-pulse 2.4s ease-in-out infinite;
+}
+
+@utility text-ember {
+  color: oklch(0.87 0.13 72);
+  text-shadow: 0 0 18px oklch(0.76 0.16 62 / 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ember { animation: none; box-shadow: 0 0 22px oklch(0.72 0.16 60 / 0.45); }
+}
