@@ -31,6 +31,7 @@ import GoldDivider from "./GoldDivider";
 import FAQ from "./FAQ";
 import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
+import Magnetic from "./Magnetic";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -50,6 +51,7 @@ const depthIn: Variants = {
     z: -120,
     scale: 0.96,
     rotateX: 8,
+    filter: "blur(10px)",
     transformPerspective: 1000,
   },
   visible: {
@@ -58,8 +60,9 @@ const depthIn: Variants = {
     z: 0,
     scale: 1,
     rotateX: 0,
+    filter: "blur(0px)",
     transformPerspective: 1000,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
@@ -100,6 +103,7 @@ function WhatsAppButton({
 
   return (
     <>
+    <Magnetic>
     <button
       type="button"
       onClick={handleClick}
@@ -119,6 +123,7 @@ function WhatsAppButton({
     >
       {children}
     </button>
+    </Magnetic>
     {typeof document !== "undefined"
       ? createPortal(
           <AnimatePresence>
@@ -188,7 +193,7 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
       variants={fadeInUp}
       className="text-center mb-12 md:mb-16"
     >
-      <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.1]">
+      <h2 className="title-sheen font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.1]">
         <WordReveal text={title} />
       </h2>
       <div className="divider-gold w-24 mx-auto mt-5" />
@@ -353,7 +358,7 @@ function About() {
             <span className="text-gold text-sm font-semibold uppercase tracking-widest">
               Sobre a Personal
             </span>
-            <h2 className="font-serif-display text-4xl sm:text-5xl md:text-6xl text-foreground mt-2 mb-6 leading-[1.1]">
+            <h2 className="title-sheen font-serif-display text-4xl sm:text-5xl md:text-6xl text-foreground mt-2 mb-6 leading-[1.1]">
               Lindyara <span className="text-gradient-gold italic">Ribeiro</span>
             </h2>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
@@ -650,7 +655,7 @@ function CTA() {
         >
           <div className="absolute inset-0 bg-gradient-gold opacity-[0.03]" />
           <div className="relative z-10">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl text-foreground uppercase tracking-wide">
+            <h2 className="title-sheen text-4xl md:text-5xl lg:text-6xl text-foreground uppercase tracking-wide">
               Comece sua <span className="text-gradient-gold">transformação</span> hoje com a Personal Lindy
             </h2>
             <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
