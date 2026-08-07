@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, lazy, Suspense } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
@@ -35,10 +35,8 @@ import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
 import Magnetic from "./Magnetic";
 import ProgressRing from "./ProgressRing";
+import AuthenticVideo from "./AuthenticVideo";
 import { useSheenVisible } from "../hooks/use-sheen-visible";
-
-// Cena 3D (three.js) em chunk separado — só baixa/roda no cliente (desktop capaz).
-const Hero3D = lazy(() => import("./Hero3D"));
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -221,8 +219,6 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
 
 function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.35 });
   const bgY = useTransform(smooth, [0, 1], ["0%", "14%"]);
@@ -260,15 +256,6 @@ function Hero() {
       </motion.div>
 
       <GoldParticles />
-
-      {/* Cena 3D ambiente (desktop capaz) — atrás do texto, nunca bloqueia toque/scroll */}
-      {mounted && (
-        <div className="hidden lg:block absolute inset-0 z-[2] pointer-events-none" aria-hidden="true">
-          <Suspense fallback={null}>
-            <Hero3D />
-          </Suspense>
-        </div>
-      )}
 
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
@@ -767,6 +754,8 @@ export default function LandingPage() {
       <main id="top" className="bg-background pt-16">
         <Hero />
         <About />
+        <GoldDivider />
+        <AuthenticVideo />
         <GoldDivider />
         <HowItWorks />
         <GoldDivider />
