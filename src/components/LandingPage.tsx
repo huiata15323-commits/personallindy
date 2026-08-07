@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
   Dumbbell,
