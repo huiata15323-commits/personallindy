@@ -85,7 +85,9 @@ function WhatsAppButton({
     if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.(18);
     setLaunching(true);
     setTimeout(() => {
-      window.location.href = href;
+      const win = window.open(href, "_blank", "noopener,noreferrer");
+      if (!win) window.location.href = href;
+      setLaunching(false);
     }, 1350);
   };
 
@@ -109,9 +111,14 @@ function WhatsAppButton({
     >
       {children}
     </a>
-    <AnimatePresence>
-      {launching && launchLabel ? <PlanLaunch label={launchLabel} /> : null}
-    </AnimatePresence>
+    {typeof document !== "undefined"
+      ? createPortal(
+          <AnimatePresence>
+            {launching && launchLabel ? <PlanLaunch label={launchLabel} /> : null}
+          </AnimatePresence>,
+          document.body,
+        )
+      : null}
     </>
   );
 }
