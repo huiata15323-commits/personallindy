@@ -96,6 +96,8 @@ img, video {
 
   html {
     scroll-behavior: smooth;
+    /* âncoras (#sobre, #top) não ficam escondidas sob o header fixo */
+    scroll-padding-top: 5rem;
   }
 
   body {
@@ -431,4 +433,44 @@ img, video {
 @media (prefers-reduced-motion: reduce) {
   .animate-ember { animation: none; box-shadow: 0 0 22px oklch(0.72 0.16 60 / 0.45); }
   .flame-flicker { animation: none; }
+}
+
+/* ============ Micro-detalhes premium ============ */
+
+/* Seleção de texto dourada */
+::selection {
+  background: oklch(0.72 0.12 85 / 0.3);
+  color: oklch(0.99 0 0);
+}
+
+/* Foco visível acessível (navegação por teclado) em links e botões */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Quebra de linha elegante (evita "viúvas" e linhas tortas) */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* Scrollbar fina e discreta (desktop / ponteiro fino) */
+@media (pointer: fine) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.72 0.12 85 / 0.5) transparent;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(oklch(0.72 0.12 85 / 0.55), oklch(0.58 0.1 85 / 0.55));
+    border-radius: 9999px;
+    border: 2px solid var(--dark);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: oklch(0.75 0.13 85 / 0.75); }
 }

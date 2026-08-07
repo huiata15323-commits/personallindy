@@ -31,7 +31,8 @@ function Scene() {
   });
 
   return (
-    <group ref={group}>
+    // Deslocada para a direita/cima: acento elegante ao lado do título, não atrás dele.
+    <group ref={group} position={[1.7, 0.5, 0]}>
       <ambientLight intensity={0.4} />
       <directionalLight position={[4, 5, 3]} intensity={2.6} color="#ffdca0" />
       <pointLight position={[-5, -2, -3]} intensity={2.2} decay={0} color="#c8922e" />
@@ -39,7 +40,7 @@ function Scene() {
 
       {/* Gema principal — icosaedro facetado, ouro metálico */}
       <mesh ref={gem}>
-        <icosahedronGeometry args={[1.5, 0]} />
+        <icosahedronGeometry args={[1.3, 0]} />
         <meshStandardMaterial
           color="#e6bf7a"
           metalness={1}
@@ -51,9 +52,9 @@ function Scene() {
       </mesh>
 
       {/* Casca externa em wireframe — dá profundidade sem pesar */}
-      <mesh scale={2.5}>
+      <mesh scale={2.2}>
         <icosahedronGeometry args={[1, 0]} />
-        <meshBasicMaterial color="#b98b34" wireframe transparent opacity={0.1} />
+        <meshBasicMaterial color="#b98b34" wireframe transparent opacity={0.09} />
       </mesh>
     </group>
   );
