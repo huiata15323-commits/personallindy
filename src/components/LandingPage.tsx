@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
+import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
   Dumbbell,
   Target,
@@ -28,6 +28,7 @@ import GoldCursor from "./GoldCursor";
 import GoldParticles from "./GoldParticles";
 import GoldDivider from "./GoldDivider";
 import FAQ from "./FAQ";
+import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
 
 const fadeInUp: Variants = {
