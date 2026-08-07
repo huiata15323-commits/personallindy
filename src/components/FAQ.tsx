@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
+import WordReveal from "./WordReveal";
+import { useSheenVisible } from "../hooks/use-sheen-visible";
 
 export const faqItems = [
   {
@@ -27,12 +29,16 @@ export const faqItems = [
 
 export default function FAQ() {
   const [open, setOpen] = useState<number | null>(0);
+  const sheen = useSheenVisible<HTMLHeadingElement>();
 
   return (
     <section id="faq" className="py-20 md:py-28 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto">
-        <h2 className="font-serif-display text-4xl md:text-5xl text-foreground text-center">
-          Perguntas <span className="text-gradient-gold italic">frequentes</span>
+        <h2
+          ref={sheen.ref}
+          className={`title-sheen font-serif-display text-4xl md:text-5xl text-foreground text-center ${sheen.visible ? "sheen-visible" : ""}`}
+        >
+          <WordReveal text="Perguntas frequentes" />
         </h2>
 
         <div className="mt-10 md:mt-14 space-y-3">

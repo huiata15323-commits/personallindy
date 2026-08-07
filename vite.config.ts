@@ -12,4 +12,8 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Deploy target: Vercel. Fora de um build do Lovable, este override é respeitado
+  // e faz o Nitro gerar a saída no formato do Vercel (.vercel/output / Build Output API).
+  // Pode ser sobrescrito por NITRO_PRESET no ambiente, se necessário.
+  nitro: { preset: process.env.NITRO_PRESET || "vercel" },
 });

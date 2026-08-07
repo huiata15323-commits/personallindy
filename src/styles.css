@@ -349,8 +349,41 @@ img, video {
   color: transparent;
   -webkit-text-fill-color: transparent;
   animation: title-sheen 6.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  /* Paused by default; re-enabled only while on-screen (see useSheenVisible).
+     The sweep repaints on every frame it runs, so skipping it off-screen
+     avoids wasted work without changing how it looks while visible. */
+  animation-play-state: paused;
+}
+
+.title-sheen.sheen-visible {
+  animation-play-state: running;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .title-sheen { animation: none; }
+}
+
+/* CTA final: aurora dourada ambiente que deriva lentamente atrás do texto.
+   GPU-only (transform/opacity), pausada sob prefers-reduced-motion. */
+@keyframes cta-aurora-drift {
+  0%   { transform: translate3d(-6%, -4%, 0) scale(1);    opacity: 0.5; }
+  50%  { transform: translate3d(6%, 4%, 0) scale(1.14);   opacity: 0.85; }
+  100% { transform: translate3d(-6%, -4%, 0) scale(1);    opacity: 0.5; }
+}
+
+.cta-aurora {
+  position: absolute;
+  inset: -25%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(40% 40% at 28% 30%, oklch(0.72 0.12 85 / 0.22), transparent 70%),
+    radial-gradient(45% 45% at 72% 68%, oklch(0.82 0.10 85 / 0.15), transparent 72%);
+  filter: blur(8px);
+  animation: cta-aurora-drift 16s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-aurora { animation: none; opacity: 0.4; }
 }

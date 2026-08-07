@@ -19,8 +19,10 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
-import heroBg from "../assets/hero-coach.png.asset.json";
-import lindyProfile from "../assets/about-coach.png.asset.json";
+// Imagens otimizadas (WebP) servidas de /public — funcionam em qualquer host (Vercel etc.)
+// sem depender do proxy de assets do Lovable. Mesma imagem, ~95% mais leve.
+const heroBg = { url: "/hero-coach.webp" };
+const lindyProfile = { url: "/about-coach.webp" };
 import RevealImage from "./RevealImage";
 import Tilt3D from "./Tilt3D";
 import WordReveal from "./WordReveal";
@@ -32,6 +34,7 @@ import FAQ from "./FAQ";
 import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
 import Magnetic from "./Magnetic";
+import { useSheenVisible } from "../hooks/use-sheen-visible";
 
 const fadeInUp: Variants = {
   hidden: { opacity: 0, y: 30 },
@@ -163,15 +166,17 @@ function Header() {
           <span className="font-display uppercase">Personal</span>
           <span className="font-serif-display italic text-gradient-gold text-2xl sm:text-3xl">Lindy</span>
         </a>
-        <a
-          href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-shine inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
-        >
-          <MessageCircle size={16} />
-          <span className="hidden xs:inline sm:inline">WhatsApp</span>
-        </a>
+        <Magnetic strength={0.2}>
+          <a
+            href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-shine inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
+          >
+            <MessageCircle size={16} />
+            <span className="hidden xs:inline sm:inline">WhatsApp</span>
+          </a>
+        </Magnetic>
       </div>
       <motion.div
         style={{ scaleX: progress }}
@@ -184,6 +189,7 @@ function Header() {
 function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const sheen = useSheenVisible<HTMLHeadingElement>();
 
   return (
     <motion.div
@@ -193,7 +199,10 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
       variants={fadeInUp}
       className="text-center mb-12 md:mb-16"
     >
-      <h2 className="title-sheen font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.1]">
+      <h2
+        ref={sheen.ref}
+        className={`title-sheen font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.1] ${sheen.visible ? "sheen-visible" : ""}`}
+      >
         <WordReveal text={title} />
       </h2>
       <div className="divider-gold w-24 mx-auto mt-5" />
@@ -328,6 +337,7 @@ function Hero() {
 function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const sheen = useSheenVisible<HTMLHeadingElement>();
 
   return (
     <section id="sobre" className="py-20 md:py-28 px-4 sm:px-6">
@@ -358,7 +368,10 @@ function About() {
             <span className="text-gold text-sm font-semibold uppercase tracking-widest">
               Sobre a Personal
             </span>
-            <h2 className="title-sheen font-serif-display text-4xl sm:text-5xl md:text-6xl text-foreground mt-2 mb-6 leading-[1.1]">
+            <h2
+              ref={sheen.ref}
+              className={`title-sheen font-serif-display text-4xl sm:text-5xl md:text-6xl text-foreground mt-2 mb-6 leading-[1.1] ${sheen.visible ? "sheen-visible" : ""}`}
+            >
               Lindyara <span className="text-gradient-gold italic">Ribeiro</span>
             </h2>
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-4">
@@ -642,6 +655,7 @@ function Plans() {
 function CTA() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const sheen = useSheenVisible<HTMLHeadingElement>();
 
   return (
     <section className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
@@ -654,8 +668,13 @@ function CTA() {
           className="text-center p-8 md:p-12 lg:p-16 rounded-3xl bg-dark-elevated border-gold-subtle relative overflow-hidden"
         >
           <div className="absolute inset-0 bg-gradient-gold opacity-[0.03]" />
+          <div className="cta-aurora" aria-hidden="true" />
+          <GoldParticles count={18} />
           <div className="relative z-10">
-            <h2 className="title-sheen text-4xl md:text-5xl lg:text-6xl text-foreground uppercase tracking-wide">
+            <h2
+              ref={sheen.ref}
+              className={`title-sheen text-4xl md:text-5xl lg:text-6xl text-foreground uppercase tracking-wide ${sheen.visible ? "sheen-visible" : ""}`}
+            >
               Comece sua <span className="text-gradient-gold">transformação</span> hoje com a Personal Lindy
             </h2>
             <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
