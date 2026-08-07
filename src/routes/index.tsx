@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import LandingPage from "../components/LandingPage";
+import { faqItems } from "../components/FAQ";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -40,6 +41,18 @@ export const Route = createFileRoute("/")({
           },
           priceRange: "R$",
           description: "Consultoria fitness online com treinos personalizados e acompanhamento direto com Lindyara Ribeiro, Personal Trainer. Resultados reais garantidos.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
         }),
       },
     ],
