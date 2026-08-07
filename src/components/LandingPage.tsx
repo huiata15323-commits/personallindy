@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
+import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
   Dumbbell,
   Target,
@@ -28,6 +28,7 @@ import GoldCursor from "./GoldCursor";
 import GoldParticles from "./GoldParticles";
 import GoldDivider from "./GoldDivider";
 import FAQ from "./FAQ";
+import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
 
 const fadeInUp: Variants = {
@@ -66,16 +67,33 @@ function WhatsAppButton({
   className = "",
   large = false,
   message = "Olá Lindy! Quero começar minha transformação.",
+  launchLabel,
 }: {
   children: React.ReactNode;
   className?: string;
   large?: boolean;
   message?: string;
+  launchLabel?: string;
 }) {
   const encoded = encodeURIComponent(message);
+  const href = `https://wa.me/5562984811499?text=${encoded}`;
+  const [launching, setLaunching] = useState(false);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!launchLabel || launching) return;
+    e.preventDefault();
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) navigator.vibrate?.(18);
+    setLaunching(true);
+    setTimeout(() => {
+      window.location.href = href;
+    }, 1350);
+  };
+
   return (
+    <>
     <a
-      href={`https://wa.me/5562984811499?text=${encoded}`}
+      href={href}
+      onClick={handleClick}
       target="_blank"
       rel="noopener noreferrer"
       className={`
@@ -91,6 +109,10 @@ function WhatsAppButton({
     >
       {children}
     </a>
+    <AnimatePresence>
+      {launching && launchLabel ? <PlanLaunch label={launchLabel} /> : null}
+    </AnimatePresence>
+    </>
   );
 }
 
@@ -507,7 +529,8 @@ function Plans() {
       price: "R$ 100",
       period: "/mês",
       highlight: false,
-      ctaMessage: "Olá Lindy! Quero começar com o Plano Mensal.",
+      ctaMessage:
+        "Olá Lindy! 💪 Quero começar com o *Plano MENSAL* (R$ 100/mês). Como faço para iniciar?",
       features: [
         "Treino 100% personalizado",
         "Suporte via WhatsApp",
@@ -521,7 +544,8 @@ function Plans() {
       period: "/trimestral",
       badge: "Mais escolhido",
       highlight: true,
-      ctaMessage: "Olá Lindy! Quero começar com o Plano Trimestral.",
+      ctaMessage:
+        "Olá Lindy! 💪 Quero começar com o *Plano TRIMESTRAL* (3x R$ 95 - 90 dias). Como faço para iniciar?",
       features: [
         "Consultoria online individualizada",
         "Acesso à ficha por 90 dias",
@@ -574,7 +598,11 @@ function Plans() {
                   </li>
                 ))}
               </ul>
-              <WhatsAppButton className="w-full" message={p.ctaMessage}>
+              <WhatsAppButton
+                className="w-full"
+                message={p.ctaMessage}
+                launchLabel={`Plano ${p.name} — abrindo o WhatsApp da Lindy...`}
+              >
                 Quero esse plano
                 <ArrowRight size={16} />
               </WhatsAppButton>
