@@ -69,7 +69,7 @@ img, video {
   --secondary: oklch(0.14 0.01 270);
   --secondary-foreground: oklch(0.97 0 0);
   --muted: oklch(0.18 0.01 270);
-  --muted-foreground: oklch(0.62 0.01 270);
+  --muted-foreground: oklch(0.68 0.012 270);
   --accent: oklch(0.14 0.01 270);
   --accent-foreground: oklch(0.97 0 0);
   --destructive: oklch(0.65 0.18 25);
@@ -81,6 +81,9 @@ img, video {
   --gold: oklch(0.72 0.12 85);
   --gold-light: oklch(0.82 0.1 85);
   --gold-dark: oklch(0.58 0.1 85);
+  /* Acento de "energia" (âmbar) — mais quente que o ouro, reutilizável */
+  --ember: oklch(0.72 0.16 60);
+  --ember-light: oklch(0.83 0.15 66);
   --dark: oklch(0.045 0.005 270);
   --dark-surface: oklch(0.08 0.005 270);
   --dark-elevated: oklch(0.12 0.01 270);
@@ -400,10 +403,32 @@ img, video {
 }
 
 @utility text-ember {
-  color: oklch(0.87 0.13 72);
+  color: var(--ember-light);
   text-shadow: 0 0 18px oklch(0.76 0.16 62 / 0.5);
+}
+
+/* Ícones dentro de cards com .group: transicionam de ouro para âmbar no hover.
+   Combina com o .icon-lift já existente (que sobe/escala). */
+.icon-ember {
+  transition: color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .icon-ember {
+  color: var(--ember-light);
+}
+
+/* Flicker sutil e contínuo na chama do selo do Hero — atrai o olhar sem distrair */
+@keyframes flame-flicker {
+  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 2px oklch(0.8 0.16 62 / 0.5)); }
+  45%      { opacity: 0.82; transform: scale(0.96) rotate(-2deg); filter: drop-shadow(0 0 5px oklch(0.82 0.17 64 / 0.75)); }
+  70%      { opacity: 0.95; transform: scale(1.04) rotate(1.5deg); filter: drop-shadow(0 0 3px oklch(0.8 0.16 62 / 0.6)); }
+}
+.flame-flicker {
+  animation: flame-flicker 2.6s ease-in-out infinite;
+  transform-origin: center bottom;
+  will-change: transform, opacity, filter;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .animate-ember { animation: none; box-shadow: 0 0 22px oklch(0.72 0.16 60 / 0.45); }
+  .flame-flicker { animation: none; }
 }

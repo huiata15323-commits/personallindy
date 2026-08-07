@@ -281,7 +281,7 @@ function Hero() {
           className="mb-4"
         >
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-gold-subtle bg-background/40 backdrop-blur-sm text-gold text-sm font-medium tracking-wide uppercase">
-            <Flame size={16} />
+            <Flame size={16} className="flame-flicker text-ember" />
             Personal Trainer Online
           </span>
         </motion.div>
@@ -460,7 +460,7 @@ function HowItWorks() {
                   {i + 1}
                 </div>
                 <ProgressRing className="mb-4">
-                  <step.icon size={30} className="text-gold icon-lift" />
+                  <step.icon size={30} className="text-gold icon-lift icon-ember" />
                 </ProgressRing>
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
@@ -507,7 +507,7 @@ function Benefits() {
                 className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
               >
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                  <b.icon size={24} className="text-gold icon-lift" />
+                  <b.icon size={24} className="text-gold icon-lift icon-ember" />
                 </div>
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{b.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
