@@ -474,3 +474,84 @@ p {
   }
   ::-webkit-scrollbar-thumb:hover { background: oklch(0.75 0.13 85 / 0.75); }
 }
+
+/* ============ Ícones fitness animados ============ */
+.fit-icon { overflow: visible; }
+.fit-dumbbell,
+.fit-shine,
+.fit-pulse,
+.fit-pin,
+.fit-medal,
+.fit-bar {
+  transform-box: fill-box;
+}
+
+/* Halter: "curl" elástico ao passar o mouse no card */
+.fit-dumbbell {
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.group:hover .fit-dumbbell { transform: rotate(-20deg) translateY(-1px); }
+
+/* Kettlebell: brilho pulsa no hover */
+.group:hover .fit-shine { animation: fit-shine-pulse 1.2s ease-in-out infinite; }
+@keyframes fit-shine-pulse { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.6; } }
+
+/* ECG: linha de batimento desenhando em loop */
+.fit-ecg {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: fit-ecg-draw 2.6s ease-in-out infinite;
+}
+@keyframes fit-ecg-draw {
+  0% { stroke-dashoffset: 40; }
+  55% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -40; }
+}
+
+/* Alvo: centro pulsando */
+.fit-pulse {
+  transform-origin: center;
+  animation: fit-target-pulse 2.4s ease-in-out infinite;
+}
+@keyframes fit-target-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.6); opacity: 0.5; }
+}
+
+/* Cronômetro: ponteiro girando */
+.fit-hand {
+  transform-origin: 12px 12.5px;
+  animation: fit-hand-rotate 3s linear infinite;
+}
+@keyframes fit-hand-rotate { to { transform: rotate(360deg); } }
+
+/* Pin: flutuando */
+.fit-pin {
+  transform-origin: center bottom;
+  animation: fit-pin-float 2.8s ease-in-out infinite;
+}
+@keyframes fit-pin-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+
+/* Medalha: inclina e brilha no hover */
+.fit-medal {
+  transform-origin: center;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.5s ease;
+}
+.group:hover .fit-medal { transform: rotate(10deg); filter: drop-shadow(0 0 4px currentColor); }
+
+/* Barras: crescem em stagger no hover */
+.fit-bar {
+  transform-origin: center bottom;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.group:hover .fit-bar-1 { transform: scaleY(1.18); transition-delay: 0s; }
+.group:hover .fit-bar-2 { transform: scaleY(1.18); transition-delay: 0.09s; }
+.group:hover .fit-bar-3 { transform: scaleY(1.18); transition-delay: 0.18s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fit-ecg { animation: none; stroke-dashoffset: 0; }
+  .fit-pulse, .fit-hand, .fit-pin { animation: none; }
+  .fit-dumbbell, .fit-medal, .fit-bar { transition: none; }
+  .group:hover .fit-shine { animation: none; }
+}

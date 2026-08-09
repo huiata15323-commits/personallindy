@@ -2,14 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
-  Dumbbell,
-  Target,
   MessageCircle,
-  TrendingUp,
-  Clock,
-  MapPin,
-  Award,
-  Users,
   Flame,
   Star,
   Phone,
@@ -19,6 +12,7 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
+import * as Fit from "./FitIcons";
 // Imagens otimizadas (WebP) servidas de /public — funcionam em qualquer host (Vercel etc.)
 // sem depender do proxy de assets do Lovable. Mesma imagem, ~95% mais leve.
 const heroBg = { url: "/hero-coach.webp" };
@@ -416,10 +410,10 @@ function HowItWorks() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const steps = [
-    { icon: Target, title: "Avaliação Inicial", desc: "Análise completa do seu perfil, objetivos e condicionamento físico atual." },
-    { icon: Dumbbell, title: "Treino Exclusivo", desc: "Montagem de um programa de treino 100% personalizado para o seu corpo." },
-    { icon: MessageCircle, title: "Acompanhamento Contínuo", desc: "Suporte direto via WhatsApp para tirar dúvidas e manter a motivação." },
-    { icon: TrendingUp, title: "Ajustes e Evolução", desc: "Reavaliações periódicas e adaptações conforme sua evolução." },
+    { icon: Fit.Target, title: "Avaliação Inicial", desc: "Análise completa do seu perfil, objetivos e condicionamento físico atual." },
+    { icon: Fit.Dumbbell, title: "Treino Exclusivo", desc: "Montagem de um programa de treino 100% personalizado para o seu corpo." },
+    { icon: Fit.Heartbeat, title: "Acompanhamento Contínuo", desc: "Suporte direto via WhatsApp para tirar dúvidas e manter a motivação." },
+    { icon: Fit.BarsUp, title: "Ajustes e Evolução", desc: "Reavaliações periódicas e adaptações conforme sua evolução." },
   ];
 
   return (
@@ -465,11 +459,11 @@ function Benefits() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const benefits = [
-    { icon: Dumbbell, title: "Treino 100% Personalizado", desc: "Criado exclusivamente para o seu corpo, seus objetivos e sua rotina." },
-    { icon: MessageCircle, title: "Suporte Direto Comigo", desc: "Atendimento próximo e humanizado pelo WhatsApp para dúvidas e motivação." },
-    { icon: Clock, title: "Flexibilidade de Horários", desc: "Treine no momento que for melhor para você, sem depender de agenda fixa." },
-    { icon: MapPin, title: "Treine em Qualquer Lugar", desc: "Programas adaptados para academia, casa, parque ou viagem." },
-    { icon: Award, title: "Resultados Reais e Consistentes", desc: "Metodologia comprovada que entrega transformação de verdade." },
+    { icon: Fit.Dumbbell, title: "Treino 100% Personalizado", desc: "Criado exclusivamente para o seu corpo, seus objetivos e sua rotina." },
+    { icon: Fit.Heartbeat, title: "Suporte Direto Comigo", desc: "Atendimento próximo e humanizado pelo WhatsApp para dúvidas e motivação." },
+    { icon: Fit.Stopwatch, title: "Flexibilidade de Horários", desc: "Treine no momento que for melhor para você, sem depender de agenda fixa." },
+    { icon: Fit.Pin, title: "Treine em Qualquer Lugar", desc: "Programas adaptados para academia, casa, parque ou viagem." },
+    { icon: Fit.Medal, title: "Resultados Reais e Consistentes", desc: "Metodologia comprovada que entrega transformação de verdade." },
   ];
 
   return (
@@ -512,11 +506,11 @@ function ForWho() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const audiences = [
-    { icon: Users, label: "Iniciantes", desc: "Nunca treinou? Vou te guiar do zero com segurança e confiança." },
-    { icon: Target, label: "Quem não consegue resultados", desc: "Cansado de treinar sem evoluir? A estratégia certa muda tudo." },
-    { icon: Flame, label: "Quem quer emagrecer", desc: "Programa focado em queima de gordura com saúde e sustentabilidade." },
-    { icon: Dumbbell, label: "Quem quer ganhar massa", desc: "Treinos de hipertrofia inteligente para ganho muscular eficiente." },
-    { icon: Award, label: "Quem busca disciplina", desc: "Acompanhamento que te mantém focado e consistente no dia a dia." },
+    { icon: Fit.People, label: "Iniciantes", desc: "Nunca treinou? Vou te guiar do zero com segurança e confiança." },
+    { icon: Fit.Target, label: "Quem não consegue resultados", desc: "Cansado de treinar sem evoluir? A estratégia certa muda tudo." },
+    { icon: Fit.Flame, label: "Quem quer emagrecer", desc: "Programa focado em queima de gordura com saúde e sustentabilidade." },
+    { icon: Fit.Kettlebell, label: "Quem quer ganhar massa", desc: "Treinos de hipertrofia inteligente para ganho muscular eficiente." },
+    { icon: Fit.Medal, label: "Quem busca disciplina", desc: "Acompanhamento que te mantém focado e consistente no dia a dia." },
   ];
 
   return (
@@ -539,10 +533,10 @@ function ForWho() {
               key={i}
               variants={depthIn}
               style={{ transformStyle: "preserve-3d" }}
-              className="flex items-start gap-4 p-5 md:p-6 rounded-xl bg-dark-elevated border-gold-subtle"
+              className="group flex items-start gap-4 p-5 md:p-6 rounded-xl bg-dark-elevated border-gold-subtle transition-colors hover:bg-dark-elevated/80 hover:border-gold/40"
             >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                <a.icon size={20} className="text-gold" />
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 transition-colors group-hover:bg-primary/20">
+                <a.icon size={20} className="text-gold icon-ember" />
               </div>
               <div>
                 <h3 className="text-foreground font-semibold text-base uppercase tracking-wide">{a.label}</h3>
