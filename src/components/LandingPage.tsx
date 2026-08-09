@@ -292,7 +292,7 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.9 }}
           className="mt-8 md:mt-10"
         >
-          <WhatsAppButton large>
+          <WhatsAppButton large launchLabel="Abrindo o WhatsApp da Lindy...">
             Começar agora
             <ArrowRight size={20} />
           </WhatsAppButton>
@@ -574,6 +574,7 @@ function Plans() {
       price: "3x R$ 95",
       period: "/trimestral",
       badge: "Mais escolhido",
+      save: "Economize R$ 15 no período",
       highlight: true,
       ctaMessage:
         "Olá Lindy! 💪 Quero começar com o *Plano TRIMESTRAL* (3x R$ 95 - 90 dias). Como faço para iniciar?",
@@ -617,10 +618,17 @@ function Plans() {
                 </span>
               )}
               <h3 className="text-2xl text-foreground uppercase tracking-wide">{p.name}</h3>
-              <div className="mt-4 mb-6 flex items-baseline gap-1">
+              <div className="mt-4 mb-2 flex items-baseline gap-1">
                 <span className="text-4xl md:text-5xl font-bold text-gradient-gold">{p.price}</span>
                 <span className="text-sm text-muted-foreground">{p.period}</span>
               </div>
+              {p.save ? (
+                <span className="mb-5 inline-flex w-fit items-center gap-1.5 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
+                  <Check size={13} /> {p.save}
+                </span>
+              ) : (
+                <div className="mb-5" />
+              )}
               <ul className="space-y-3 mb-8 flex-1">
                 {p.features.map((f, j) => (
                   <li key={j} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -643,7 +651,7 @@ function Plans() {
         </motion.div>
 
         <p className="text-center text-xs text-muted-foreground mt-8">
-          Valores ilustrativos. Confirme condições atualizadas pelo WhatsApp.
+          A partir de <span className="text-gold font-semibold">R$ 95/mês</span> no plano trimestral. Condições confirmadas direto pelo WhatsApp, com resposta em até 24h.
         </p>
       </div>
     </section>
@@ -679,7 +687,7 @@ function CTA() {
               Não espere o momento perfeito. Dê o primeiro passo agora e descubra do que o seu corpo é capaz.
             </p>
             <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <WhatsAppButton large>
+              <WhatsAppButton large launchLabel="Abrindo o WhatsApp da Lindy...">
                 <MessageCircle size={20} />
                 Falar no WhatsApp
               </WhatsAppButton>
@@ -725,6 +733,18 @@ function Footer() {
               @personallindy
             </a>
           </div>
+        </div>
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          <span className="inline-flex items-center gap-2 rounded-full border-gold-subtle bg-dark-surface px-4 py-2 text-xs text-muted-foreground">
+            <ShieldCheck size={15} className="text-gold" /> CREF 010437/GO · Registro ativo
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full border-gold-subtle bg-dark-surface px-4 py-2 text-xs text-muted-foreground">
+            <Fit.Medal size={15} className="text-gold" /> 9+ anos de experiência
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full border-gold-subtle bg-dark-surface px-4 py-2 text-xs text-muted-foreground">
+            <Star size={15} className="text-gold" /> Especialista em grupos especiais
+          </span>
         </div>
 
         <div className="mt-12 pt-8 border-t border-border text-center">
