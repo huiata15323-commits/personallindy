@@ -154,7 +154,7 @@ export function BarsUp(props: IconProps) {
 export function People(props: IconProps) {
   return (
     <Svg {...props}>
-      <g fill="currentColor">
+      <g className="fit-people" fill="currentColor">
         <circle cx="8.5" cy="8" r="3.2" />
         <path d="M2.5 20a6 6 0 0 1 12 0 1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1Z" />
         <circle cx="16.5" cy="8.4" r="2.6" opacity="0.6" />
