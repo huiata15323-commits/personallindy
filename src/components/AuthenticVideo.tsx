@@ -44,7 +44,7 @@ export default function AuthenticVideo() {
                 autoPlay
                 playsInline
                 preload="metadata"
-                poster="/lindy-treino-poster.jpg"
+                poster="/lindy-treino-capa.jpg"
               >
                 <source src="/lindy-treino.mp4" type="video/mp4" />
               </video>
@@ -56,7 +56,7 @@ export default function AuthenticVideo() {
                 aria-label="Assistir ao vídeo da Lindy treinando"
               >
                 <img
-                  src="/lindy-treino-poster.jpg"
+                  src="/lindy-treino-capa.jpg"
                   alt="Lindy treinando, com a filha por perto"
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   loading="lazy"
