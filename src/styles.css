@@ -548,3 +548,28 @@ p {
   .fit-dumbbell, .fit-shine, .fit-pulse, .fit-hand, .fit-pin, .fit-medal,
   .fit-bar-1, .fit-bar-2, .fit-bar-3, .fit-people { animation: none; }
 }
+
+/* ============ Faixa deslizante (marquee) ============ */
+.marquee-track { animation: marquee 30s linear infinite; }
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-50%); } }
+
+/* ============ Aurora ambiente do Hero ============ */
+.hero-glow {
+  background: radial-gradient(circle at 50% 42%, oklch(0.72 0.12 85 / 0.16), transparent 55%);
+  animation: hero-glow-pulse 8s ease-in-out infinite;
+}
+@keyframes hero-glow-pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
+
+/* ============ Pulso do botão flutuante do WhatsApp ============ */
+.fab-ping { animation: fab-ping 2.2s ease-out infinite; }
+@keyframes fab-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+  .hero-glow { animation: none; }
+  .fab-ping { animation: none; opacity: 0; }
+}

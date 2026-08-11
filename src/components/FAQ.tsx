@@ -51,7 +51,11 @@ export default function FAQ() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.5, delay: i * 0.06 }}
-                className="rounded-2xl bg-dark-elevated border-gold-subtle overflow-hidden"
+                className={`rounded-2xl bg-dark-elevated overflow-hidden border transition-all duration-300 ${
+                  isOpen
+                    ? "border-gold/50 shadow-[0_0_34px_-12px_var(--color-gold)]"
+                    : "border-gold/15"
+                }`}
               >
                 <button
                   type="button"
@@ -59,7 +63,7 @@ export default function FAQ() {
                   aria-expanded={isOpen}
                   className="w-full flex items-center justify-between gap-4 text-left px-5 py-4 md:px-6 md:py-5"
                 >
-                  <span className="text-foreground text-base md:text-lg">{item.q}</span>
+                  <span className={`text-base md:text-lg transition-colors ${isOpen ? "text-gold" : "text-foreground"}`}>{item.q}</span>
                   <motion.span
                     animate={{ rotate: isOpen ? 45 : 0 }}
                     transition={{ duration: 0.3 }}

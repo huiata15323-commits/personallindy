@@ -30,6 +30,8 @@ import MobileCTA from "./MobileCTA";
 import Magnetic from "./Magnetic";
 import ProgressRing from "./ProgressRing";
 import AuthenticVideo from "./AuthenticVideo";
+import Marquee from "./Marquee";
+import WhatsAppFab from "./WhatsAppFab";
 import { useSheenVisible } from "../hooks/use-sheen-visible";
 
 const fadeInUp: Variants = {
@@ -251,6 +253,9 @@ function Hero() {
 
       <GoldParticles />
 
+      {/* Aurora/luz ambiente dourada atrás do título */}
+      <div className="pointer-events-none absolute inset-0 z-[1] hero-glow" aria-hidden="true" />
+
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto pt-20"
@@ -345,7 +350,7 @@ function About() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <Tilt3D max={10} className="relative overflow-hidden rounded-2xl border-gold-subtle">
+            <Tilt3D max={10} className="relative overflow-hidden rounded-2xl border-gold-subtle shadow-[0_0_60px_-18px_oklch(0.72_0.12_85_/_0.5)]">
               <RevealImage
                 src={lindyProfile.url}
                 alt="Lindyara Ribeiro - Personal Trainer"
@@ -353,6 +358,11 @@ function About() {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+              {/* Moldura editorial: cantos dourados */}
+              <span className="pointer-events-none absolute left-3 top-3 h-7 w-7 rounded-tl-lg border-l-2 border-t-2 border-gold/70" />
+              <span className="pointer-events-none absolute right-3 top-3 h-7 w-7 rounded-tr-lg border-r-2 border-t-2 border-gold/70" />
+              <span className="pointer-events-none absolute bottom-3 left-3 h-7 w-7 rounded-bl-lg border-b-2 border-l-2 border-gold/70" />
+              <span className="pointer-events-none absolute bottom-3 right-3 h-7 w-7 rounded-br-lg border-b-2 border-r-2 border-gold/70" />
             </Tilt3D>
           </motion.div>
 
@@ -424,13 +434,22 @@ function HowItWorks() {
           subtitle="Um processo simples e estratégico para você alcançar seus objetivos de forma definitiva."
         />
 
-        <motion.div
-          ref={ref}
-          initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
-          variants={staggerContainer}
-          className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
-        >
+        <div className="relative">
+          <motion.span
+            aria-hidden="true"
+            className="hidden lg:block absolute top-[74px] left-[12%] right-[12%] h-px origin-left bg-gradient-to-r from-transparent via-gold/45 to-transparent"
+            initial={{ scaleX: 0, opacity: 0 }}
+            whileInView={{ scaleX: 1, opacity: 1 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 1.3, ease: [0.22, 1, 0.36, 1] }}
+          />
+          <motion.div
+            ref={ref}
+            initial="hidden"
+            animate={isInView ? "visible" : "hidden"}
+            variants={staggerContainer}
+            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+          >
           {steps.map((step, i) => (
             <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
               <Tilt3D
@@ -448,7 +467,8 @@ function HowItWorks() {
               </Tilt3D>
             </motion.div>
           ))}
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -767,6 +787,7 @@ export default function LandingPage() {
       <GoldCursor />
       <main id="top" className="bg-background pt-16">
         <Hero />
+        <Marquee />
         <About />
         <GoldDivider />
         <AuthenticVideo />
@@ -784,6 +805,7 @@ export default function LandingPage() {
         <Footer />
       </main>
       <MobileCTA />
+      <WhatsAppFab />
     </>
   );
 }
