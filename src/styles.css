@@ -265,9 +265,10 @@ img, video {
   opacity: var(--glow-opacity, 0);
   transition: opacity 400ms ease-out;
   background: radial-gradient(
-    260px circle at var(--glow-x, 50%) var(--glow-y, 50%),
-    oklch(0.72 0.12 85 / 0.16),
-    transparent 70%
+    320px circle at var(--glow-x, 50%) var(--glow-y, 50%),
+    oklch(0.78 0.13 85 / 0.24),
+    oklch(0.72 0.12 85 / 0.1) 45%,
+    transparent 72%
   );
 }
 

@@ -34,6 +34,8 @@ import Marquee from "./Marquee";
 import WhatsAppFab from "./WhatsAppFab";
 import SectionDots from "./SectionDots";
 import LoadingIntro from "./LoadingIntro";
+import BackToTop from "./BackToTop";
+import TabTitleSwitcher from "./TabTitleSwitcher";
 import { useSheenVisible } from "../hooks/use-sheen-visible";
 
 const fadeInUp: Variants = {
@@ -889,29 +891,38 @@ export default function LandingPage() {
   return (
     <>
       <LoadingIntro />
+      <TabTitleSwitcher />
       <Header />
       <GoldCursor />
       <main id="top" className="bg-background pt-16">
-        <Hero />
-        <Marquee />
-        <About />
-        <GoldDivider />
-        <AuthenticVideo />
-        <GoldDivider />
-        <HowItWorks />
-        <GoldDivider />
-        <Benefits />
-        <GoldDivider />
-        <ForWho />
-        <GoldDivider />
-        <Plans />
-        <GoldDivider />
-        <FAQ />
-        <CTA />
-        <Footer />
+        {/* Hero "gruda" (desktop) enquanto o restante desliza por cima — estilo Apple */}
+        <div className="relative md:h-[160vh]">
+          <div className="overflow-hidden md:sticky md:top-16 md:h-screen">
+            <Hero />
+          </div>
+        </div>
+        <div className="relative z-10 bg-background md:rounded-t-[2.5rem] md:shadow-[0_-40px_80px_-20px_rgba(0,0,0,0.6)]">
+          <Marquee />
+          <About />
+          <GoldDivider />
+          <AuthenticVideo />
+          <GoldDivider />
+          <HowItWorks />
+          <GoldDivider />
+          <Benefits />
+          <GoldDivider />
+          <ForWho />
+          <GoldDivider />
+          <Plans />
+          <GoldDivider />
+          <FAQ />
+          <CTA />
+          <Footer />
+        </div>
       </main>
       <MobileCTA />
       <WhatsAppFab />
+      <BackToTop />
       <SectionDots />
     </>
   );

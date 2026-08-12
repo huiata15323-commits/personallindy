@@ -1,6 +1,7 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Play } from "lucide-react";
+import Tilt3D from "./Tilt3D";
 
 /**
  * Bloco "bastidores": vídeo autêntico da Lindy treinando (clique para assistir).
@@ -11,6 +12,11 @@ export default function AuthenticVideo() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [playing, setPlaying] = useState(false);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
 
   return (
     <section id="video" className="py-20 md:py-28 px-4 sm:px-6">
@@ -38,18 +44,32 @@ export default function AuthenticVideo() {
           transition={{ duration: 0.7, delay: 0.1 }}
           className="relative mx-auto w-full max-w-[300px]"
         >
-          <div className="relative rounded-2xl overflow-hidden border-gold-subtle bg-dark-surface aspect-[9/16] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.85)]">
+          <Tilt3D
+            max={0}
+            scale={1.01}
+            className="relative rounded-2xl overflow-hidden border-gold-subtle bg-dark-surface aspect-[9/16] shadow-[0_20px_60px_-20px_rgba(0,0,0,0.85)]"
+          >
             {playing ? (
-              <video
-                className="w-full h-full object-cover"
-                controls
-                autoPlay
-                playsInline
-                preload="metadata"
-                poster="/lindy-treino-capa.jpg"
-              >
-                <source src="/lindy-treino.mp4" type="video/mp4" />
-              </video>
+              <>
+                <video
+                  className="w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  poster="/lindy-treino-capa.jpg"
+                >
+                  <source src="/lindy-treino.mp4" type="video/mp4" />
+                </video>
+                {/* Cortina dourada: desliza revelando o vídeo em vez de um corte seco */}
+                <motion.div
+                  initial={{ x: "0%" }}
+                  animate={{ x: "100%" }}
+                  transition={{ duration: reduced ? 0 : 0.7, delay: reduced ? 0 : 0.05, ease: [0.76, 0, 0.24, 1] }}
+                  className="bg-gradient-gold pointer-events-none absolute inset-0 z-10"
+                  aria-hidden="true"
+                />
+              </>
             ) : (
               <button
                 type="button"
@@ -71,7 +91,7 @@ export default function AuthenticVideo() {
                 </span>
               </button>
             )}
-          </div>
+          </Tilt3D>
         </motion.div>
       </div>
     </section>
