@@ -13,14 +13,16 @@ export default function AuthenticVideo() {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6">
+    <section id="video" className="py-20 md:py-28 px-4 sm:px-6">
       <div ref={ref} className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-14 items-center">
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.7 }}
         >
-          <span className="text-gold text-sm font-semibold uppercase tracking-widest">Bastidores</span>
+          <span className="text-gold text-sm font-semibold uppercase tracking-widest">
+            <span className="mr-2 text-gold/50">02</span>Bastidores
+          </span>
           <h2 className="title-sheen font-serif-display text-3xl sm:text-4xl md:text-5xl text-foreground mt-2 mb-4 leading-[1.1]">
             Treino é vida — e a minha <span className="text-gradient-gold italic">maior torcedora</span> tá sempre por perto
           </h2>

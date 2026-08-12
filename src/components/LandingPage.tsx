@@ -32,6 +32,8 @@ import ProgressRing from "./ProgressRing";
 import AuthenticVideo from "./AuthenticVideo";
 import Marquee from "./Marquee";
 import WhatsAppFab from "./WhatsAppFab";
+import SectionDots from "./SectionDots";
+import LoadingIntro from "./LoadingIntro";
 import { useSheenVisible } from "../hooks/use-sheen-visible";
 
 const fadeInUp: Variants = {
@@ -83,6 +85,27 @@ function WhatsAppButton({
   const encoded = encodeURIComponent(message);
   const href = `https://wa.me/5562984811499?text=${encoded}`;
   const [launching, setLaunching] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  // Tilt 3D sutil nos botões grandes (desktop, ponteiro fino, sem reduced-motion)
+  const handleTiltMove = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!large) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const el = btnRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const px = (e.clientX - r.left) / r.width - 0.5;
+    const py = (e.clientY - r.top) / r.height - 0.5;
+    el.style.transition = "transform 80ms ease-out";
+    el.style.transform = `perspective(500px) rotateX(${(-py * 9).toFixed(2)}deg) rotateY(${(px * 9).toFixed(2)}deg)`;
+  };
+  const handleTiltLeave = () => {
+    const el = btnRef.current;
+    if (!el) return;
+    el.style.transition = "transform 500ms cubic-bezier(0.22, 1, 0.36, 1)";
+    el.style.transform = "";
+  };
 
   const handleClick = () => {
     if (launching) return;
@@ -106,8 +129,11 @@ function WhatsAppButton({
     <>
     <Magnetic>
     <button
+      ref={btnRef}
       type="button"
       onClick={handleClick}
+      onMouseMove={handleTiltMove}
+      onMouseLeave={handleTiltLeave}
       disabled={launching}
       aria-label={launchLabel ? `${children?.toString() ?? "Escolher plano"}: ${launchLabel}` : undefined}
       className={`
@@ -160,9 +186,33 @@ function Header() {
           scrolled ? "py-2" : "py-3"
         }`}
       >
-        <a href="#top" className="text-xl sm:text-2xl text-foreground tracking-widest flex items-baseline gap-2">
+        <a href="#top" className="relative text-xl sm:text-2xl text-foreground tracking-widest flex items-baseline gap-2">
           <span className="font-display uppercase">Personal</span>
           <span className="font-serif-display italic text-gradient-gold text-2xl sm:text-3xl">Lindy</span>
+          <svg
+            viewBox="0 0 100 10"
+            preserveAspectRatio="none"
+            className="pointer-events-none absolute -bottom-0.5 left-0 h-2 w-full overflow-visible"
+            aria-hidden="true"
+          >
+            <motion.path
+              d="M2 7 Q 25 2, 50 5 T 98 3"
+              fill="none"
+              stroke="url(#logoFlourish)"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 1 }}
+              transition={{ duration: 1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            />
+            <defs>
+              <linearGradient id="logoFlourish" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="var(--color-gold-dark)" stopOpacity="0" />
+                <stop offset="50%" stopColor="var(--color-gold)" />
+                <stop offset="100%" stopColor="var(--color-gold-light)" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
         </a>
         <Magnetic strength={0.2}>
           <a
@@ -184,7 +234,7 @@ function Header() {
   );
 }
 
-function SectionHeading({ title, subtitle }: { title: string; subtitle?: string }) {
+function SectionHeading({ number, title, subtitle }: { number?: string; title: string; subtitle?: string }) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const sheen = useSheenVisible<HTMLHeadingElement>();
@@ -197,6 +247,11 @@ function SectionHeading({ title, subtitle }: { title: string; subtitle?: string 
       variants={fadeInUp}
       className="text-center mb-12 md:mb-16"
     >
+      {number && (
+        <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/55">
+          {number}
+        </span>
+      )}
       <h2
         ref={sheen.ref}
         className={`title-sheen font-serif-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-foreground leading-[1.1] ${sheen.visible ? "sheen-visible" : ""}`}
@@ -372,7 +427,7 @@ function About() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <span className="text-gold text-sm font-semibold uppercase tracking-widest">
-              Sobre a Personal
+              <span className="mr-2 text-gold/50">01</span>Sobre a Personal
             </span>
             <h2
               ref={sheen.ref}
@@ -427,9 +482,10 @@ function HowItWorks() {
   ];
 
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
+    <section id="como-funciona" className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
+          number="03"
           title="Como Funciona"
           subtitle="Um processo simples e estratégico para você alcançar seus objetivos de forma definitiva."
         />
@@ -487,9 +543,10 @@ function Benefits() {
   ];
 
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6">
+    <section id="beneficios" className="py-20 md:py-28 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
+          number="04"
           title="Benefícios"
           subtitle="O que você ganha ao treinar com acompanhamento profissional da Personal Lindy."
         />
@@ -534,9 +591,10 @@ function ForWho() {
   ];
 
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
+    <section id="para-quem" className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
+          number="05"
           title="Para Quem é"
           subtitle="Seja qual for o seu nível ou objetivo, existe um caminho para você."
         />
@@ -578,6 +636,8 @@ function Plans() {
     {
       name: "Mensal",
       price: "R$ 100",
+      priceNum: 100,
+      pricePrefix: "R$ ",
       period: "/mês",
       highlight: false,
       ctaMessage:
@@ -592,6 +652,8 @@ function Plans() {
     {
       name: "Trimestral",
       price: "3x R$ 95",
+      priceNum: 95,
+      pricePrefix: "3x R$ ",
       period: "/trimestral",
       badge: "Mais escolhido",
       save: "Economize R$ 15 no período",
@@ -608,9 +670,10 @@ function Plans() {
   ];
 
   return (
-    <section className="py-20 md:py-28 px-4 sm:px-6">
+    <section id="planos" className="py-20 md:py-28 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
+          number="06"
           title="Investimento"
           subtitle="Escolha o plano que mais combina com o seu momento. Todos com acompanhamento direto comigo."
         />
@@ -628,7 +691,7 @@ function Plans() {
                 max={6}
                 className={`relative h-full p-6 md:p-8 rounded-2xl flex flex-col ${
                 p.highlight
-                  ? "bg-dark-elevated border-2 border-gold/60 shadow-[0_0_40px_-10px_var(--color-gold)]"
+                  ? "plan-glow-border bg-dark-elevated shadow-[0_0_40px_-10px_var(--color-gold)]"
                   : "bg-dark-surface border-gold-subtle"
               }`}
               >
@@ -639,7 +702,12 @@ function Plans() {
               )}
               <h3 className="text-2xl text-foreground uppercase tracking-wide">{p.name}</h3>
               <div className="mt-4 mb-2 flex items-baseline gap-1">
-                <span className="text-4xl md:text-5xl font-bold text-gradient-gold">{p.price}</span>
+                <CountUp
+                  to={p.priceNum}
+                  prefix={p.pricePrefix}
+                  duration={1200}
+                  className="text-4xl md:text-5xl font-bold text-gradient-gold"
+                />
                 <span className="text-sm text-muted-foreground">{p.period}</span>
               </div>
               {p.save ? (
@@ -697,6 +765,7 @@ function CTA() {
           <div className="cta-aurora" aria-hidden="true" />
           <GoldParticles count={18} />
           <div className="relative z-10">
+            <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/55">08</span>
             <h2
               ref={sheen.ref}
               className={`title-sheen text-4xl md:text-5xl lg:text-6xl text-foreground uppercase tracking-wide ${sheen.visible ? "sheen-visible" : ""}`}
@@ -719,6 +788,42 @@ function CTA() {
         </motion.div>
       </div>
     </section>
+  );
+}
+
+/** Efeito "máquina de escrever" com largura medida em JS (imune a letter-spacing/fonte). */
+function TypewriterTagline({ text }: { text: string }) {
+  const containerRef = useRef<HTMLSpanElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
+  const inView = useInView(containerRef, { once: true, margin: "-60px" });
+  const [targetWidth, setTargetWidth] = useState<number | null>(null);
+  const [reduced, setReduced] = useState(false);
+
+  useEffect(() => {
+    if (measureRef.current) setTargetWidth(measureRef.current.scrollWidth);
+    setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
+  const done = inView || reduced;
+
+  return (
+    <span ref={containerRef} className="relative inline-block align-bottom">
+      <span
+        ref={measureRef}
+        className="pointer-events-none invisible absolute left-0 top-0 whitespace-nowrap"
+        aria-hidden="true"
+      >
+        {text}
+      </span>
+      <motion.span
+        className="tw-caret inline-block overflow-hidden whitespace-nowrap border-r-2 border-gold/70 align-bottom"
+        initial={{ width: 0 }}
+        animate={{ width: done ? (targetWidth ?? "auto") : 0 }}
+        transition={{ duration: reduced ? 0 : 1.5, ease: "linear" }}
+      >
+        {text}
+      </motion.span>
+    </span>
   );
 }
 
@@ -768,8 +873,8 @@ function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border text-center">
-          <p className="text-gradient-gold text-lg md:text-xl font-display uppercase tracking-widest">
-            Seu resultado começa com uma decisão.
+          <p className="text-lg md:text-xl font-display uppercase tracking-widest text-gradient-gold">
+            <TypewriterTagline text="Seu resultado começa com uma decisão." />
           </p>
           <p className="mt-4 text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Lindyara Ribeiro. Todos os direitos reservados.
@@ -783,6 +888,7 @@ function Footer() {
 export default function LandingPage() {
   return (
     <>
+      <LoadingIntro />
       <Header />
       <GoldCursor />
       <main id="top" className="bg-background pt-16">
@@ -806,6 +912,7 @@ export default function LandingPage() {
       </main>
       <MobileCTA />
       <WhatsAppFab />
+      <SectionDots />
     </>
   );
 }

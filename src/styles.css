@@ -126,13 +126,15 @@ img, video {
   body::after {
     content: "";
     position: fixed;
-    inset: 0;
+    inset: -5%;
     pointer-events: none;
     z-index: 2;
     mix-blend-mode: screen;
     background:
       radial-gradient(ellipse 50% 35% at 10% 0%, oklch(0.72 0.12 85 / 0.12), transparent 70%),
       radial-gradient(ellipse 50% 35% at 90% 100%, oklch(0.72 0.12 85 / 0.08), transparent 70%);
+    animation: mesh-drift 22s ease-in-out infinite;
+    will-change: transform;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -572,4 +574,62 @@ p {
   .marquee-track { animation: none; }
   .hero-glow { animation: none; }
   .fab-ping { animation: none; opacity: 0; }
+}
+
+/* ============ Borda com brilho rotativo (plano em destaque) ============ */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.plan-glow-border {
+  position: relative;
+}
+.plan-glow-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    transparent 0%,
+    oklch(0.58 0.1 80) 15%,
+    oklch(0.92 0.09 88) 25%,
+    oklch(0.58 0.1 80) 35%,
+    transparent 50%,
+    transparent 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: plan-border-rotate 5s linear infinite;
+  pointer-events: none;
+}
+@keyframes plan-border-rotate {
+  to { --angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plan-glow-border::before { animation: none; }
+}
+
+/* ============ Deriva ambiente (mesh) no fundo da página ============ */
+@keyframes mesh-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-2%, 1.5%) scale(1.04); }
+  66% { transform: translate(2%, -1.5%) scale(1.02); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::after { animation: none; }
+}
+
+/* ============ Typewriter (frase de fechamento do rodapé) ============ */
+/* A largura é medida em JS (evita corte por letter-spacing/fonte) — aqui só o cursor piscando. */
+.tw-caret {
+  animation: tw-caret-blink 0.85s step-end 6;
+}
+@keyframes tw-caret-blink { 50% { border-color: transparent; } }
+@media (prefers-reduced-motion: reduce) {
+  .tw-caret { animation: none; border-color: transparent; }
 }

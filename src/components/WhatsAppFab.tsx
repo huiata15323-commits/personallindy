@@ -28,8 +28,11 @@ export default function WhatsAppFab() {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.6, y: 20 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="animate-ember fixed bottom-6 right-6 z-50 hidden h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_12px_34px_-8px_rgba(0,0,0,0.75)] transition-transform hover:scale-110 md:flex"
+          className="group animate-ember fixed bottom-6 right-6 z-50 hidden h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_12px_34px_-8px_rgba(0,0,0,0.75)] transition-transform hover:scale-110 md:flex"
         >
+          <span className="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-lg border-gold-subtle bg-dark-elevated px-3 py-1.5 text-sm text-foreground opacity-0 shadow-lg transition-opacity duration-200 group-hover:opacity-100">
+            Fale comigo 💬
+          </span>
           <span className="fab-ping pointer-events-none absolute inset-0 rounded-full border border-gold/50" />
           <MessageCircle size={26} />
         </motion.a>
