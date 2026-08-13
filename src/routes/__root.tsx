@@ -96,19 +96,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" },
     ],
-    scripts: [
-      {
-        src: "https://www.googletagmanager.com/gtag/js?id=AW-972549241",
-        async: true,
-      },
-      {
-        type: "text/javascript",
-        children: `window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'AW-972549241');`,
-      },
-    ],
+    // Página sem scripts de terceiros. Para reativar o rastreamento de conversão
+    // do Google Ads (quando for anunciar), recolocar os dois scripts abaixo com
+    // o ID AW-972549241:
+    //   { src: "https://www.googletagmanager.com/gtag/js?id=AW-972549241", async: true },
+    //   { type: "text/javascript", children: `window.dataLayer = window.dataLayer || [];
+    //     function gtag(){dataLayer.push(arguments);} gtag('js', new Date());
+    //     gtag('config', 'AW-972549241');` },
+    scripts: [],
   }),
   shellComponent: RootShell,
   component: RootComponent,
