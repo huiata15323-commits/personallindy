@@ -800,9 +800,18 @@ function TypewriterTagline({ text }: { text: string }) {
   const inView = useInView(containerRef, { once: true, margin: "-60px" });
   const [targetWidth, setTargetWidth] = useState<number | null>(null);
   const [reduced, setReduced] = useState(false);
+  const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    if (measureRef.current) setTargetWidth(measureRef.current.scrollWidth);
+    const measure = () => {
+      if (measureRef.current) setTargetWidth(measureRef.current.scrollWidth);
+    };
+    measure();
+    // Re-mede quando a fonte custom carregar: medir com a fonte fallback (mais
+    // estreita) travava a caixa num valor curto e cortava o fim do texto.
+    if (typeof document !== "undefined" && document.fonts?.ready) {
+      document.fonts.ready.then(measure);
+    }
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
 
@@ -820,8 +829,13 @@ function TypewriterTagline({ text }: { text: string }) {
       <motion.span
         className="tw-caret inline-block overflow-hidden whitespace-nowrap border-r-2 border-gold/70 align-bottom"
         initial={{ width: 0 }}
-        animate={{ width: done ? (targetWidth ?? "auto") : 0 }}
+        // Ao terminar, libera a largura (auto = encolhe ao conteúdo) para nunca
+        // cortar o texto, mesmo que a medição tenha ficado alguns px curta.
+        animate={{ width: finished ? "auto" : done ? (targetWidth ?? "auto") : 0 }}
         transition={{ duration: reduced ? 0 : 1.5, ease: "linear" }}
+        onAnimationComplete={() => {
+          if (done && targetWidth) setFinished(true);
+        }}
       >
         {text}
       </motion.span>
@@ -875,7 +889,7 @@ function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border text-center">
-          <p className="text-lg md:text-xl font-display uppercase tracking-widest text-gradient-gold">
+          <p className="text-base sm:text-lg md:text-xl font-display uppercase tracking-wide sm:tracking-widest text-gradient-gold">
             <TypewriterTagline text="Seu resultado começa com uma decisão." />
           </p>
           <p className="mt-4 text-xs text-muted-foreground">
