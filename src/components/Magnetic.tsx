@@ -1,16 +1,20 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Magnetic hover: the element gently follows the cursor and springs back.
- * Desktop / fine-pointer only, disabled under reduced motion.
+ * Magnetic hover: o elemento "puxa" na direção do cursor quando ele entra numa
+ * zona de proximidade ao redor do botão (não só quando já está por cima) e
+ * volta com mola ao sair. Desktop / ponteiro fino, desligado em reduced-motion.
  */
 export default function Magnetic({
   children,
   strength = 0.28,
+  radius = 90,
   className = "",
 }: {
   children: React.ReactNode;
   strength?: number;
+  /** Distância extra (px) além das bordas em que o efeito já começa a agir. */
+  radius?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -30,27 +34,41 @@ export default function Magnetic({
       el.style.transform = `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0)`;
     };
 
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+
+    // Ouve o ponteiro na janela inteira e mede a distância até a zona ativa do
+    // botão (retângulo expandido por `radius`). Dentro dela, puxa proporcional
+    // à proximidade; fora, relaxa de volta ao centro.
     const onMove = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
-      tx = (e.clientX - (r.left + r.width / 2)) * strength;
-      ty = (e.clientY - (r.top + r.height / 2)) * strength;
-      if (!raf) raf = requestAnimationFrame(apply);
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const zoneX = r.width / 2 + radius;
+      const zoneY = r.height / 2 + radius;
+
+      if (Math.abs(dx) <= zoneX && Math.abs(dy) <= zoneY) {
+        // Falloff suave: puxa mais forte quanto mais perto do centro.
+        const prox = 1 - Math.min(1, Math.hypot(dx / zoneX, dy / zoneY));
+        const pull = strength * (0.45 + 0.55 * prox);
+        tx = dx * pull;
+        ty = dy * pull;
+      } else {
+        tx = 0;
+        ty = 0;
+      }
+      schedule();
     };
 
-    const onLeave = () => {
-      tx = 0;
-      ty = 0;
-      if (!raf) raf = requestAnimationFrame(apply);
-    };
-
-    el.addEventListener("pointermove", onMove);
-    el.addEventListener("pointerleave", onLeave);
+    window.addEventListener("pointermove", onMove, { passive: true });
     return () => {
-      el.removeEventListener("pointermove", onMove);
-      el.removeEventListener("pointerleave", onLeave);
+      window.removeEventListener("pointermove", onMove);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, [strength]);
+  }, [strength, radius]);
 
   return (
     <span

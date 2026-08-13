@@ -28,6 +28,7 @@ import FAQ from "./FAQ";
 import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
 import Magnetic from "./Magnetic";
+import GoldBurst from "./GoldBurst";
 import ProgressRing from "./ProgressRing";
 import AuthenticVideo from "./AuthenticVideo";
 import Marquee from "./Marquee";
@@ -87,6 +88,7 @@ function WhatsAppButton({
   const encoded = encodeURIComponent(message);
   const href = `https://wa.me/5562984811499?text=${encoded}`;
   const [launching, setLaunching] = useState(false);
+  const [burst, setBurst] = useState<{ id: number; x: number; y: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
   // Tilt 3D sutil nos botões grandes (desktop, ponteiro fino, sem reduced-motion)
@@ -109,10 +111,18 @@ function WhatsAppButton({
     el.style.transform = "";
   };
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (launching) return;
 
     if (!launchLabel) {
+      // Micro-celebração: estouro de partículas douradas no ponto do clique.
+      // Só aqui — nos botões com takeover (launchLabel) a tela "Bora treinar!"
+      // já é a celebração e cobriria o burst.
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const id = Date.now();
+        setBurst({ id, x: e.clientX, y: e.clientY });
+        window.setTimeout(() => setBurst((b) => (b?.id === id ? null : b)), 850);
+      }
       window.open(href, "_blank", "noopener,noreferrer");
       return;
     }
@@ -155,9 +165,12 @@ function WhatsAppButton({
     </Magnetic>
     {typeof document !== "undefined"
       ? createPortal(
-          <AnimatePresence>
-            {launching && launchLabel ? <PlanLaunch label={launchLabel} /> : null}
-          </AnimatePresence>,
+          <>
+            <AnimatePresence>
+              {launching && launchLabel ? <PlanLaunch label={launchLabel} /> : null}
+            </AnimatePresence>
+            {burst ? <GoldBurst key={burst.id} x={burst.x} y={burst.y} /> : null}
+          </>,
           document.body,
         )
       : null}
@@ -230,7 +243,7 @@ function Header() {
       </div>
       <motion.div
         style={{ scaleX: progress }}
-        className="origin-left h-[2px] w-full bg-gradient-gold"
+        className="origin-left h-[3px] w-full bg-gradient-gold shadow-[0_0_12px_rgba(212,175,55,0.65)]"
       />
     </header>
   );
