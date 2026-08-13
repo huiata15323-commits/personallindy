@@ -313,11 +313,14 @@ function Hero() {
         }}
         className="absolute inset-0 z-0 will-change-transform"
       >
-        <RevealImage
-          src={heroBg.url}
-          alt="Treino na academia"
-          className="w-full h-full object-cover object-top"
-        />
+        {/* Câmera cinematográfica: zoom + pan lento e contínuo (Ken Burns) */}
+        <div className="hero-kenburns absolute inset-0 will-change-transform">
+          <RevealImage
+            src={heroBg.url}
+            alt="Treino na academia"
+            className="w-full h-full object-cover object-top"
+          />
+        </div>
         <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay" />
       </motion.div>
 
@@ -325,6 +328,11 @@ function Hero() {
 
       {/* Aurora/luz ambiente dourada atrás do título */}
       <div className="pointer-events-none absolute inset-0 z-[1] hero-glow" aria-hidden="true" />
+
+      {/* Vinheta cinematográfica: escurece as bordas e puxa o olhar pro centro */}
+      <div className="pointer-events-none absolute inset-0 z-[2] hero-vignette" aria-hidden="true" />
+      {/* Grão de filme sutil, dando textura de cinema */}
+      <div className="pointer-events-none absolute inset-0 z-[2] hero-grain" aria-hidden="true" />
 
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
