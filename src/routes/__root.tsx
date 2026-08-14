@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Personal Lindy | Transforme Seu Corpo" },
       { property: "og:description", content: "Consultoria fitness online com treinos personalizados e acompanhamento direto com Lindyara Ribeiro, Personal Trainer. Resultados reais garantidos." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://personallindy.lovable.app/" },
+      { property: "og:url", content: "https://personallindy.com.br/" },
       { property: "og:site_name", content: "Personal Lindy" },
       { property: "og:locale", content: "pt_BR" },
       { name: "twitter:card", content: "summary_large_image" },

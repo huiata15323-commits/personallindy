@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://personallindy.lovable.app/sitemap.xml
+Sitemap: https://personallindy.com.br/sitemap.xml
