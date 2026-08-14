@@ -178,7 +178,7 @@ function WhatsAppButton({
   );
 }
 
-function Header() {
+export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.3 });
@@ -866,7 +866,7 @@ function TypewriterTagline({ text }: { text: string }) {
   );
 }
 
-function Footer() {
+export function Footer() {
   return (
     <footer className="py-12 md:py-16 px-4 sm:px-6 border-t border-border">
       <div className="max-w-6xl mx-auto">
@@ -917,6 +917,10 @@ function Footer() {
           </p>
           <p className="mt-4 text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Lindyara Ribeiro. Todos os direitos reservados.
+            {" · "}
+            <a href="/politica-de-privacidade" className="hover:text-gold transition-colors underline underline-offset-2">
+              Política de Privacidade
+            </a>
           </p>
         </div>
       </div>
