@@ -436,6 +436,8 @@ function About() {
                 loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+              {/* Vinheta sutil — mesma direção fotográfica do Hero, dá unidade à página */}
+              <div className="pointer-events-none absolute inset-0 about-vignette" aria-hidden="true" />
               {/* Moldura editorial: cantos dourados */}
               <span className="pointer-events-none absolute left-3 top-3 h-7 w-7 rounded-tl-lg border-l-2 border-t-2 border-gold/70" />
               <span className="pointer-events-none absolute right-3 top-3 h-7 w-7 rounded-tr-lg border-r-2 border-t-2 border-gold/70" />
