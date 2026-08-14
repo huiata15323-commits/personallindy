@@ -25,7 +25,7 @@ function PrivacyPolicy() {
           <h1 className="font-serif-display text-4xl sm:text-5xl text-foreground mt-2 mb-3 leading-[1.1]">
             Política de <span className="text-gradient-gold italic">Privacidade</span>
           </h1>
-          <p className="text-sm text-muted-foreground mb-12">Última atualização: 14 de agosto de 2026</p>
+          <p className="text-sm text-muted-foreground mb-12">Última atualização: 14 de agosto de 2026 (v2 — inclusão de análise de tráfego)</p>
 
           <div className="space-y-10 text-base text-muted-foreground leading-relaxed">
             <section>
@@ -53,13 +53,37 @@ function PrivacyPolicy() {
 
             <section>
               <h2 className="font-display text-xl text-foreground uppercase tracking-wide mb-3">
-                3. Cookies e armazenamento local
+                3. Cookies e ferramentas de análise
               </h2>
-              <p>
-                Utilizamos apenas um pequeno recurso técnico do navegador (<em>sessionStorage</em>) para controlar a
+              <p className="mb-3">
+                Utilizamos um pequeno recurso técnico do navegador (<em>sessionStorage</em>) para controlar a
                 exibição da animação de abertura uma única vez por visita — essa informação fica só no seu aparelho,
-                não identifica você e não é enviada a nenhum servidor. Atualmente não utilizamos cookies de
-                rastreamento nem ferramentas de publicidade de terceiros.
+                não identifica você e não é enviada a nenhum servidor.
+              </p>
+              <p>
+                Também utilizamos o <strong className="text-foreground">Google Analytics</strong>, uma ferramenta de
+                estatísticas que nos ajuda a entender, de forma agregada e anônima, quantas pessoas visitam o site,
+                de onde vêm e quais páginas acessam — não usamos isso para identificar você individualmente nem para
+                exibir anúncios. Não utilizamos ferramentas de publicidade de terceiros. Você pode saber mais sobre
+                como o Google trata esses dados em{" "}
+                <a
+                  href="https://policies.google.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:underline"
+                >
+                  policies.google.com/privacy
+                </a>
+                , ou bloquear esse tipo de coleta usando extensões de navegador como o{" "}
+                <a
+                  href="https://tools.google.com/dlpage/gaoptout"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:underline"
+                >
+                  Google Analytics Opt-out
+                </a>
+                .
               </p>
             </section>
 
