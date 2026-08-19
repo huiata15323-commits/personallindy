@@ -850,7 +850,7 @@ function TypewriterTagline({ text }: { text: string }) {
         {text}
       </span>
       <motion.span
-        className="tw-caret inline-block overflow-hidden whitespace-nowrap border-r-2 border-gold/70 align-bottom"
+        className="tw-caret text-gradient-gold inline-block overflow-hidden whitespace-nowrap border-r-2 border-gold/70 align-bottom"
         initial={{ width: 0 }}
         // Ao terminar, libera a largura (auto = encolhe ao conteúdo) para nunca
         // cortar o texto, mesmo que a medição tenha ficado alguns px curta.
@@ -912,7 +912,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border text-center">
-          <p className="text-base sm:text-lg md:text-xl font-display uppercase tracking-wide sm:tracking-widest text-gradient-gold">
+          <p className="text-base sm:text-lg md:text-xl font-display uppercase tracking-wide sm:tracking-widest">
             <TypewriterTagline text="Seu resultado começa com uma decisão." />
           </p>
           <p className="mt-4 text-xs text-muted-foreground">
