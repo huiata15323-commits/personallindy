@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, useScroll, useSpring, useTransform } from "framer-motion";
 import { Play } from "lucide-react";
 import Tilt3D from "./Tilt3D";
 
@@ -17,6 +17,14 @@ export default function AuthenticVideo() {
   useEffect(() => {
     setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }, []);
+
+  // Parallax na capa (mesma linguagem da foto "Sobre") — só antes de dar play.
+  // Valores em PIXELS, não porcentagem: translateY percentual dentro de um
+  // ancestral com transform ativo (o Tilt3D, sempre transformado, mesmo em
+  // repouso) resolve pra 0 no WebKit/Safari — bug de resolução de %.
+  const { scrollYProgress: posterProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const smoothPosterProgress = useSpring(posterProgress, { stiffness: 100, damping: 30, mass: 0.4 });
+  const posterY = useTransform(smoothPosterProgress, [0, 1], [-22, 22]);
 
   return (
     <section id="video" className="py-20 md:py-28 px-4 sm:px-6">
@@ -77,12 +85,14 @@ export default function AuthenticVideo() {
                 className="group absolute inset-0 h-full w-full"
                 aria-label="Assistir ao vídeo da Lindy treinando"
               >
-                <img
-                  src="/lindy-treino-capa.jpg"
-                  alt="Lindy treinando, com a filha por perto"
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  loading="lazy"
-                />
+                <motion.div style={{ y: posterY, scale: 1.08 }} className="h-full w-full">
+                  <img
+                    src="/lindy-treino-capa.jpg"
+                    alt="Lindy treinando, com a filha por perto"
+                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    loading="lazy"
+                  />
+                </motion.div>
                 <span className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
                 <span className="absolute inset-0 flex items-center justify-center">
                   <span className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/90 text-primary-foreground shadow-lg transition-transform duration-300 group-hover:scale-110 animate-ember">

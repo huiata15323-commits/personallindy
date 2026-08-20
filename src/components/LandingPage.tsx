@@ -418,6 +418,16 @@ function About() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const sheen = useSheenVisible<HTMLHeadingElement>();
 
+  // Parallax: a foto desliza dentro da moldura fixa enquanto rola (a moldura,
+  // vinheta e cantos ficam parados — só a imagem se move, por isso o scale
+  // extra, pra nunca revelar borda vazia). Valores em PIXELS, não porcentagem:
+  // translateY percentual dentro de um ancestral com transform ativo (o
+  // Tilt3D, sempre transformado, mesmo em repouso) resolve pra 0 no
+  // WebKit/Safari — bug de resolução de %, confirmado testando o motor real.
+  const { scrollYProgress: photoProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const smoothPhotoProgress = useSpring(photoProgress, { stiffness: 100, damping: 30, mass: 0.4 });
+  const photoY = useTransform(smoothPhotoProgress, [0, 1], [-28, 28]);
+
   return (
     <section id="sobre" className="py-20 md:py-28 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
@@ -429,12 +439,14 @@ function About() {
             className="relative"
           >
             <Tilt3D max={10} className="relative overflow-hidden rounded-2xl border-gold-subtle shadow-[0_0_60px_-18px_oklch(0.72_0.12_85_/_0.5)]">
-              <RevealImage
-                src={lindyProfile.url}
-                alt="Lindyara Ribeiro - Personal Trainer"
-                className="w-full h-auto object-cover"
-                loading="lazy"
-              />
+              <motion.div style={{ y: photoY, scale: 1.1 }}>
+                <RevealImage
+                  src={lindyProfile.url}
+                  alt="Lindyara Ribeiro - Personal Trainer"
+                  className="w-full h-auto object-cover"
+                  loading="lazy"
+                />
+              </motion.div>
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
               {/* Vinheta sutil — mesma direção fotográfica do Hero, dá unidade à página */}
               <div className="pointer-events-none absolute inset-0 about-vignette" aria-hidden="true" />
