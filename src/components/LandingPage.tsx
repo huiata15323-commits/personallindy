@@ -16,8 +16,10 @@ import * as Fit from "./FitIcons";
 // Imagens otimizadas (WebP) servidas de /public — funcionam em qualquer host (Vercel etc.)
 // sem depender do proxy de assets do Lovable. Mesma imagem, ~95% mais leve.
 const heroBg = { url: "/hero-coach.webp" };
+const heroLoop = { url: "/hero-coach-loop.mp4" };
 const lindyProfile = { url: "/about-coach.webp" };
 import RevealImage from "./RevealImage";
+import HeroVideoLoop from "./HeroVideoLoop";
 import Tilt3D from "./Tilt3D";
 import WordReveal from "./WordReveal";
 import CountUp from "./CountUp";
@@ -320,6 +322,7 @@ function Hero() {
             alt="Treino na academia"
             className="w-full h-full object-cover object-top"
           />
+          <HeroVideoLoop src={heroLoop.url} className="absolute inset-0 w-full h-full object-cover object-top" />
         </div>
         <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay" />
       </motion.div>
