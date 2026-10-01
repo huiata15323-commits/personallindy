@@ -4,6 +4,7 @@ const SECTIONS = [
   { id: "sobre", label: "Sobre" },
   { id: "video", label: "Bastidores" },
   { id: "como-funciona", label: "Como Funciona" },
+  { id: "na-pratica", label: "Na Prática" },
   { id: "beneficios", label: "Benefícios" },
   { id: "para-quem", label: "Para Quem" },
   { id: "planos", label: "Investimento" },

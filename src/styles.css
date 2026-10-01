@@ -658,6 +658,12 @@ p {
   );
 }
 
+/* Fotos/vídeos de academias com luz roxa ou vermelha: puxa pro tom quente da marca
+   (dourado/preto) sem alterar o arquivo original — mesma correção pra foto e vídeo. */
+.grade-gold {
+  filter: saturate(0.55) sepia(0.2) contrast(1.06) brightness(0.92);
+}
+
 /* Vinheta: bordas escuras que focam o olhar no centro (Lindy + CTA). */
 .hero-vignette {
   background: radial-gradient(

@@ -19,7 +19,7 @@ const heroBg = { url: "/hero-coach.webp" };
 const heroLoop = { url: "/hero-coach-loop.mp4" };
 const lindyProfile = { url: "/about-coach.webp" };
 import RevealImage from "./RevealImage";
-import HeroVideoLoop from "./HeroVideoLoop";
+import LoopVideo from "./LoopVideo";
 import Tilt3D from "./Tilt3D";
 import WordReveal from "./WordReveal";
 import CountUp from "./CountUp";
@@ -322,7 +322,7 @@ function Hero() {
             alt="Treino na academia"
             className="w-full h-full object-cover object-top"
           />
-          <HeroVideoLoop src={heroLoop.url} className="absolute inset-0 w-full h-full object-cover object-top" />
+          <LoopVideo src={heroLoop.url} className="absolute inset-0 w-full h-full object-cover object-top" />
         </div>
         <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay" />
       </motion.div>
@@ -570,6 +570,87 @@ function HowItWorks() {
   );
 }
 
+type PracticeItem = {
+  poster: string;
+  video?: string;
+  alt: string;
+  aspect: string;
+  label?: string;
+};
+
+const practiceItems: PracticeItem[] = [
+  { poster: "/pratica-1.webp", video: "/pratica-1-loop.mp4", alt: "Lindy na academia, pronta pro treino", aspect: "aspect-[3/4]" },
+  {
+    poster: "/pratica-treino-capa.webp",
+    video: "/pratica-treino.mp4",
+    alt: "Lindy fazendo elevação de quadril na academia",
+    aspect: "aspect-[9/16]",
+    label: "Treino real",
+  },
+  { poster: "/pratica-2.webp", alt: "Lindy na academia, mostrando o resultado do treino", aspect: "aspect-[3/4]" },
+];
+
+function InPractice() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+
+  return (
+    <section id="na-pratica" className="py-20 md:py-28 px-4 sm:px-6 overflow-hidden">
+      <div className="max-w-5xl mx-auto">
+        <SectionHeading
+          number="04"
+          title="Na Prática"
+          subtitle="Cada treino que eu passo, eu vivo na pele. Um pouco da minha rotina na academia."
+        />
+
+        {/* Mobile: carrossel de arrastar (sem empilhar 3 fotos altas). Desktop: mosaico
+            com o vídeo no centro, mais alto — dá hierarquia sem precisar de legenda. */}
+        <motion.div
+          ref={ref}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={staggerContainer}
+          className="-mx-4 flex snap-x snap-mandatory items-center gap-4 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0"
+        >
+          {practiceItems.map((item) => (
+            <motion.div
+              key={item.poster}
+              variants={depthIn}
+              style={{ transformStyle: "preserve-3d" }}
+              className="w-[72vw] max-w-[320px] shrink-0 snap-center md:w-auto md:max-w-none"
+            >
+              <Tilt3D
+                max={7}
+                className={`group relative overflow-hidden rounded-2xl border-gold-subtle bg-dark-surface shadow-[0_0_60px_-22px_oklch(0.72_0.12_85_/_0.5)] ${item.aspect}`}
+              >
+                <div className="grade-gold absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]">
+                  <img src={item.poster} alt={item.alt} loading="lazy" className="h-full w-full object-cover" />
+                  {item.video && (
+                    <LoopVideo src={item.video} preload="none" className="absolute inset-0 h-full w-full object-cover" />
+                  )}
+                </div>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/55 via-transparent to-transparent" />
+                <div className="pointer-events-none absolute inset-0 about-vignette" aria-hidden="true" />
+                <span className="pointer-events-none absolute left-3 top-3 h-6 w-6 rounded-tl-lg border-l-2 border-t-2 border-gold/70" />
+                <span className="pointer-events-none absolute bottom-3 right-3 h-6 w-6 rounded-br-lg border-b-2 border-r-2 border-gold/70" />
+                {item.label && (
+                  <span className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full border-gold-subtle bg-background/60 px-3 py-1 text-xs font-medium uppercase tracking-wide text-gold backdrop-blur-sm">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[var(--ember)] animate-pulse" aria-hidden="true" />
+                    {item.label}
+                  </span>
+                )}
+              </Tilt3D>
+            </motion.div>
+          ))}
+        </motion.div>
+        <p className="mt-4 text-center text-xs uppercase tracking-widest text-muted-foreground md:hidden" aria-hidden="true">
+          Arraste para o lado →
+        </p>
+      </div>
+    </section>
+  );
+}
+
 function Benefits() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
@@ -586,7 +667,7 @@ function Benefits() {
     <section id="beneficios" className="py-20 md:py-28 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
-          number="04"
+          number="05"
           title="Benefícios"
           subtitle="O que você ganha ao treinar com acompanhamento profissional da Personal Lindy."
         />
@@ -634,7 +715,7 @@ function ForWho() {
     <section id="para-quem" className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
-          number="05"
+          number="06"
           title="Para Quem é"
           subtitle="Seja qual for o seu nível ou objetivo, existe um caminho para você."
         />
@@ -713,7 +794,7 @@ function Plans() {
     <section id="planos" className="py-20 md:py-28 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
         <SectionHeading
-          number="06"
+          number="07"
           title="Investimento"
           subtitle="Escolha o plano que mais combina com o seu momento. Todos com acompanhamento direto comigo."
         />
@@ -964,6 +1045,8 @@ export default function LandingPage() {
           <AuthenticVideo />
           <GoldDivider />
           <HowItWorks />
+          <GoldDivider />
+          <InPractice />
           <GoldDivider />
           <Benefits />
           <GoldDivider />
