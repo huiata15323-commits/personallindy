@@ -137,8 +137,6 @@ img, video {
     background:
       radial-gradient(ellipse 50% 35% at 10% 0%, oklch(0.72 0.12 85 / 0.12), transparent 70%),
       radial-gradient(ellipse 50% 35% at 90% 100%, oklch(0.72 0.12 85 / 0.08), transparent 70%);
-    animation: mesh-drift 22s ease-in-out infinite;
-    will-change: transform;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -280,67 +278,11 @@ img, video {
   .tilt-glow::before { display: none; }
 }
 
-/* Halo dourado que segue o cursor (desktop) */
-.gold-cursor {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 280px;
-  height: 280px;
-  border-radius: 9999px;
-  pointer-events: none;
-  z-index: 60;
-  opacity: 0;
-  transition: opacity 400ms ease-out;
-  mix-blend-mode: screen;
-  background: radial-gradient(
-    circle,
-    oklch(0.78 0.13 85 / 0.16),
-    oklch(0.78 0.13 85 / 0.06) 45%,
-    transparent 70%
-  );
-}
-
-/* Poeira dourada do hero */
-@keyframes gold-float {
-  0% { transform: translate3d(0, 110%, 0) scale(0.8); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translate3d(var(--drift, 0px), -20%, 0) scale(1.1); opacity: 0; }
-}
-
-.gold-particle {
-  position: absolute;
-  bottom: 0;
-  border-radius: 9999px;
-  background: oklch(0.85 0.12 85);
-  box-shadow: 0 0 8px oklch(0.8 0.13 85 / 0.7);
-  animation-name: gold-float;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  will-change: transform, opacity;
-}
-
-/* Pulso suave em selos e destaques */
-@keyframes soft-gold-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 oklch(0.78 0.13 85 / 0.18); }
-  50% { box-shadow: 0 0 18px 3px oklch(0.78 0.13 85 / 0.22); }
-}
-
-@utility pulse-badge {
-  animation: soft-gold-pulse 3.2s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gold-cursor { display: none; }
-  .gold-particle { animation: none; opacity: 0 !important; }
-  .pulse-badge { animation: none; }
-}
-
-/* Premium: gold light sweeping across display headings */
+/* Premium: gold light sweeping across display headings — uma passada só, quando o
+   título entra na tela (antes repetia a cada 6,5s em todos os títulos). */
 @keyframes title-sheen {
   0% { background-position: -160% 0; }
-  55%, 100% { background-position: 260% 0; }
+  100% { background-position: 260% 0; }
 }
 
 .title-sheen {
@@ -360,10 +302,8 @@ img, video {
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  animation: title-sheen 6.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  /* Paused by default; re-enabled only while on-screen (see useSheenVisible).
-     The sweep repaints on every frame it runs, so skipping it off-screen
-     avoids wasted work without changing how it looks while visible. */
+  animation: title-sheen 2.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s 1 both;
+  /* Pausada até o título ficar visível (ver useSheenVisible); aí roda uma vez. */
   animation-play-state: paused;
 }
 
@@ -483,21 +423,8 @@ img, video {
   .glass-icon-front { transition: none; }
 }
 
-/* Flicker sutil e contínuo na chama do selo do Hero — atrai o olhar sem distrair */
-@keyframes flame-flicker {
-  0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 2px oklch(0.8 0.16 62 / 0.5)); }
-  45%      { opacity: 0.82; transform: scale(0.96) rotate(-2deg); filter: drop-shadow(0 0 5px oklch(0.82 0.17 64 / 0.75)); }
-  70%      { opacity: 0.95; transform: scale(1.04) rotate(1.5deg); filter: drop-shadow(0 0 3px oklch(0.8 0.16 62 / 0.6)); }
-}
-.flame-flicker {
-  animation: flame-flicker 2.6s ease-in-out infinite;
-  transform-origin: center bottom;
-  will-change: transform, opacity, filter;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .animate-ember { animation: none; box-shadow: 0 0 22px oklch(0.72 0.16 60 / 0.45); }
-  .flame-flicker { animation: none; }
 }
 
 /* ============ Micro-detalhes premium ============ */
@@ -540,7 +467,8 @@ p {
   ::-webkit-scrollbar-thumb:hover { background: oklch(0.75 0.13 85 / 0.75); }
 }
 
-/* ============ Ícones fitness animados (movimento premium contínuo) ============ */
+/* ============ Ícones fitness: parados em repouso, animam só no hover do card ============ */
+/* (antes todos se mexiam sem parar ao mesmo tempo — competiam com o texto) */
 .fit-icon { overflow: visible; transition: filter 0.4s ease; }
 .fit-dumbbell,
 .fit-shine,
@@ -552,20 +480,19 @@ p {
   transform-box: fill-box;
 }
 
-/* Halter: balanço suave contínuo */
-.fit-dumbbell { transform-origin: center; animation: fit-dumbbell-idle 3.6s ease-in-out infinite; }
+/* Halter: balanço suave */
+.fit-dumbbell { transform-origin: center; }
+.group:hover .fit-dumbbell { animation: fit-dumbbell-idle 3.6s ease-in-out infinite; }
 @keyframes fit-dumbbell-idle { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 
 /* Kettlebell: brilho pulsando */
-.fit-shine { animation: fit-shine-pulse 2.4s ease-in-out infinite; }
+.fit-shine { opacity: 0.35; }
+.group:hover .fit-shine { animation: fit-shine-pulse 2.4s ease-in-out infinite; }
 @keyframes fit-shine-pulse { 0%, 100% { opacity: 0.28; } 50% { opacity: 0.62; } }
 
-/* ECG: linha de batimento desenhando em loop */
-.fit-ecg {
-  stroke-dasharray: 40;
-  stroke-dashoffset: 40;
-  animation: fit-ecg-draw 2.6s ease-in-out infinite;
-}
+/* ECG: em repouso a linha fica desenhada; no hover ela "corre" */
+.fit-ecg { stroke-dasharray: 40; stroke-dashoffset: 0; }
+.group:hover .fit-ecg { animation: fit-ecg-draw 2.6s ease-in-out infinite; }
 @keyframes fit-ecg-draw {
   0% { stroke-dashoffset: 40; }
   55% { stroke-dashoffset: 0; }
@@ -573,45 +500,48 @@ p {
 }
 
 /* Alvo: centro pulsando */
-.fit-pulse { transform-origin: center; animation: fit-target-pulse 2.4s ease-in-out infinite; }
+.fit-pulse { transform-origin: center; }
+.group:hover .fit-pulse { animation: fit-target-pulse 2.4s ease-in-out infinite; }
 @keyframes fit-target-pulse {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.6); opacity: 0.5; }
 }
 
 /* Cronômetro: ponteiro girando */
-.fit-hand { transform-origin: 12px 12.5px; animation: fit-hand-rotate 3s linear infinite; }
+.fit-hand { transform-origin: 12px 12.5px; }
+.group:hover .fit-hand { animation: fit-hand-rotate 3s linear infinite; }
 @keyframes fit-hand-rotate { to { transform: rotate(360deg); } }
 
 /* Pin: flutuando */
-.fit-pin { transform-origin: center bottom; animation: fit-pin-float 2.8s ease-in-out infinite; }
+.fit-pin { transform-origin: center bottom; }
+.group:hover .fit-pin { animation: fit-pin-float 2.8s ease-in-out infinite; }
 @keyframes fit-pin-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
 
-/* Medalha: leve giro contínuo */
-.fit-medal { transform-origin: center; animation: fit-medal-idle 4s ease-in-out infinite; }
+/* Medalha: leve giro */
+.fit-medal { transform-origin: center; }
+.group:hover .fit-medal { animation: fit-medal-idle 4s ease-in-out infinite; }
 @keyframes fit-medal-idle {
   0%, 100% { transform: rotate(-5deg); }
   50% { transform: rotate(5deg) scale(1.04); }
 }
 
-/* Barras: "equalizer" contínuo em stagger */
+/* Barras: "equalizer" em stagger */
 .fit-bar { transform-origin: center bottom; }
-.fit-bar-1 { animation: fit-eq 1.5s ease-in-out infinite; }
-.fit-bar-2 { animation: fit-eq 1.5s ease-in-out infinite 0.2s; }
-.fit-bar-3 { animation: fit-eq 1.5s ease-in-out infinite 0.4s; }
+.group:hover .fit-bar-1 { animation: fit-eq 1.5s ease-in-out infinite; }
+.group:hover .fit-bar-2 { animation: fit-eq 1.5s ease-in-out infinite 0.2s; }
+.group:hover .fit-bar-3 { animation: fit-eq 1.5s ease-in-out infinite 0.4s; }
 @keyframes fit-eq { 0%, 100% { transform: scaleY(0.72); } 50% { transform: scaleY(1); } }
 
 /* Pessoas: respiração sutil */
-.fit-people { transform-origin: center; animation: fit-breathe 4s ease-in-out infinite; }
+.fit-people { transform-origin: center; }
+.group:hover .fit-people { animation: fit-breathe 4s ease-in-out infinite; }
 @keyframes fit-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
 
 /* Glow dourado no hover do card */
 .group:hover .fit-icon { filter: drop-shadow(0 0 6px currentColor); }
 
 @media (prefers-reduced-motion: reduce) {
-  .fit-ecg { animation: none; stroke-dashoffset: 0; }
-  .fit-dumbbell, .fit-shine, .fit-pulse, .fit-hand, .fit-pin, .fit-medal,
-  .fit-bar-1, .fit-bar-2, .fit-bar-3, .fit-people { animation: none; }
+  .fit-icon * { animation: none !important; }
 }
 
 /* ============ Faixa deslizante (marquee) ============ */
@@ -619,24 +549,14 @@ p {
 .marquee:hover .marquee-track { animation-play-state: paused; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
-/* ============ Aurora ambiente do Hero ============ */
+/* ============ Luz ambiente do Hero (fixa) ============ */
 .hero-glow {
   background: radial-gradient(circle at 50% 42%, oklch(0.72 0.12 85 / 0.16), transparent 55%);
-  animation: hero-glow-pulse 8s ease-in-out infinite;
-}
-@keyframes hero-glow-pulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-
-/* ============ Pulso do botão flutuante do WhatsApp ============ */
-.fab-ping { animation: fab-ping 2.2s ease-out infinite; }
-@keyframes fab-ping {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(1.8); opacity: 0; }
+  opacity: 0.8;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
-  .hero-glow { animation: none; }
-  .fab-ping { animation: none; opacity: 0; }
 }
 
 /* ============ Borda com brilho rotativo (plano em destaque) ============ */
@@ -675,16 +595,6 @@ p {
 }
 @media (prefers-reduced-motion: reduce) {
   .plan-glow-border::before { animation: none; }
-}
-
-/* ============ Deriva ambiente (mesh) no fundo da página ============ */
-@keyframes mesh-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(-2%, 1.5%) scale(1.04); }
-  66% { transform: translate(2%, -1.5%) scale(1.02); }
-}
-@media (prefers-reduced-motion: reduce) {
-  body::after { animation: none; }
 }
 
 /* ============ Typewriter (frase de fechamento do rodapé) ============ */
@@ -776,28 +686,14 @@ p {
   .hero-scroll-cue { display: none !important; }
 }
 
-/* Grão de filme: ruído sutil em blend "overlay". Estático por padrão (leve);
-   flicker discreto só no desktop. */
+/* Grão de filme: ruído sutil e estático em blend "overlay" (textura de cinema). */
 .hero-grain {
   opacity: 0.07;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 120px 120px;
 }
-@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-  .hero-grain {
-    animation: hero-grain-shift 0.5s steps(4) infinite;
-  }
-}
-@keyframes hero-grain-shift {
-  0%   { background-position: 0 0; }
-  25%  { background-position: -28px 12px; }
-  50%  { background-position: 18px -22px; }
-  75%  { background-position: -12px 24px; }
-  100% { background-position: 0 0; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .hero-kenburns { animation: none; }
-  .hero-grain { animation: none; }
 }

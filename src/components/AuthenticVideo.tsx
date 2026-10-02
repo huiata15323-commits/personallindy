@@ -65,7 +65,7 @@ export default function AuthenticVideo() {
                   autoPlay
                   playsInline
                   preload="metadata"
-                  poster="/lindy-treino-capa.jpg"
+                  poster="/lindy-treino-capa.jpg?v=2"
                 >
                   <source src="/lindy-treino.mp4" type="video/mp4" />
                 </video>
@@ -87,7 +87,7 @@ export default function AuthenticVideo() {
               >
                 <motion.div style={{ y: posterY, scale: 1.08 }} className="h-full w-full">
                   <img
-                    src="/lindy-treino-capa.jpg"
+                    src="/lindy-treino-capa.jpg?v=2"
                     alt="Lindy treinando, com a filha por perto"
                     className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                     loading="lazy"

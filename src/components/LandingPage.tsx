@@ -23,8 +23,6 @@ import LoopVideo from "./LoopVideo";
 import Tilt3D from "./Tilt3D";
 import WordReveal from "./WordReveal";
 import CountUp from "./CountUp";
-import GoldCursor from "./GoldCursor";
-import GoldParticles from "./GoldParticles";
 import GoldDivider from "./GoldDivider";
 import FAQ from "./FAQ";
 import PlanLaunch from "./PlanLaunch";
@@ -340,8 +338,6 @@ function Hero() {
         <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay hero-overlay" />
       </motion.div>
 
-      <GoldParticles />
-
       {/* Aurora/luz ambiente dourada atrás do título */}
       <div className="pointer-events-none absolute inset-0 z-[1] hero-glow" aria-hidden="true" />
 
@@ -361,7 +357,7 @@ function Hero() {
           className="mb-4"
         >
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border-gold-subtle bg-background/40 backdrop-blur-sm text-gold text-sm font-medium tracking-wide uppercase">
-            <Flame size={16} className="flame-flicker text-ember" />
+            <Flame size={16} className="text-ember" />
             Personal Trainer Online
           </span>
         </motion.div>
@@ -525,11 +521,11 @@ function About() {
               Meu objetivo é proporcionar os melhores resultados no menor tempo possível, sempre respeitando a individualidade, os limites e as metas de cada aluno.
             </p>
             <div className="grid grid-cols-2 gap-3 mb-8">
-              <div className="pulse-badge text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
                 <ShieldCheck size={20} className="text-gold mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">CREF 010437/GO</p>
               </div>
-              <div className="pulse-badge text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
+              <div className="text-center p-3 rounded-lg bg-dark-surface border-gold-subtle">
                 <Zap size={20} className="text-gold mx-auto mb-1" />
                 <p className="text-xs text-muted-foreground uppercase tracking-wide">
                   <CountUp to={9} suffix="+" className="text-ember font-bold" /> anos
@@ -953,7 +949,6 @@ function CTA() {
             <LoopVideo src={ctaBg.video} preload="none" className="cta-bg-media grade-gold" />
             <div className="absolute inset-0 bg-gradient-to-b from-dark-elevated/20 via-dark-elevated/55 to-dark-elevated" />
           </div>
-          <GoldParticles count={12} />
           <div
             ref={stageRef}
             aria-hidden="true"
@@ -1118,7 +1113,6 @@ export default function LandingPage() {
       <LoadingIntro />
       <TabTitleSwitcher />
       <Header />
-      <GoldCursor />
       <main id="top" className="bg-background pt-16">
         {/* Hero "gruda" (desktop) enquanto o Sobre desliza por cima — estilo Apple.
             O sticky vale dentro deste bloco: quando o Sobre termina, o topo já está todo coberto. */}
