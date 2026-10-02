@@ -32,6 +32,8 @@ import MobileCTA from "./MobileCTA";
 import Magnetic from "./Magnetic";
 import GoldBurst from "./GoldBurst";
 import GlassIcon from "./GlassIcon";
+import RotatingText from "./RotatingText";
+import CircularText from "./CircularText";
 import AuthenticVideo from "./AuthenticVideo";
 import Marquee from "./Marquee";
 import WhatsAppFab from "./WhatsAppFab";
@@ -158,7 +160,7 @@ function WhatsAppButton({
         hover:brightness-110 hover:scale-[1.02]
         active:scale-[0.98]
         disabled:pointer-events-none
-        ${large ? "px-8 py-4 text-lg rounded-xl animate-ember" : "px-6 py-3 text-sm rounded-lg"}
+        ${large ? "px-6 py-4 text-base sm:px-8 sm:text-lg rounded-xl animate-ember whitespace-nowrap" : "px-6 py-3 text-sm rounded-lg"}
         ${className}
       `}
     >
@@ -236,7 +238,7 @@ export function Header() {
             href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-shine inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
+            className="btn-shine inline-flex h-10 items-center gap-2 bg-primary text-primary-foreground px-4 sm:h-auto sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
           >
             <MessageCircle size={16} />
             <span className="hidden xs:inline sm:inline">WhatsApp</span>
@@ -265,7 +267,7 @@ function SectionHeading({ number, title, subtitle }: { number?: string; title: s
       className="text-center mb-12 md:mb-16"
     >
       {number && (
-        <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/55">
+        <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/80">
           {number}
         </span>
       )}
@@ -285,8 +287,19 @@ function SectionHeading({ number, title, subtitle }: { number?: string; title: s
   );
 }
 
+// Objetivos que giram no subtítulo do topo (os mesmos públicos da seção "Para Quem é").
+// O primeiro repete a frase original, então o HTML inicial continua igual ao de antes.
+const heroGoals = [
+  "conquistar resultados reais.",
+  "emagrecer com saúde.",
+  "ganhar massa muscular.",
+  "sair do zero com segurança.",
+  "ter constância nos treinos.",
+];
+
 function Hero() {
   const ref = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const smooth = useSpring(scrollYProgress, { stiffness: 90, damping: 26, mass: 0.35 });
   const bgY = useTransform(smooth, [0, 1], ["0%", "14%"]);
@@ -301,7 +314,7 @@ function Hero() {
   return (
     <section
       ref={ref}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-[calc(100svh-4rem)] flex items-center justify-center lg:justify-start overflow-hidden"
       style={{ perspective: "1200px", perspectiveOrigin: "50% 40%" }}
     >
       <motion.div
@@ -324,7 +337,7 @@ function Hero() {
           />
           <LoopVideo src={heroLoop.url} className="absolute inset-0 w-full h-full object-cover object-top" />
         </div>
-        <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay" />
+        <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay hero-overlay" />
       </motion.div>
 
       <GoldParticles />
@@ -339,7 +352,7 @@ function Hero() {
 
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 text-center px-4 sm:px-6 max-w-4xl mx-auto pt-20"
+        className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 pt-20 text-center md:pt-0 lg:mx-0 lg:ml-[calc(max(0px,(100vw_-_72rem)/2)_+_1.5rem)] lg:max-w-[38rem] lg:px-0 lg:text-left xl:max-w-[46rem] 2xl:max-w-[54rem]"
       >
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -357,7 +370,7 @@ function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.4 }}
-          className="font-serif-display text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[8.5rem] text-foreground leading-[1.05] sm:leading-[0.95] break-words"
+          className="font-serif-display text-4xl xs:text-5xl sm:text-6xl md:text-7xl lg:text-[min(6.5rem,11.5vh)] xl:text-[min(8rem,12.5vh)] text-foreground leading-[1.05] sm:leading-[0.95] break-words"
         >
           Transforme seu corpo com a{" "}
           <span className="text-gradient-gold italic">Personal Lindy</span>
@@ -367,9 +380,22 @@ function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="mt-6 md:mt-8 text-base md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
+          className="hero-sub mt-6 md:mt-8 text-base md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed lg:mx-0 lg:max-w-xl"
         >
-          Treinos personalizados e acompanhamento direto para você conquistar resultados reais.
+          Treinos personalizados e acompanhamento direto para você
+          {/* Linha própria e altura fixa: a troca de frase não empurra o botão abaixo */}
+          <span className="mt-1 flex h-[1.6em] justify-center lg:justify-start">
+            <RotatingText
+              texts={heroGoals}
+              auto={!reduceMotion}
+              rotationInterval={2600}
+              staggerFrom="last"
+              staggerDuration={0.015}
+              transition={{ type: "spring", damping: 30, stiffness: 400 }}
+              mainClassName="overflow-hidden font-semibold text-gold"
+              splitLevelClassName="overflow-hidden pb-0.5"
+            />
+          </span>
         </motion.p>
 
         <motion.div
@@ -388,7 +414,7 @@ function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.1 }}
-          className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs sm:text-sm text-muted-foreground"
+          className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs sm:text-sm text-muted-foreground lg:justify-start"
         >
           <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> Suporte direto</span>
           <span className="inline-flex items-center gap-2"><Check size={14} className="text-gold" /> 100% online</span>
@@ -401,7 +427,7 @@ function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.6, duration: 0.8 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2"
+        className="hero-scroll-cue absolute bottom-6 left-1/2 -translate-x-1/2 z-10 hidden sm:flex flex-col items-center gap-2"
       >
         <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">Role</span>
         <span className="relative h-10 w-6 rounded-full border border-gold/50 overflow-hidden">
@@ -459,6 +485,17 @@ function About() {
               <span className="pointer-events-none absolute bottom-3 left-3 h-7 w-7 rounded-bl-lg border-b-2 border-l-2 border-gold/70" />
               <span className="pointer-events-none absolute bottom-3 right-3 h-7 w-7 rounded-br-lg border-b-2 border-r-2 border-gold/70" />
             </Tilt3D>
+            {/* Selo giratório (Circular Text do React Bits) com a credencial dela sobre a foto */}
+            <div className="pointer-events-none absolute -bottom-10 right-3 z-10 md:-right-8">
+              <div className="relative grid h-28 w-28 place-items-center rounded-full border border-gold/40 bg-background/80 shadow-[0_0_30px_-8px_oklch(0.72_0.12_85_/_0.6)] backdrop-blur-sm md:h-32 md:w-32">
+                <CircularText
+                  text="PERSONAL TRAINER • CREF 010437/GO • "
+                  className="absolute inset-2.5"
+                  letterClassName="font-display text-[11px] leading-none tracking-wider text-gold md:text-xs"
+                />
+                <Fit.Medal size={26} className="text-gold" />
+              </div>
+            </div>
           </motion.div>
 
           <motion.div
@@ -467,7 +504,7 @@ function About() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <span className="text-gold text-sm font-semibold uppercase tracking-widest">
-              <span className="mr-2 text-gold/50">01</span>Sobre a Personal
+              <span className="mr-2 text-gold/80">01</span>Sobre a Personal
             </span>
             <h2
               ref={sheen.ref}
@@ -656,8 +693,8 @@ function Benefits() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const benefits = [
-    { icon: Fit.Dumbbell, title: "Treino 100% Personalizado", desc: "Criado exclusivamente para o seu corpo, seus objetivos e sua rotina." },
-    { icon: Fit.Heartbeat, title: "Suporte Direto Comigo", desc: "Atendimento próximo e humanizado pelo WhatsApp para dúvidas e motivação." },
+    { icon: Fit.Kettlebell, title: "Treino 100% Personalizado", desc: "Criado exclusivamente para o seu corpo, seus objetivos e sua rotina." },
+    { icon: Fit.People, title: "Suporte Direto Comigo", desc: "Atendimento próximo e humanizado pelo WhatsApp para dúvidas e motivação." },
     { icon: Fit.Stopwatch, title: "Flexibilidade de Horários", desc: "Treine no momento que for melhor para você, sem depender de agenda fixa." },
     { icon: Fit.Pin, title: "Treine em Qualquer Lugar", desc: "Programas adaptados para academia, casa, parque ou viagem." },
     { icon: Fit.Medal, title: "Resultados Reais e Consistentes", desc: "Metodologia comprovada que entrega transformação de verdade." },
@@ -677,10 +714,19 @@ function Benefits() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={staggerContainer}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid sm:grid-cols-2 lg:grid-cols-6 gap-6"
         >
+          {/* 5 itens: grade de 6 colunas (2 por card) para a última linha ficar centralizada
+              em vez de deixar um buraco à direita; no tablet o último card fica no meio. */}
           {benefits.map((b, i) => (
-            <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
+            <motion.div
+              key={i}
+              variants={depthIn}
+              style={{ transformStyle: "preserve-3d" }}
+              className={`h-full lg:col-span-2 ${i === 3 ? "lg:col-start-2" : ""} ${
+                i === benefits.length - 1 ? "sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.75rem)] lg:mx-0 lg:w-auto" : ""
+              }`}
+            >
               <Tilt3D
                 max={7}
                 className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
@@ -704,46 +750,51 @@ function ForWho() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const audiences = [
-    { icon: Fit.People, label: "Iniciantes", desc: "Nunca treinou? Vou te guiar do zero com segurança e confiança." },
-    { icon: Fit.Target, label: "Quem não consegue resultados", desc: "Cansado de treinar sem evoluir? A estratégia certa muda tudo." },
-    { icon: Fit.Flame, label: "Quem quer emagrecer", desc: "Programa focado em queima de gordura com saúde e sustentabilidade." },
-    { icon: Fit.Kettlebell, label: "Quem quer ganhar massa", desc: "Treinos de hipertrofia inteligente para ganho muscular eficiente." },
-    { icon: Fit.Medal, label: "Quem busca disciplina", desc: "Acompanhamento que te mantém focado e consistente no dia a dia." },
+    { label: "Iniciantes", desc: "Nunca treinou? Vou te guiar do zero com segurança e confiança." },
+    { label: "Quem não consegue resultados", desc: "Cansado de treinar sem evoluir? A estratégia certa muda tudo." },
+    { label: "Quem quer emagrecer", desc: "Programa focado em queima de gordura com saúde e sustentabilidade." },
+    { label: "Quem quer ganhar massa", desc: "Treinos de hipertrofia inteligente para ganho muscular eficiente." },
+    { label: "Quem busca disciplina", desc: "Acompanhamento que te mantém focado e consistente no dia a dia." },
   ];
 
   return (
     <section id="para-quem" className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <SectionHeading
           number="06"
           title="Para Quem é"
           subtitle="Seja qual for o seu nível ou objetivo, existe um caminho para você."
         />
 
-        <motion.div
+        {/* Lista editorial (sem cards nem ícones): quebra a repetição das grades das
+            seções anteriores e fica mais rápida de ler no celular. O losango é o
+            mesmo dos divisores dourados da página. */}
+        <motion.ul
           ref={ref}
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
           variants={staggerContainer}
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+          className="grid border-t border-gold/15 md:grid-cols-2 md:gap-x-14"
         >
-          {audiences.map((a, i) => (
-            <motion.div
-              key={i}
-              variants={depthIn}
-              style={{ transformStyle: "preserve-3d" }}
-              className="group flex items-start gap-4 p-5 md:p-6 rounded-xl bg-dark-elevated border-gold-subtle transition-colors hover:bg-dark-elevated/80 hover:border-gold/40"
+          {audiences.map((a) => (
+            <motion.li
+              key={a.label}
+              variants={fadeInUp}
+              className="group flex items-start gap-4 border-b border-gold/15 py-5 md:py-6 md:last:col-span-2"
             >
-              <GlassIcon className="mt-1 mr-1 text-[11px]">
-                <a.icon />
-              </GlassIcon>
+              <span
+                aria-hidden="true"
+                className="mt-2 h-2.5 w-2.5 shrink-0 rotate-45 bg-gradient-gold shadow-[0_0_12px_oklch(0.72_0.12_85_/_0.5)] transition-transform duration-300 group-hover:scale-125"
+              />
               <div>
-                <h3 className="text-foreground font-semibold text-base uppercase tracking-wide">{a.label}</h3>
-                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{a.desc}</p>
+                <h3 className="text-lg md:text-xl text-foreground uppercase tracking-wide transition-colors group-hover:text-gold">
+                  {a.label}
+                </h3>
+                <p className="mt-1 text-sm md:text-base text-muted-foreground leading-relaxed">{a.desc}</p>
               </div>
-            </motion.div>
+            </motion.li>
           ))}
-        </motion.div>
+        </motion.ul>
       </div>
     </section>
   );
@@ -765,17 +816,19 @@ function Plans() {
         "Olá Lindy! 💪 Quero começar com o *Plano MENSAL* (R$ 100/mês). Como faço para iniciar?",
       features: [
         "Treino 100% personalizado",
-        "Suporte via WhatsApp",
+        "Suporte direto pelo WhatsApp",
         "Reavaliação mensal",
         "Ajustes ilimitados",
       ],
     },
     {
       name: "Trimestral",
-      price: "3x R$ 95",
+      // Preço mensal em destaque para comparar direto com o Mensal; o parcelamento vem logo abaixo.
+      price: "R$ 95",
       priceNum: 95,
-      pricePrefix: "3x R$ ",
-      period: "/trimestral",
+      pricePrefix: "R$ ",
+      period: "/mês",
+      billing: "3x de R$ 95 · 90 dias de acompanhamento",
       badge: "Mais escolhido",
       save: "Economize R$ 15 no período",
       highlight: true,
@@ -783,9 +836,10 @@ function Plans() {
         "Olá Lindy! 💪 Quero começar com o *Plano TRIMESTRAL* (3x R$ 95 - 90 dias). Como faço para iniciar?",
       features: [
         "Consultoria online individualizada",
+        "Suporte direto pelo WhatsApp",
+        "Reavaliações periódicas",
         "Acesso à ficha por 90 dias",
         "Treinos atualizados na plataforma",
-        "Resultados com constância",
       ],
     },
   ];
@@ -831,6 +885,7 @@ function Plans() {
                 />
                 <span className="text-sm text-muted-foreground">{p.period}</span>
               </div>
+              {p.billing && <p className="-mt-1 mb-3 text-xs text-muted-foreground">{p.billing}</p>}
               {p.save ? (
                 <span className="mb-5 inline-flex w-fit items-center gap-1.5 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-xs font-semibold text-gold">
                   <Check size={13} /> {p.save}
@@ -919,7 +974,7 @@ function CTA() {
             </div>
           </div>
           <div className="relative z-10 -mt-4">
-            <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/55">08</span>
+            <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/80">08</span>
             <h2
               ref={sheen.ref}
               className={`title-sheen text-4xl md:text-5xl lg:text-6xl text-foreground uppercase tracking-wide ${sheen.visible ? "sheen-visible" : ""}`}
@@ -1006,12 +1061,12 @@ export function Footer() {
               Transformando vidas através do treino personalizado.
             </p>
           </div>
-          <div className="flex flex-col gap-3 md:items-end">
+          <div className="flex flex-col gap-1 md:items-end">
             <a
               href="https://wa.me/5562984811499"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-gold transition-colors text-sm"
+              className="inline-flex items-center gap-2 py-2 text-muted-foreground hover:text-gold transition-colors text-sm"
             >
               <Phone size={16} />
               (62) 98481-1499
@@ -1020,7 +1075,7 @@ export function Footer() {
               href="https://instagram.com/personallindy"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-muted-foreground hover:text-gold transition-colors text-sm"
+              className="inline-flex items-center gap-2 py-2 text-muted-foreground hover:text-gold transition-colors text-sm"
             >
               <Instagram size={16} />
               @personallindy
@@ -1065,15 +1120,18 @@ export default function LandingPage() {
       <Header />
       <GoldCursor />
       <main id="top" className="bg-background pt-16">
-        {/* Hero "gruda" (desktop) enquanto o restante desliza por cima — estilo Apple */}
-        <div className="relative md:h-[160vh]">
-          <div className="overflow-hidden md:sticky md:top-16 md:h-screen">
+        {/* Hero "gruda" (desktop) enquanto o Sobre desliza por cima — estilo Apple.
+            O sticky vale dentro deste bloco: quando o Sobre termina, o topo já está todo coberto. */}
+        <div className="relative">
+          <div className="overflow-hidden md:sticky md:top-16 md:h-[calc(100vh-4rem)]">
             <Hero />
           </div>
+          <div className="relative z-10 bg-background md:rounded-t-[2.5rem] md:shadow-[0_-40px_80px_-20px_rgba(0,0,0,0.6)]">
+            <Marquee />
+            <About />
+          </div>
         </div>
-        <div className="relative z-10 bg-background md:rounded-t-[2.5rem] md:shadow-[0_-40px_80px_-20px_rgba(0,0,0,0.6)]">
-          <Marquee />
-          <About />
+        <div className="relative z-10 bg-background">
           <GoldDivider />
           <AuthenticVideo />
           <GoldDivider />

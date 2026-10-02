@@ -163,17 +163,3 @@ export function People(props: IconProps) {
     </Svg>
   );
 }
-
-/** Chama — sólida, usa o flicker existente */
-export function Flame(props: IconProps) {
-  return (
-    <Svg {...props}>
-      <path
-        className="flame-flicker"
-        fill="currentColor"
-        d="M12 2s5.5 4 5.5 9.5A5.5 5.5 0 0 1 6.5 12c0-1.4.6-2.6 1.4-3.5.2 1 .9 1.8 1.8 2 .2-2.5 1.4-4.8 2.3-6.5.6 1.5 2 2.6 2 4.2 0 .9-.4 1.6-1 2.1 1.7-.2 2.4-1.8 2.2-3.4C16.8 5.8 14.6 3.5 12 2Z"
-        style={{ transformOrigin: "center bottom" }}
-      />
-    </Svg>
-  );
-}

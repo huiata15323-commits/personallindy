@@ -35,7 +35,7 @@ export default function AuthenticVideo() {
           transition={{ duration: 0.7 }}
         >
           <span className="text-gold text-sm font-semibold uppercase tracking-widest">
-            <span className="mr-2 text-gold/50">02</span>Bastidores
+            <span className="mr-2 text-gold/80">02</span>Bastidores
           </span>
           <h2 className="title-sheen font-serif-display text-3xl sm:text-4xl md:text-5xl text-foreground mt-2 mb-4 leading-[1.1]">
             Treino é vida — e a minha <span className="text-gradient-gold italic">maior torcedora</span> tá sempre por perto
