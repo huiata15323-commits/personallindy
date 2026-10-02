@@ -756,6 +756,20 @@ p {
   }
 }
 
+/* Intro: o palco do halter some suavemente nas bordas (o preto do vídeo encontra o
+   fundo da página). height explícito porque a regra global img/video { height: auto }
+   fica fora das camadas e venceria o h-full. */
+.intro-stage {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent), linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent), linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+  mask-composite: intersect;
+}
+.intro-stage img,
+.intro-stage video {
+  height: 100%;
+}
+
 /* Indicador "Role": em telas baixas (notebooks 1366x768 etc.) não há espaço
    abaixo dos selos e ele ficava por cima do texto. */
 @media (max-height: 859px) {
