@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
-import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion, useScroll, useSpring, useTransform, type Variants } from "framer-motion";
 import {
   MessageCircle,
   Flame,
@@ -31,7 +31,7 @@ import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
 import Magnetic from "./Magnetic";
 import GoldBurst from "./GoldBurst";
-import ProgressRing from "./ProgressRing";
+import GlassIcon from "./GlassIcon";
 import AuthenticVideo from "./AuthenticVideo";
 import Marquee from "./Marquee";
 import WhatsAppFab from "./WhatsAppFab";
@@ -533,7 +533,7 @@ function HowItWorks() {
         <div className="relative">
           <motion.span
             aria-hidden="true"
-            className="hidden lg:block absolute top-[74px] left-[12%] right-[12%] h-px origin-left bg-gradient-to-r from-transparent via-gold/45 to-transparent"
+            className="hidden lg:block absolute top-[68px] left-[12%] right-[12%] h-px origin-left bg-gradient-to-r from-transparent via-gold/45 to-transparent"
             initial={{ scaleX: 0, opacity: 0 }}
             whileInView={{ scaleX: 1, opacity: 1 }}
             viewport={{ once: true, margin: "-80px" }}
@@ -555,9 +555,9 @@ function HowItWorks() {
                 <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold z-10">
                   {i + 1}
                 </div>
-                <ProgressRing className="mb-4">
-                  <step.icon size={30} className="text-gold icon-lift icon-ember" />
-                </ProgressRing>
+                <GlassIcon className="mb-6 text-[16px]">
+                  <step.icon />
+                </GlassIcon>
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
               </Tilt3D>
@@ -685,9 +685,9 @@ function Benefits() {
                 max={7}
                 className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
               >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
-                  <b.icon size={24} className="text-gold icon-lift icon-ember" />
-                </div>
+                <GlassIcon className="mb-6 text-[13px]">
+                  <b.icon />
+                </GlassIcon>
                 <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{b.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
               </Tilt3D>
@@ -734,9 +734,9 @@ function ForWho() {
               style={{ transformStyle: "preserve-3d" }}
               className="group flex items-start gap-4 p-5 md:p-6 rounded-xl bg-dark-elevated border-gold-subtle transition-colors hover:bg-dark-elevated/80 hover:border-gold/40"
             >
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 transition-colors group-hover:bg-primary/20">
-                <a.icon size={20} className="text-gold icon-ember" />
-              </div>
+              <GlassIcon className="mt-1 mr-1 text-[11px]">
+                <a.icon />
+              </GlassIcon>
               <div>
                 <h3 className="text-foreground font-semibold text-base uppercase tracking-wide">{a.label}</h3>
                 <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{a.desc}</p>
@@ -867,10 +867,21 @@ function Plans() {
   );
 }
 
+// CTA final: fundo em vídeo (feixe de luz dourada com poeira de giz, gerado no Higgsfield)
+// e efeito de profundidade estilo capa de revista: o nome gigante fica atrás da Lindy.
+const ctaBg = { poster: "/cta-bg.webp", video: "/cta-bg.mp4" };
+const ctaCutout = "/lindy-cutout.webp";
+
 function CTA() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const sheen = useSheenVisible<HTMLHeadingElement>();
+  const stageRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
+  // Na rolagem o nome anda mais devagar que a Lindy, o que reforça a sensação de camadas.
+  const { scrollYProgress } = useScroll({ target: stageRef, offset: ["start end", "end start"] });
+  const wordY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-24, 24]);
+  const cutoutY = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [16, -16]);
 
   return (
     <section className="py-20 md:py-28 px-4 sm:px-6 bg-dark-surface">
@@ -880,12 +891,34 @@ function CTA() {
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center p-8 md:p-12 lg:p-16 rounded-3xl bg-dark-elevated border-gold-subtle relative overflow-hidden"
+          className="text-center px-8 pb-8 md:px-12 md:pb-12 lg:px-16 lg:pb-16 rounded-3xl bg-dark-elevated border-gold-subtle relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-gold opacity-[0.03]" />
-          <div className="cta-aurora" aria-hidden="true" />
-          <GoldParticles count={18} />
-          <div className="relative z-10">
+          <div className="absolute inset-0" aria-hidden="true">
+            <img src={ctaBg.poster} alt="" loading="lazy" className="cta-bg-media grade-gold" />
+            <LoopVideo src={ctaBg.video} preload="none" className="cta-bg-media grade-gold" />
+            <div className="absolute inset-0 bg-gradient-to-b from-dark-elevated/20 via-dark-elevated/55 to-dark-elevated" />
+          </div>
+          <GoldParticles count={12} />
+          <div
+            ref={stageRef}
+            aria-hidden="true"
+            className="relative -mx-8 h-[300px] select-none sm:h-[360px] md:-mx-12 md:h-[440px] lg:-mx-16"
+          >
+            <motion.span style={{ y: wordY }} className="cta-word absolute inset-x-0 top-[6%] block font-display text-gradient-gold">
+              LINDY
+            </motion.span>
+            <div className="absolute inset-0 flex items-end justify-center">
+              <motion.img
+                style={{ y: cutoutY }}
+                src={ctaCutout}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="cta-cutout"
+              />
+            </div>
+          </div>
+          <div className="relative z-10 -mt-4">
             <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/55">08</span>
             <h2
               ref={sheen.ref}
