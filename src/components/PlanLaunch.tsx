@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
-import { Dumbbell, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
+import { DumbbellPlus } from "./BrandIcons";
 
 /** Explosão de partículas douradas a partir do centro. */
 const PARTICLES = Array.from({ length: 16 }, (_, i) => {
@@ -56,7 +57,7 @@ export default function PlanLaunch({ label }: { label: string }) {
         className="relative text-gold"
         style={{ filter: "drop-shadow(0 0 14px var(--color-gold))" }}
       >
-        <Dumbbell size={64} strokeWidth={1.5} />
+        <DumbbellPlus size={64} />
       </motion.div>
 
       {/* Barra de "carga" */}

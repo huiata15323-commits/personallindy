@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header, Footer } from "../components/LandingPage";
+import { trackWhatsApp } from "../lib/analytics";
 
 export const Route = createFileRoute("/politica-de-privacidade")({
   head: () => ({
@@ -25,11 +26,11 @@ function PrivacyPolicy() {
           <h1 className="font-serif-display text-4xl sm:text-5xl text-foreground mt-2 mb-3 leading-[1.1]">
             Política de <span className="text-gradient-gold italic">Privacidade</span>
           </h1>
-          <p className="text-sm text-muted-foreground mb-12">Última atualização: 14 de agosto de 2026 (v2 — inclusão de análise de tráfego)</p>
+          <p className="text-sm text-muted-foreground mb-12">Última atualização: 9 de outubro de 2026 (v3 — contagem de cliques nos botões de WhatsApp)</p>
 
           <div className="space-y-10 text-base text-muted-foreground leading-relaxed">
             <section>
-              <h2 className="font-display text-xl text-foreground uppercase tracking-wide mb-3">1. Quem somos</h2>
+              <h2 className="font-serif-display text-2xl md:text-[1.7rem] text-foreground mb-3">1. Quem somos</h2>
               <p>
                 Este site (<strong className="text-foreground">personallindy.com.br</strong>) é operado por{" "}
                 <strong className="text-foreground">Lindyara Ribeiro</strong>, Personal Trainer registrada no CREF
@@ -39,7 +40,7 @@ function PrivacyPolicy() {
             </section>
 
             <section>
-              <h2 className="font-display text-xl text-foreground uppercase tracking-wide mb-3">
+              <h2 className="font-serif-display text-2xl md:text-[1.7rem] text-foreground mb-3">
                 2. Quais dados coletamos
               </h2>
               <p>
@@ -52,7 +53,7 @@ function PrivacyPolicy() {
             </section>
 
             <section>
-              <h2 className="font-display text-xl text-foreground uppercase tracking-wide mb-3">
+              <h2 className="font-serif-display text-2xl md:text-[1.7rem] text-foreground mb-3">
                 3. Cookies e ferramentas de análise
               </h2>
               <p className="mb-3">
@@ -63,7 +64,8 @@ function PrivacyPolicy() {
               <p>
                 Também utilizamos o <strong className="text-foreground">Google Analytics</strong>, uma ferramenta de
                 estatísticas que nos ajuda a entender, de forma agregada e anônima, quantas pessoas visitam o site,
-                de onde vêm e quais páginas acessam — não usamos isso para identificar você individualmente nem para
+                de onde vêm, quais páginas acessam e quantas vezes cada botão de WhatsApp é clicado (sem o conteúdo
+                das conversas) — não usamos isso para identificar você individualmente nem para
                 exibir anúncios. Não utilizamos ferramentas de publicidade de terceiros. Você pode saber mais sobre
                 como o Google trata esses dados em{" "}
                 <a
@@ -88,7 +90,7 @@ function PrivacyPolicy() {
             </section>
 
             <section>
-              <h2 className="font-display text-xl text-foreground uppercase tracking-wide mb-3">
+              <h2 className="font-serif-display text-2xl md:text-[1.7rem] text-foreground mb-3">
                 4. Seus direitos (LGPD)
               </h2>
               <p>
@@ -99,7 +101,7 @@ function PrivacyPolicy() {
             </section>
 
             <section>
-              <h2 className="font-display text-xl text-foreground uppercase tracking-wide mb-3">
+              <h2 className="font-serif-display text-2xl md:text-[1.7rem] text-foreground mb-3">
                 5. Alterações nesta política
               </h2>
               <p>
@@ -110,13 +112,14 @@ function PrivacyPolicy() {
             </section>
 
             <section>
-              <h2 className="font-display text-xl text-foreground uppercase tracking-wide mb-3">6. Contato</h2>
+              <h2 className="font-serif-display text-2xl md:text-[1.7rem] text-foreground mb-3">6. Contato</h2>
               <p>
                 Dúvidas sobre esta política ou sobre seus dados podem ser enviadas para{" "}
                 <a
                   href="https://wa.me/5562984811499"
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackWhatsApp("politica")}
                   className="text-gold hover:underline"
                 >
                   (62) 98481-1499

@@ -17,7 +17,7 @@ export default function Marquee() {
         {row.map((t, i) => (
           <span
             key={i}
-            className="flex items-center gap-8 whitespace-nowrap font-display text-sm md:text-base uppercase tracking-[0.25em] text-gold/80"
+            className="flex items-center gap-8 whitespace-nowrap font-serif-display italic text-xl md:text-2xl text-gold/85"
           >
             {t}
             <span className="block h-1.5 w-1.5 rotate-45 bg-gold/50" />

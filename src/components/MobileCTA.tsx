@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle } from "lucide-react";
+import { trackWhatsApp } from "../lib/analytics";
 
 export default function MobileCTA() {
   const [show, setShow] = useState(false);
@@ -26,7 +27,10 @@ export default function MobileCTA() {
             href={`https://wa.me/5562984811499?text=${encodeURIComponent("Olá Lindy! Quero começar minha transformação.")}`}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => navigator.vibrate?.(12)}
+            onClick={() => {
+              trackWhatsApp("barra-celular");
+              navigator.vibrate?.(12);
+            }}
             className="btn-shine flex items-center justify-center gap-2 w-full px-6 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold uppercase tracking-wide text-sm active:scale-[0.98] transition-transform"
           >
             <MessageCircle size={18} />

@@ -4,7 +4,8 @@ import { motion, useAnimation, useMotionValue, useReducedMotion } from "framer-m
 /**
  * Adaptado do Circular Text do React Bits (reactbits.dev/text-animations/circular-text):
  * letras distribuídas num círculo que gira devagar. Tamanho, cor e fonte vêm das classes
- * (o original fixava 200px e texto branco). Com "reduzir movimento" ligado, fica parado.
+ * (o original fixava 200px e texto branco). Com "reduzir movimento" ligado ou spinDuration={0},
+ * fica parado.
  */
 export default function CircularText({
   text,
@@ -23,7 +24,7 @@ export default function CircularText({
   const reduce = useReducedMotion();
 
   useEffect(() => {
-    if (reduce) return;
+    if (reduce || spinDuration <= 0) return;
     const start = rotation.get();
     controls.start({
       rotate: start + 360,

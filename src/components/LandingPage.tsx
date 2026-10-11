@@ -12,24 +12,55 @@ import {
   ShieldCheck,
   Zap,
 } from "lucide-react";
-import * as Fit from "./FitIcons";
+import * as Icon from "./BrandIcons";
 // Imagens otimizadas (WebP) servidas de /public — funcionam em qualquer host (Vercel etc.)
 // sem depender do proxy de assets do Lovable. Mesma imagem, ~95% mais leve.
-const heroBg = { url: "/hero-coach.webp" };
-const heroLoop = { url: "/hero-coach-loop.mp4" };
+// Filme do topo editado no After Effects (cor noir dourado, loop sem emenda). Duas versões:
+// horizontal (computador — Lindy à direita, escuro à esquerda para o título) e vertical
+// (celular). O mesmo critério escolhe a capa (<picture>) e o vídeo: cada aparelho baixa só a sua.
+const HERO_DESKTOP_QUERY = "(min-width: 1024px), (orientation: landscape) and (min-width: 640px)";
+const heroMedia = {
+  desktop: {
+    poster: "/hero-desktop.webp",
+    sources: [
+      { src: "/hero-desktop.webm", type: "video/webm" },
+      { src: "/hero-desktop.mp4", type: "video/mp4" },
+    ],
+  },
+  mobile: {
+    poster: "/hero-mobile.webp",
+    sources: [
+      { src: "/hero-mobile.webm", type: "video/webm" },
+      { src: "/hero-mobile.mp4", type: "video/mp4" },
+    ],
+  },
+};
 const lindyProfile = { url: "/about-coach.webp" };
+
+/** true/false conforme a media query; null até montar no cliente (SSR não sabe a tela). */
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState<boolean | null>(null);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const update = () => setMatches(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, [query]);
+  return matches;
+}
 import RevealImage from "./RevealImage";
 import LoopVideo from "./LoopVideo";
-import Tilt3D from "./Tilt3D";
+import { trackWhatsApp, type WhatsAppOrigem } from "../lib/analytics";
 import WordReveal from "./WordReveal";
 import CountUp from "./CountUp";
 import GoldDivider from "./GoldDivider";
 import FAQ from "./FAQ";
 import PlanLaunch from "./PlanLaunch";
 import MobileCTA from "./MobileCTA";
-import Magnetic from "./Magnetic";
 import GoldBurst from "./GoldBurst";
-import GlassIcon from "./GlassIcon";
+import HexIcon from "./HexIcon";
+import ScrollDepth from "./ScrollDepth";
 import RotatingText from "./RotatingText";
 import CircularText from "./CircularText";
 import AuthenticVideo from "./AuthenticVideo";
@@ -76,12 +107,18 @@ const depthIn: Variants = {
 
 function WhatsAppButton({
   children,
+  origem,
+  valor,
   className = "",
   large = false,
   message = "Olá Lindy! Quero começar minha transformação.",
   launchLabel,
 }: {
   children: React.ReactNode;
+  /** Qual botão gerou o contato (vai para o Google Analytics). */
+  origem: WhatsAppOrigem;
+  /** Valor do plano, quando o botão é de um plano. */
+  valor?: number;
   className?: string;
   large?: boolean;
   message?: string;
@@ -91,30 +128,10 @@ function WhatsAppButton({
   const href = `https://wa.me/5562984811499?text=${encoded}`;
   const [launching, setLaunching] = useState(false);
   const [burst, setBurst] = useState<{ id: number; x: number; y: number } | null>(null);
-  const btnRef = useRef<HTMLButtonElement>(null);
-
-  // Tilt 3D sutil nos botões grandes (desktop, ponteiro fino, sem reduced-motion)
-  const handleTiltMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!large) return;
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const el = btnRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transition = "transform 80ms ease-out";
-    el.style.transform = `perspective(500px) rotateX(${(-py * 9).toFixed(2)}deg) rotateY(${(px * 9).toFixed(2)}deg)`;
-  };
-  const handleTiltLeave = () => {
-    const el = btnRef.current;
-    if (!el) return;
-    el.style.transition = "transform 500ms cubic-bezier(0.22, 1, 0.36, 1)";
-    el.style.transform = "";
-  };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (launching) return;
+    trackWhatsApp(origem, valor);
 
     if (!launchLabel) {
       // Micro-celebração: estouro de partículas douradas no ponto do clique.
@@ -141,13 +158,9 @@ function WhatsAppButton({
 
   return (
     <>
-    <Magnetic>
     <button
-      ref={btnRef}
       type="button"
       onClick={handleClick}
-      onMouseMove={handleTiltMove}
-      onMouseLeave={handleTiltLeave}
       disabled={launching}
       aria-label={launchLabel ? `${children?.toString() ?? "Escolher plano"}: ${launchLabel}` : undefined}
       className={`
@@ -164,7 +177,6 @@ function WhatsAppButton({
     >
       {children}
     </button>
-    </Magnetic>
     {typeof document !== "undefined"
       ? createPortal(
           <>
@@ -231,17 +243,16 @@ export function Header() {
             </defs>
           </svg>
         </a>
-        <Magnetic strength={0.2}>
           <a
             href="https://wa.me/5562984811499?text=Olá%20Lindy!%20Quero%20começar%20minha%20transformação."
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackWhatsApp("cabecalho")}
             className="btn-shine inline-flex h-10 items-center gap-2 bg-primary text-primary-foreground px-4 sm:h-auto sm:px-5 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold uppercase tracking-wide transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]"
           >
             <MessageCircle size={16} />
             <span className="hidden xs:inline sm:inline">WhatsApp</span>
           </a>
-        </Magnetic>
       </div>
       <motion.div
         style={{ scaleX: progress }}
@@ -265,7 +276,7 @@ function SectionHeading({ number, title, subtitle }: { number?: string; title: s
       className="text-center mb-12 md:mb-16"
     >
       {number && (
-        <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/80">
+        <span className="mb-3 block text-[11px] font-semibold tracking-[0.45em] text-gold/80 md:text-xs">
           {number}
         </span>
       )}
@@ -308,6 +319,8 @@ function Hero() {
   const overlayOpacity = useTransform(smooth, [0, 1], [1, 1.25]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, 70]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const isDesktop = useMediaQuery(HERO_DESKTOP_QUERY);
+  const heroVideo = isDesktop === null ? null : isDesktop ? heroMedia.desktop : heroMedia.mobile;
 
   return (
     <section
@@ -328,12 +341,26 @@ function Hero() {
       >
         {/* Câmera cinematográfica: zoom + pan lento e contínuo (Ken Burns) */}
         <div className="hero-kenburns absolute inset-0 will-change-transform">
-          <RevealImage
-            src={heroBg.url}
-            alt="Treino na academia"
-            className="w-full h-full object-cover object-top"
-          />
-          <LoopVideo src={heroLoop.url} className="absolute inset-0 w-full h-full object-cover object-top" />
+          {/* height inline: a regra global img/video { height: auto } venceria o h-full e
+              sobraria uma faixa vazia embaixo com o vídeo 16:9 em notebooks */}
+          <picture className="block h-full w-full">
+            <source media={HERO_DESKTOP_QUERY} srcSet={heroMedia.desktop.poster} type="image/webp" />
+            <RevealImage
+              src={heroMedia.mobile.poster}
+              alt="Lindyara Ribeiro, personal trainer"
+              fetchPriority="high"
+              className="w-full h-full object-cover"
+              style={{ height: "100%" }}
+            />
+          </picture>
+          {heroVideo && (
+            <LoopVideo
+              sources={heroVideo.sources}
+              seamless
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ height: "100%" }}
+            />
+          )}
         </div>
         <motion.div style={{ opacity: overlayOpacity }} className="absolute inset-0 bg-hero-overlay hero-overlay" />
       </motion.div>
@@ -400,7 +427,7 @@ function Hero() {
           transition={{ duration: 0.8, delay: 0.9 }}
           className="mt-8 md:mt-10"
         >
-          <WhatsAppButton large launchLabel="Abrindo o WhatsApp da Lindy...">
+          <WhatsAppButton origem="topo" large launchLabel="Abrindo o WhatsApp da Lindy...">
             Começar agora
             <ArrowRight size={20} />
           </WhatsAppButton>
@@ -446,9 +473,8 @@ function About() {
   // Parallax: a foto desliza dentro da moldura fixa enquanto rola (a moldura,
   // vinheta e cantos ficam parados — só a imagem se move, por isso o scale
   // extra, pra nunca revelar borda vazia). Valores em PIXELS, não porcentagem:
-  // translateY percentual dentro de um ancestral com transform ativo (o
-  // Tilt3D, sempre transformado, mesmo em repouso) resolve pra 0 no
-  // WebKit/Safari — bug de resolução de %, confirmado testando o motor real.
+  // translateY percentual dentro de um ancestral com transform ativo resolve
+  // pra 0 no WebKit/Safari — bug de resolução de %, confirmado no motor real.
   const { scrollYProgress: photoProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const smoothPhotoProgress = useSpring(photoProgress, { stiffness: 100, damping: 30, mass: 0.4 });
   const photoY = useTransform(smoothPhotoProgress, [0, 1], [-28, 28]);
@@ -463,7 +489,7 @@ function About() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            <Tilt3D max={10} className="relative overflow-hidden rounded-2xl border-gold-subtle shadow-[0_0_60px_-18px_oklch(0.72_0.12_85_/_0.5)]">
+            <div className="relative overflow-hidden rounded-2xl border-gold-subtle shadow-[0_0_60px_-18px_oklch(0.72_0.12_85_/_0.5)]">
               <motion.div style={{ y: photoY, scale: 1.1 }}>
                 <RevealImage
                   src={lindyProfile.url}
@@ -480,16 +506,17 @@ function About() {
               <span className="pointer-events-none absolute right-3 top-3 h-7 w-7 rounded-tr-lg border-r-2 border-t-2 border-gold/70" />
               <span className="pointer-events-none absolute bottom-3 left-3 h-7 w-7 rounded-bl-lg border-b-2 border-l-2 border-gold/70" />
               <span className="pointer-events-none absolute bottom-3 right-3 h-7 w-7 rounded-br-lg border-b-2 border-r-2 border-gold/70" />
-            </Tilt3D>
-            {/* Selo giratório (Circular Text do React Bits) com a credencial dela sobre a foto */}
+            </div>
+            {/* Selo com a credencial dela sobre a foto: texto em círculo, parado (antes girava) */}
             <div className="pointer-events-none absolute -bottom-10 right-3 z-10 md:-right-8">
               <div className="relative grid h-28 w-28 place-items-center rounded-full border border-gold/40 bg-background/80 shadow-[0_0_30px_-8px_oklch(0.72_0.12_85_/_0.6)] backdrop-blur-sm md:h-32 md:w-32">
                 <CircularText
                   text="PERSONAL TRAINER • CREF 010437/GO • "
+                  spinDuration={0}
                   className="absolute inset-2.5"
-                  letterClassName="font-display text-[11px] leading-none tracking-wider text-gold md:text-xs"
+                  letterClassName="text-[9px] font-semibold leading-none tracking-wide text-gold md:text-[10px]"
                 />
-                <Fit.Medal size={26} className="text-gold" />
+                <Icon.MedalRibbon size={26} className="text-gold" />
               </div>
             </div>
           </motion.div>
@@ -532,7 +559,7 @@ function About() {
                 </p>
               </div>
             </div>
-            <WhatsAppButton>
+            <WhatsAppButton origem="sobre">
               Quero treinar com a Lindy
               <ArrowRight size={18} />
             </WhatsAppButton>
@@ -548,10 +575,10 @@ function HowItWorks() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const steps = [
-    { icon: Fit.Target, title: "Avaliação Inicial", desc: "Análise completa do seu perfil, objetivos e condicionamento físico atual." },
-    { icon: Fit.Dumbbell, title: "Treino Exclusivo", desc: "Montagem de um programa de treino 100% personalizado para o seu corpo." },
-    { icon: Fit.Heartbeat, title: "Acompanhamento Contínuo", desc: "Suporte direto via WhatsApp para tirar dúvidas e manter a motivação." },
-    { icon: Fit.BarsUp, title: "Ajustes e Evolução", desc: "Reavaliações periódicas e adaptações conforme sua evolução." },
+    { icon: Icon.Tape, title: "Avaliação Inicial", desc: "Análise completa do seu perfil, objetivos e condicionamento físico atual." },
+    { icon: Icon.DumbbellPlus, title: "Treino Exclusivo", desc: "Montagem de um programa de treino 100% personalizado para o seu corpo." },
+    { icon: Icon.ChatPulse, title: "Acompanhamento Contínuo", desc: "Suporte direto via WhatsApp para tirar dúvidas e manter a motivação." },
+    { icon: Icon.GrowthChart, title: "Ajustes e Evolução", desc: "Reavaliações periódicas e adaptações conforme sua evolução." },
   ];
 
   return (
@@ -563,7 +590,7 @@ function HowItWorks() {
           subtitle="Um processo simples e estratégico para você alcançar seus objetivos de forma definitiva."
         />
 
-        <div className="relative">
+        <ScrollDepth className="relative">
           <motion.span
             aria-hidden="true"
             className="hidden lg:block absolute top-[68px] left-[12%] right-[12%] h-px origin-left bg-gradient-to-r from-transparent via-gold/45 to-transparent"
@@ -581,23 +608,22 @@ function HowItWorks() {
           >
           {steps.map((step, i) => (
             <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
-              <Tilt3D
-                max={7}
+              <div
                 className="group relative h-full p-6 md:p-8 rounded-2xl bg-dark-elevated border-gold-subtle hover:border-gold/40"
               >
                 <div className="absolute -top-3 -left-3 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-bold z-10">
                   {i + 1}
                 </div>
-                <GlassIcon className="mb-6 text-[16px]">
+                <HexIcon className="mb-6 text-[16px]">
                   <step.icon />
-                </GlassIcon>
-                <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{step.title}</h3>
+                </HexIcon>
+                <h3 className="font-serif-display text-[1.65rem] leading-tight text-foreground mb-2">{step.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{step.desc}</p>
-              </Tilt3D>
+              </div>
             </motion.div>
           ))}
           </motion.div>
-        </div>
+        </ScrollDepth>
       </div>
     </section>
   );
@@ -652,8 +678,7 @@ function InPractice() {
               style={{ transformStyle: "preserve-3d" }}
               className="w-[72vw] max-w-[320px] shrink-0 snap-center md:w-auto md:max-w-none"
             >
-              <Tilt3D
-                max={7}
+              <div
                 className={`group relative overflow-hidden rounded-2xl border-gold-subtle bg-dark-surface shadow-[0_0_60px_-22px_oklch(0.72_0.12_85_/_0.5)] ${item.aspect}`}
               >
                 <div className="grade-gold absolute inset-0 transition-transform duration-700 group-hover:scale-[1.04]">
@@ -672,7 +697,7 @@ function InPractice() {
                     {item.label}
                   </span>
                 )}
-              </Tilt3D>
+              </div>
             </motion.div>
           ))}
         </motion.div>
@@ -689,11 +714,11 @@ function Benefits() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   const benefits = [
-    { icon: Fit.Kettlebell, title: "Treino 100% Personalizado", desc: "Criado exclusivamente para o seu corpo, seus objetivos e sua rotina." },
-    { icon: Fit.People, title: "Suporte Direto Comigo", desc: "Atendimento próximo e humanizado pelo WhatsApp para dúvidas e motivação." },
-    { icon: Fit.Stopwatch, title: "Flexibilidade de Horários", desc: "Treine no momento que for melhor para você, sem depender de agenda fixa." },
-    { icon: Fit.Pin, title: "Treine em Qualquer Lugar", desc: "Programas adaptados para academia, casa, parque ou viagem." },
-    { icon: Fit.Medal, title: "Resultados Reais e Consistentes", desc: "Metodologia comprovada que entrega transformação de verdade." },
+    { icon: Icon.KettlebellPlus, title: "Treino 100% Personalizado", desc: "Criado exclusivamente para o seu corpo, seus objetivos e sua rotina." },
+    { icon: Icon.ChatDuo, title: "Suporte Direto Comigo", desc: "Atendimento próximo e humanizado pelo WhatsApp para dúvidas e motivação." },
+    { icon: Icon.StopwatchLine, title: "Flexibilidade de Horários", desc: "Treine no momento que for melhor para você, sem depender de agenda fixa." },
+    { icon: Icon.PinDumbbell, title: "Treine em Qualquer Lugar", desc: "Programas adaptados para academia, casa, parque ou viagem." },
+    { icon: Icon.Trophy, title: "Resultados Reais e Consistentes", desc: "Metodologia comprovada que entrega transformação de verdade." },
   ];
 
   return (
@@ -705,6 +730,7 @@ function Benefits() {
           subtitle="O que você ganha ao treinar com acompanhamento profissional da Personal Lindy."
         />
 
+        <ScrollDepth>
         <motion.div
           ref={ref}
           initial="hidden"
@@ -723,19 +749,19 @@ function Benefits() {
                 i === benefits.length - 1 ? "sm:col-span-2 sm:mx-auto sm:w-[calc(50%-0.75rem)] lg:mx-0 lg:w-auto" : ""
               }`}
             >
-              <Tilt3D
-                max={7}
+              <div
                 className="h-full p-6 md:p-8 rounded-2xl bg-dark-surface border-gold-subtle hover:bg-dark-elevated group"
               >
-                <GlassIcon className="mb-6 text-[13px]">
+                <HexIcon className="mb-6 text-[13px]">
                   <b.icon />
-                </GlassIcon>
-                <h3 className="text-xl text-foreground uppercase tracking-wide mb-2">{b.title}</h3>
+                </HexIcon>
+                <h3 className="font-serif-display text-[1.65rem] leading-tight text-foreground mb-2">{b.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{b.desc}</p>
-              </Tilt3D>
+              </div>
             </motion.div>
           ))}
         </motion.div>
+        </ScrollDepth>
       </div>
     </section>
   );
@@ -783,7 +809,7 @@ function ForWho() {
                 className="mt-2 h-2.5 w-2.5 shrink-0 rotate-45 bg-gradient-gold shadow-[0_0_12px_oklch(0.72_0.12_85_/_0.5)] transition-transform duration-300 group-hover:scale-125"
               />
               <div>
-                <h3 className="text-lg md:text-xl text-foreground uppercase tracking-wide transition-colors group-hover:text-gold">
+                <h3 className="font-serif-display text-xl md:text-[1.6rem] leading-tight text-foreground transition-colors group-hover:text-gold">
                   {a.label}
                 </h3>
                 <p className="mt-1 text-sm md:text-base text-muted-foreground leading-relaxed">{a.desc}</p>
@@ -803,6 +829,8 @@ function Plans() {
   const plans = [
     {
       name: "Mensal",
+      origem: "plano-mensal" as const,
+      valor: 100,
       price: "R$ 100",
       priceNum: 100,
       pricePrefix: "R$ ",
@@ -819,6 +847,8 @@ function Plans() {
     },
     {
       name: "Trimestral",
+      origem: "plano-trimestral" as const,
+      valor: 285,
       // Preço mensal em destaque para comparar direto com o Mensal; o parcelamento vem logo abaixo.
       price: "R$ 95",
       priceNum: 95,
@@ -849,6 +879,7 @@ function Plans() {
           subtitle="Escolha o plano que mais combina com o seu momento. Todos com acompanhamento direto comigo."
         />
 
+        <ScrollDepth strength={0.8}>
         <motion.div
           ref={ref}
           initial="hidden"
@@ -858,8 +889,7 @@ function Plans() {
         >
           {plans.map((p, i) => (
             <motion.div key={i} variants={depthIn} style={{ transformStyle: "preserve-3d" }} className="h-full">
-              <Tilt3D
-                max={6}
+              <div
                 className={`relative h-full p-6 md:p-8 rounded-2xl flex flex-col ${
                 p.highlight
                   ? "plan-glow-border bg-dark-elevated shadow-[0_0_40px_-10px_var(--color-gold)]"
@@ -871,7 +901,7 @@ function Plans() {
                   {p.badge}
                 </span>
               )}
-              <h3 className="text-2xl text-foreground uppercase tracking-wide">{p.name}</h3>
+              <h3 className="font-serif-display text-3xl md:text-4xl text-foreground">{p.name}</h3>
               <div className="mt-4 mb-2 flex items-baseline gap-1">
                 <CountUp
                   to={p.priceNum}
@@ -898,6 +928,8 @@ function Plans() {
                 ))}
               </ul>
               <WhatsAppButton
+                origem={p.origem}
+                valor={p.valor}
                 className="w-full"
                 message={p.ctaMessage}
                 launchLabel={`Plano ${p.name} — abrindo o WhatsApp da Lindy...`}
@@ -905,10 +937,11 @@ function Plans() {
                 Quero esse plano
                 <ArrowRight size={16} />
               </WhatsAppButton>
-              </Tilt3D>
+              </div>
             </motion.div>
           ))}
         </motion.div>
+        </ScrollDepth>
 
         <p className="text-center text-xs text-muted-foreground mt-8">
           A partir de <span className="text-gold font-semibold">R$ 95/mês</span> no plano trimestral. Condições confirmadas direto pelo WhatsApp, com resposta em até 24h.
@@ -918,9 +951,21 @@ function Plans() {
   );
 }
 
-// CTA final: fundo em vídeo (feixe de luz dourada com poeira de giz, gerado no Higgsfield)
-// e efeito de profundidade estilo capa de revista: o nome gigante fica atrás da Lindy.
-const ctaBg = { poster: "/cta-bg.webp", video: "/cta-bg.mp4" };
+// CTA final: fundo em vídeo (feixe de luz com poeira de giz do Higgsfield, recolorido em noir
+// dourado no After Effects, com partículas douradas e loop sem emenda) e efeito de profundidade
+// estilo capa de revista: o nome gigante fica atrás da Lindy e uma camada de poeira passa na
+// frente dela (fundo preto + mix-blend-mode: screen, então só o brilho aparece).
+const ctaBg = {
+  poster: "/cta-fundo.webp",
+  sources: [
+    { src: "/cta-fundo.webm", type: "video/webm" },
+    { src: "/cta-fundo.mp4", type: "video/mp4" },
+  ],
+};
+const ctaDust = [
+  { src: "/cta-poeira.webm", type: "video/webm" },
+  { src: "/cta-poeira.mp4", type: "video/mp4" },
+];
 const ctaCutout = "/lindy-cutout.webp";
 
 function CTA() {
@@ -945,8 +990,8 @@ function CTA() {
           className="text-center px-8 pb-8 md:px-12 md:pb-12 lg:px-16 lg:pb-16 rounded-3xl bg-dark-elevated border-gold-subtle relative overflow-hidden"
         >
           <div className="absolute inset-0" aria-hidden="true">
-            <img src={ctaBg.poster} alt="" loading="lazy" className="cta-bg-media grade-gold" />
-            <LoopVideo src={ctaBg.video} preload="none" className="cta-bg-media grade-gold" />
+            <img src={ctaBg.poster} alt="" loading="lazy" className="cta-bg-media" />
+            <LoopVideo sources={ctaBg.sources} seamless preload="none" className="cta-bg-media" />
             <div className="absolute inset-0 bg-gradient-to-b from-dark-elevated/20 via-dark-elevated/55 to-dark-elevated" />
           </div>
           <div
@@ -954,10 +999,10 @@ function CTA() {
             aria-hidden="true"
             className="relative -mx-8 h-[300px] select-none sm:h-[360px] md:-mx-12 md:h-[440px] lg:-mx-16"
           >
-            <motion.span style={{ y: wordY }} className="cta-word absolute inset-x-0 top-[6%] block font-display text-gradient-gold">
-              LINDY
+            <motion.span style={{ y: wordY }} className="cta-word cta-word-sheen absolute inset-x-0 top-[2%] block font-serif-display italic">
+              Lindy
             </motion.span>
-            <div className="absolute inset-0 flex items-end justify-center">
+            <div className="cta-cutout-shadow absolute inset-0 flex items-end justify-center">
               <motion.img
                 style={{ y: cutoutY }}
                 src={ctaCutout}
@@ -967,20 +1012,21 @@ function CTA() {
                 className="cta-cutout"
               />
             </div>
+            <LoopVideo sources={ctaDust} seamless preload="none" className="cta-dust" />
           </div>
           <div className="relative z-10 -mt-4">
-            <span className="mb-3 block font-display text-xs md:text-sm tracking-[0.5em] text-gold/80">08</span>
+            <span className="mb-3 block text-[11px] font-semibold tracking-[0.45em] text-gold/80 md:text-xs">08</span>
             <h2
               ref={sheen.ref}
-              className={`title-sheen text-4xl md:text-5xl lg:text-6xl text-foreground uppercase tracking-wide ${sheen.visible ? "sheen-visible" : ""}`}
+              className={`title-sheen font-serif-display text-4xl md:text-5xl lg:text-6xl leading-[1.08] text-foreground ${sheen.visible ? "sheen-visible" : ""}`}
             >
-              Comece sua <span className="text-gradient-gold">transformação</span> hoje com a Personal Lindy
+              Comece sua <span className="text-gradient-gold italic">transformação</span> hoje com a Personal Lindy
             </h2>
             <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
               Não espere o momento perfeito. Dê o primeiro passo agora e descubra do que o seu corpo é capaz.
             </p>
             <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <WhatsAppButton large launchLabel="Abrindo o WhatsApp da Lindy...">
+              <WhatsAppButton origem="fechamento" large launchLabel="Abrindo o WhatsApp da Lindy...">
                 <MessageCircle size={20} />
                 Falar no WhatsApp
               </WhatsAppButton>
@@ -1051,7 +1097,11 @@ export function Footer() {
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div>
-            <h3 className="text-3xl text-foreground uppercase tracking-wide">Personal Lindy</h3>
+            {/* Nome no rodapé = o logo (Bebas Neue só aqui e no cabeçalho) */}
+            <p className="flex items-baseline gap-2 text-2xl tracking-widest text-foreground" aria-label="Personal Lindy">
+              <span className="font-display uppercase">Personal</span>
+              <span className="font-serif-display italic text-gradient-gold text-3xl">Lindy</span>
+            </p>
             <p className="mt-2 text-muted-foreground text-sm">
               Transformando vidas através do treino personalizado.
             </p>
@@ -1061,6 +1111,7 @@ export function Footer() {
               href="https://wa.me/5562984811499"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsApp("rodape")}
               className="inline-flex items-center gap-2 py-2 text-muted-foreground hover:text-gold transition-colors text-sm"
             >
               <Phone size={16} />
@@ -1083,7 +1134,7 @@ export function Footer() {
             <ShieldCheck size={15} className="text-gold" /> CREF 010437/GO · Registro ativo
           </span>
           <span className="inline-flex items-center gap-2 rounded-full border-gold-subtle bg-dark-surface px-4 py-2 text-xs text-muted-foreground">
-            <Fit.Medal size={15} className="text-gold" /> 9+ anos de experiência
+            <Icon.MedalRibbon size={15} className="text-gold" /> 9+ anos de experiência
           </span>
           <span className="inline-flex items-center gap-2 rounded-full border-gold-subtle bg-dark-surface px-4 py-2 text-xs text-muted-foreground">
             <Star size={15} className="text-gold" /> Especialista em grupos especiais
@@ -1091,7 +1142,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border text-center">
-          <p className="text-base sm:text-lg md:text-xl font-display uppercase tracking-wide sm:tracking-widest">
+          <p className="font-serif-display italic text-2xl sm:text-3xl">
             <TypewriterTagline text="Seu resultado começa com uma decisão." />
           </p>
           <p className="mt-4 text-xs text-muted-foreground">

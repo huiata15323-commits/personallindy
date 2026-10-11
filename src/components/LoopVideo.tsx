@@ -1,14 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 const FADE_SECONDS = 0.7;
 const START_DELAY_MS = 1200;
 
+export type VideoSource = { src: string; type: string };
+
 type LoopVideoProps = {
-  src: string;
+  /** Um arquivo só (vídeos antigos) ou várias fontes em ordem de preferência (WebM antes do MP4). */
+  src?: string;
+  sources?: VideoSource[];
   className?: string;
+  style?: CSSProperties;
   /** "auto" pro Hero (aparece de cara); "none" pros vídeos do meio da página,
    *  que só baixam quando o visitante chega perto deles. */
   preload?: "auto" | "none";
+  /** Vídeo editado com o último quadro igual ao primeiro: usa o loop nativo, sem esmaecer. */
+  seamless?: boolean;
 };
 
 /**
@@ -18,10 +25,12 @@ type LoopVideoProps = {
  * Quando o último quadro não é igual ao primeiro, o vídeo esmaece de volta pra
  * foto perto do fim e recomeça: o loop não dá "pulo". Pausa fora da tela.
  */
-export default function LoopVideo({ src, className = "", preload = "auto" }: LoopVideoProps) {
+export default function LoopVideo({ src, sources, className = "", style, preload = "auto", seamless = false }: LoopVideoProps) {
   const ref = useRef<HTMLVideoElement>(null);
   const [enabled, setEnabled] = useState(false);
   const [visible, setVisible] = useState(false);
+  // Troca de fonte (ex.: girar o celular) recria o <video> e reinicia o ciclo.
+  const sourceKey = sources ? sources.map((s) => s.src).join("|") : (src ?? "");
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -32,6 +41,7 @@ export default function LoopVideo({ src, className = "", preload = "auto" }: Loo
   useEffect(() => {
     const video = ref.current;
     if (!enabled || !video) return;
+    setVisible(false);
 
     const play = () => void video.play().catch(() => {});
     const onTimeUpdate = () => {
@@ -43,8 +53,10 @@ export default function LoopVideo({ src, className = "", preload = "auto" }: Loo
     };
     const onPlaying = () => setVisible(true);
 
-    video.addEventListener("timeupdate", onTimeUpdate);
-    video.addEventListener("ended", onEnded);
+    if (!seamless) {
+      video.addEventListener("timeupdate", onTimeUpdate);
+      video.addEventListener("ended", onEnded);
+    }
     video.addEventListener("playing", onPlaying);
 
     const observer = new IntersectionObserver(
@@ -64,21 +76,25 @@ export default function LoopVideo({ src, className = "", preload = "auto" }: Loo
       video.removeEventListener("ended", onEnded);
       video.removeEventListener("playing", onPlaying);
     };
-  }, [enabled]);
+  }, [enabled, seamless, sourceKey]);
 
   if (!enabled) return null;
 
   return (
     <video
+      key={sourceKey}
       ref={ref}
-      src={src}
+      src={sources ? undefined : src}
       muted
       playsInline
+      loop={seamless}
       preload={preload}
       aria-hidden="true"
       tabIndex={-1}
       className={className}
-      style={{ opacity: visible ? 1 : 0, transition: `opacity ${FADE_SECONDS}s ease` }}
-    />
+      style={{ ...style, opacity: visible ? 1 : 0, transition: `opacity ${FADE_SECONDS}s ease` }}
+    >
+      {sources?.map((s) => <source key={s.src} src={s.src} type={s.type} />)}
+    </video>
   );
 }

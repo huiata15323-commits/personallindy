@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle } from "lucide-react";
+import { trackWhatsApp } from "../lib/analytics";
 
 /**
  * Botão flutuante do WhatsApp — só desktop/tablet (md+), pois no mobile já
@@ -23,6 +24,7 @@ export default function WhatsAppFab() {
           href={`https://wa.me/5562984811499?text=${encodeURIComponent("Olá Lindy! Quero começar minha transformação.")}`}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackWhatsApp("botao-flutuante")}
           aria-label="Falar no WhatsApp"
           initial={{ opacity: 0, scale: 0.6, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
