@@ -102,6 +102,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     // anunciar), adicionar mais um par de scripts com o ID AW-972549241, no
     // mesmo formato dos de baixo.
     scripts: [
+      // Antes do 1º paint: se a intro já passou nesta sessão (ou o aparelho pede menos
+      // movimento), marca o <html> e o CSS esconde a capa preta que vem do servidor —
+      // senão ela cobriria a página a cada F5 até o React carregar.
+      {
+        children: `try{if(sessionStorage.getItem("pl-intro-shown")||matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("intro-skip")}catch(e){}`,
+      },
       {
         src: "https://www.googletagmanager.com/gtag/js?id=G-0R6ZPS0P70",
         async: true,
@@ -123,7 +129,7 @@ gtag('config', 'G-0R6ZPS0P70');`,
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>

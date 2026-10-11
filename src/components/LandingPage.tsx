@@ -35,7 +35,7 @@ const heroMedia = {
     ],
   },
 };
-const lindyProfile = { url: "/about-coach.webp" };
+const lindyProfile = { url: "/sobre-lindy.webp" };
 
 /** true/false conforme a media query; null até montar no cliente (SSR não sabe a tela). */
 function useMediaQuery(query: string) {
@@ -1142,7 +1142,9 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-border text-center">
-          <p className="font-serif-display italic text-2xl sm:text-3xl">
+          {/* A frase é uma linha só (máquina de escrever): no celular a fonte acompanha a
+              largura da tela, senão "decisão." passava da borda em telas de 360px. */}
+          <p className="font-serif-display italic text-[length:clamp(1.1rem,5.6vw,1.5rem)] sm:text-3xl">
             <TypewriterTagline text="Seu resultado começa com uma decisão." />
           </p>
           <p className="mt-4 text-xs text-muted-foreground">

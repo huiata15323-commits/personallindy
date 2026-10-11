@@ -18,6 +18,12 @@ img, video {
   height: auto;
 }
 
+/* Intro já vista nesta sessão: a classe vem do script no <head> (__root.tsx), então a
+   capa preta do servidor nem chega a ser pintada no F5. */
+.intro-skip .loading-intro {
+  display: none;
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

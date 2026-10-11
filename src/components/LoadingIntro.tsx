@@ -55,15 +55,19 @@ export default function LoadingIntro() {
 
   const showTextLogo = fallback && !videoOn;
 
+  // Pulando: sai sem o fade de saída (o AnimatePresence usaria a transição do render
+  // anterior, de 0,6 s, e a capa preta ficaria esmaecendo por cima da página).
+  if (instant) return null;
+
   return (
     <AnimatePresence>
       {show && (
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: instant ? 0 : 0.6, ease: "easeInOut" }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
           onClick={() => setShow(false)}
-          className="fixed inset-0 z-[200] flex cursor-pointer flex-col items-center justify-center overflow-hidden bg-background"
+          className="loading-intro fixed inset-0 z-[200] flex cursor-pointer flex-col items-center justify-center overflow-hidden bg-background"
         >
           {/* Palco quadrado: capa na hora, vídeo por cima assim que começar a tocar.
               height inline porque a regra global img/video { height: auto } venceria o h-full. */}
