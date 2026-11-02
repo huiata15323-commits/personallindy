@@ -112,12 +112,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         src: "https://www.googletagmanager.com/gtag/js?id=G-0R6ZPS0P70",
         async: true,
       },
+      // No diário de hábitos (/habitos#Nome) o endereço vai sem o "#": o nome da aluna
+      // nunca chega ao Analytics.
       {
         type: "text/javascript",
         children: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-0R6ZPS0P70');`,
+gtag('config', 'G-0R6ZPS0P70', location.pathname.indexOf('/habitos') === 0 ? { page_location: location.origin + location.pathname } : {});`,
       },
     ],
   }),

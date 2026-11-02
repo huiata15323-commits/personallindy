@@ -12,6 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as HabitosIndexRouteImport } from './routes/habitos/index'
+import { Route as HabitosImprimirRouteImport } from './routes/habitos/imprimir'
+import { Route as HabitosPresenteRouteImport } from './routes/habitos/presente'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -28,35 +31,81 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HabitosIndexRoute = HabitosIndexRouteImport.update({
+  id: '/habitos/',
+  path: '/habitos/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HabitosImprimirRoute = HabitosImprimirRouteImport.update({
+  id: '/habitos/imprimir',
+  path: '/habitos/imprimir',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HabitosPresenteRoute = HabitosPresenteRouteImport.update({
+  id: '/habitos/presente',
+  path: '/habitos/presente',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/habitos/imprimir': typeof HabitosImprimirRoute
+  '/habitos/presente': typeof HabitosPresenteRoute
+  '/habitos/': typeof HabitosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/habitos/imprimir': typeof HabitosImprimirRoute
+  '/habitos/presente': typeof HabitosPresenteRoute
+  '/habitos': typeof HabitosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/habitos/imprimir': typeof HabitosImprimirRoute
+  '/habitos/presente': typeof HabitosPresenteRoute
+  '/habitos/': typeof HabitosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/politica-de-privacidade' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/politica-de-privacidade'
+    | '/sitemap.xml'
+    | '/habitos/imprimir'
+    | '/habitos/presente'
+    | '/habitos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/politica-de-privacidade' | '/sitemap.xml'
-  id: '__root__' | '/' | '/politica-de-privacidade' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/politica-de-privacidade'
+    | '/sitemap.xml'
+    | '/habitos/imprimir'
+    | '/habitos/presente'
+    | '/habitos'
+  id:
+    | '__root__'
+    | '/'
+    | '/politica-de-privacidade'
+    | '/sitemap.xml'
+    | '/habitos/imprimir'
+    | '/habitos/presente'
+    | '/habitos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  HabitosImprimirRoute: typeof HabitosImprimirRoute
+  HabitosPresenteRoute: typeof HabitosPresenteRoute
+  HabitosIndexRoute: typeof HabitosIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +131,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/habitos/': {
+      id: '/habitos/'
+      path: '/habitos'
+      fullPath: '/habitos/'
+      preLoaderRoute: typeof HabitosIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/habitos/imprimir': {
+      id: '/habitos/imprimir'
+      path: '/habitos/imprimir'
+      fullPath: '/habitos/imprimir'
+      preLoaderRoute: typeof HabitosImprimirRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/habitos/presente': {
+      id: '/habitos/presente'
+      path: '/habitos/presente'
+      fullPath: '/habitos/presente'
+      preLoaderRoute: typeof HabitosPresenteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +159,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  HabitosImprimirRoute: HabitosImprimirRoute,
+  HabitosPresenteRoute: HabitosPresenteRoute,
+  HabitosIndexRoute: HabitosIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

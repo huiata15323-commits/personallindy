@@ -24,6 +24,18 @@ img, video {
   display: none;
 }
 
+/* Na impressão (folha do diário de hábitos e qualquer página), sem o grão e o brilho
+   fixos do fundo: eles sairiam por cima do papel. */
+@media print {
+  body::before,
+  body::after {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
