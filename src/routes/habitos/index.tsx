@@ -37,9 +37,17 @@ export const Route = createFileRoute("/habitos/")({
       { rel: "canonical", href: ENDERECO },
       { rel: "apple-touch-icon", href: "/habitos-icone-180.png" },
       { rel: "icon", type: "image/png", sizes: "192x192", href: "/habitos-icone-192.png" },
-      { rel: "preload", as: "image", href: "/habitos-lindy.webp", type: "image/webp" },
-      // O itálico de verdade da Cormorant (o site carrega só a reta, e o navegador inclinava as letras e
-      // deslocava os acentos, como o "ê" de "você").
+      // Foto do presente: o navegador escolhe a versão de 400 ou 600 px pela tela do aparelho.
+      {
+        rel: "preload",
+        as: "image",
+        href: "/habitos-lindy.webp",
+        imageSrcSet: "/habitos-lindy-400.webp 400w, /habitos-lindy.webp 600w",
+        imageSizes: "164px",
+        type: "image/webp",
+      },
+      // O itálico de verdade da Cormorant (o site carrega só a versão reta e, sem isto, o navegador
+      // só inclina as letras retas).
       { rel: "stylesheet", href: FONTE_ITALICO },
     ],
   }),

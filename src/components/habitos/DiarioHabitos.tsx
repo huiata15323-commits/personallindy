@@ -10,13 +10,15 @@ import {
   BellRing,
   ChevronLeft,
   ChevronRight,
+  Download,
   EllipsisVertical,
   ImagePlus,
   MessageCircle,
   Printer,
   Share,
+  Upload,
 } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import GoldBurst from "../GoldBurst";
 import CartaoStories from "./CartaoStories";
 import { EASE, Logo, Topo, TracoDourado } from "./comum";
@@ -26,11 +28,17 @@ import {
   FRASE_LINDY,
   GRUPOS,
   HABITOS,
+  HORAS_LEMBRETE,
   HUMOR_ROTULOS,
   LETRAS_DIAS,
   SINAIS,
   apagarTudo,
+  arquivoDeCopia,
+  arquivoLembrete,
   carregar,
+  lerCopia,
+  limparNome,
+  linkGoogleAgenda,
   chaveDe,
   cumprido,
   dataDe,
@@ -96,8 +104,9 @@ export default function DiarioHabitos() {
   useEffect(() => {
     const h = chaveDe(new Date());
     let d = carregar() ?? novoDados(h);
+    // O nome do link só vale enquanto a aluna não trocou o nome à mão (link encaminhado, nome errado).
     const nome = nomeDoLink(window.location.hash);
-    if (nome && nome !== d.nome) d = { ...d, nome };
+    if (nome && nome !== d.nome && !d.nomeManual) d = { ...d, nome };
     ref.current = d;
     hojeRef.current = h;
     setDados(d);
@@ -156,11 +165,27 @@ export default function DiarioHabitos() {
   );
 
   const abrirDiario = (nomeDigitado: string) => {
-    atualizar((d) => ({ ...d, boasVindas: true, nome: d.nome || nomeDigitado.slice(0, 40) }));
+    const nome = limparNome(nomeDigitado);
+    atualizar((d) => ({
+      ...d,
+      boasVindas: true,
+      ...(nome ? { nome, nomeManual: true } : {}),
+    }));
     window.setTimeout(
       () => document.getElementById("hab-saudacao")?.focus({ preventScroll: true }),
       50,
     );
+  };
+
+  // Cópia de segurança restaurada: substitui tudo o que estava neste aparelho.
+  const restaurar = (copia: Dados) => {
+    const novo: Dados = { ...copia, boasVindas: true };
+    ref.current = novo;
+    setDados(novo);
+    if (!salvar(novo)) setSemSalvar(true);
+    setDia(hoje);
+    setSemana(inicioDaSemana(hoje));
+    setAba("hoje");
   };
 
   const apagar = () => {
@@ -236,7 +261,13 @@ export default function DiarioHabitos() {
                 )}
               </motion.div>
             </AnimatePresence>
-            <Rodape hoje={hoje} onApagar={apagar} />
+            <Rodape
+              dados={dados}
+              hoje={hoje}
+              atualizar={atualizar}
+              onRestaurar={restaurar}
+              onApagar={apagar}
+            />
           </main>
         )}
         <AnimatePresence>
@@ -992,7 +1023,7 @@ function Semana({
             </a>
             <p className="mt-2 text-center text-xs text-muted-foreground text-pretty">
               {enviadoEm
-                ? `Enviado em ${diaCurto(chaveDe(enviadoEm))} às ${String(enviadoEm.getHours()).padStart(2, "0")}h${String(enviadoEm.getMinutes()).padStart(2, "0")}. Se mudar algo, pode enviar de novo.`
+                ? `Resumo aberto no WhatsApp em ${diaCurto(chaveDe(enviadoEm))} às ${String(enviadoEm.getHours()).padStart(2, "0")}h${String(enviadoEm.getMinutes()).padStart(2, "0")}. Se mudar algo, pode abrir de novo.`
                 : "Abre o seu WhatsApp com o resumo pronto. Nada sai sem você tocar em enviar."}
             </p>
             <button
@@ -1062,56 +1093,87 @@ function Celula({ estado, atraso }: { estado: EstadoCelula; atraso: number }) {
 
 /* ---------------- Rodapé ---------------- */
 
-function linkGoogleAgenda(hoje: string): string {
-  const d = hoje.replace(/-/g, "");
-  const p = new URLSearchParams({
-    action: "TEMPLATE",
-    text: "Marcar meus hábitos do dia",
-    details: "Abra o seu diário: https://personallindy.com.br/habitos",
-    dates: `${d}T210000/${d}T211000`,
-    recur: "RRULE:FREQ=DAILY",
-  });
-  return `https://calendar.google.com/calendar/render?${p.toString()}`;
-}
+const classeBotao =
+  "inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-medium text-foreground transition-colors hover:border-gold/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold";
 
-function Rodape({ hoje, onApagar }: { hoje: string; onApagar: () => void }) {
+function Rodape({
+  dados,
+  hoje,
+  atualizar,
+  onRestaurar,
+  onApagar,
+}: {
+  dados: Dados;
+  hoje: string;
+  atualizar: Atualizar;
+  onRestaurar: (d: Dados) => void;
+  onApagar: () => void;
+}) {
   const plataforma = usePlataforma();
-  const agenda = plataforma === "android" ? linkGoogleAgenda(hoje) : "/lembrete-habitos.ics";
-  const classeLink =
-    "inline-flex min-h-11 items-center gap-2 rounded-lg border border-border px-4 text-sm font-medium text-foreground transition-colors hover:border-gold/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold";
+  const hora = dados.lembreteHora ?? 21;
+  const agenda = plataforma === "android" ? linkGoogleAgenda(hoje, hora) : arquivoLembrete(hora);
   return (
     <footer className="mt-16 border-t border-gold/25 pt-8 text-sm text-muted-foreground">
-      <div className="space-y-7">
-        <div>
-          <p className="font-serif-display text-xl text-foreground">Lembrete todo dia às 21h</p>
+      <div className="space-y-10">
+        <section aria-labelledby="hab-lembrete">
+          <h2 id="hab-lembrete" className="font-serif-display text-xl text-foreground">
+            Lembrete todo dia
+          </h2>
           <p className="mt-1 text-pretty">
-            Um aviso na agenda do celular para você não esquecer de marcar.
+            Um aviso na agenda do celular para você não esquecer de marcar. Escolha a hora:
           </p>
+          <div
+            role="radiogroup"
+            aria-labelledby="hab-lembrete"
+            className="mt-3 flex flex-wrap gap-2"
+          >
+            {HORAS_LEMBRETE.map((h) => {
+              const ativo = h === hora;
+              return (
+                <button
+                  key={h}
+                  type="button"
+                  role="radio"
+                  aria-checked={ativo}
+                  onClick={() => atualizar((d) => ({ ...d, lembreteHora: h }))}
+                  className={`min-h-10 min-w-14 rounded-full border px-4 text-sm font-semibold tabular-nums transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold ${
+                    ativo
+                      ? "border-gold bg-gold text-primary-foreground"
+                      : "border-border text-muted-foreground hover:border-gold/50"
+                  }`}
+                >
+                  {h}h
+                </button>
+              );
+            })}
+          </div>
           <div className="mt-3 flex flex-wrap gap-2">
             <a
               href={agenda}
               target={plataforma === "android" ? "_blank" : undefined}
               rel="noopener noreferrer"
-              className={classeLink}
+              className={classeBotao}
             >
               <BellRing size={16} aria-hidden="true" />
-              Adicionar à agenda
+              Adicionar à agenda às {hora}h
             </a>
             {plataforma === "outro" && (
               <a
-                href={linkGoogleAgenda(hoje)}
+                href={linkGoogleAgenda(hoje, hora)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={classeLink}
+                className={classeBotao}
               >
                 No Google Agenda
               </a>
             )}
           </div>
-        </div>
+        </section>
 
-        <div>
-          <p className="font-serif-display text-xl text-foreground">Prefere no papel?</p>
+        <section aria-labelledby="hab-papel">
+          <h2 id="hab-papel" className="font-serif-display text-xl text-foreground">
+            Prefere no papel?
+          </h2>
           <p className="mt-1 text-pretty">
             A mesma folha, pronta para imprimir e colar na geladeira.
           </p>
@@ -1119,19 +1181,25 @@ function Rodape({ hoje, onApagar }: { hoje: string; onApagar: () => void }) {
             href="/diario-de-habitos-lindy.pdf"
             target="_blank"
             rel="noopener"
-            className={`mt-3 ${classeLink}`}
+            className={`mt-3 ${classeBotao}`}
           >
             <Printer size={16} aria-hidden="true" />
             Baixar versão para imprimir (PDF)
           </a>
-        </div>
+        </section>
+
+        <CopiaSeguranca dados={dados} hoje={hoje} atualizar={atualizar} onRestaurar={onRestaurar} />
+
+        <TrocarNome
+          nome={dados.nome}
+          onSalvar={(nome) => atualizar((d) => ({ ...d, nome, nomeManual: true }))}
+        />
 
         {plataforma !== "outro" && <DicaTelaInicial plataforma={plataforma} />}
 
         <div>
           <p className="leading-relaxed text-pretty">
             Seus registros ficam só neste aparelho. Eu só vejo o que você me enviar pelo WhatsApp.
-            Se limpar os dados do navegador ou trocar de celular, eles não vão junto.
           </p>
           <div className="mt-3">
             <BotaoApagar onApagar={onApagar} />
@@ -1140,12 +1208,236 @@ function Rodape({ hoje, onApagar }: { hoje: string; onApagar: () => void }) {
 
         <p className="text-xs">
           {ASSINATURA_LINDY} ·{" "}
-          <a href="/politica-de-privacidade" className="text-gold hover:underline">
+          <a
+            href="/politica-de-privacidade"
+            className="text-gold underline underline-offset-2 hover:text-gold-light"
+          >
             Privacidade
           </a>
         </p>
       </div>
     </footer>
+  );
+}
+
+/** Cópia de segurança: um arquivo que fica com a aluna (Arquivos, Drive, WhatsApp) e volta quando ela quiser. */
+function CopiaSeguranca({
+  dados,
+  hoje,
+  atualizar,
+  onRestaurar,
+}: {
+  dados: Dados;
+  hoje: string;
+  atualizar: Atualizar;
+  onRestaurar: (d: Dados) => void;
+}) {
+  const [aviso, setAviso] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
+  const [pendente, setPendente] = useState<{ dados: Dados; exportadoEm?: string } | null>(null);
+  const entrada = useRef<HTMLInputElement>(null);
+  const contarDias = (d: Dados) => Object.values(d.dias).filter((x) => temRegistro(x)).length;
+  const ultima = dados.ultimaCopia ? new Date(dados.ultimaCopia) : null;
+
+  const salvarCopia = async () => {
+    setAviso(null);
+    const { nome, conteudo } = arquivoDeCopia(dados, hoje);
+    const arquivo = new File([conteudo], nome, { type: "application/json" });
+    const marcar = () => {
+      atualizar((d) => ({ ...d, ultimaCopia: new Date().toISOString() }));
+      setAviso({
+        tipo: "ok",
+        texto:
+          "Cópia salva. Guarde o arquivo num lugar seguro, como Arquivos, Drive ou o seu WhatsApp.",
+      });
+    };
+    // No celular, abre a folha de compartilhar (salvar em Arquivos, mandar para si mesma…).
+    if (typeof navigator.canShare === "function" && navigator.canShare({ files: [arquivo] })) {
+      try {
+        await navigator.share({ files: [arquivo], title: "Cópia do meu diário de hábitos" });
+        marcar();
+        return;
+      } catch (e) {
+        if ((e as Error)?.name === "AbortError") return;
+      }
+    }
+    // Senão, baixa o arquivo.
+    const url = URL.createObjectURL(arquivo);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = nome;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+    marcar();
+  };
+
+  const escolherArquivo = async (e: ChangeEvent<HTMLInputElement>) => {
+    const arquivo = e.target.files?.[0];
+    e.target.value = "";
+    if (!arquivo) return;
+    if (arquivo.size > 2_000_000) {
+      setAviso({
+        tipo: "erro",
+        texto: "Esse arquivo é grande demais para ser uma cópia do diário.",
+      });
+      return;
+    }
+    const lido = lerCopia(await arquivo.text());
+    if (!lido) {
+      setAviso({ tipo: "erro", texto: "Esse arquivo não é uma cópia do diário." });
+      return;
+    }
+    setAviso(null);
+    setPendente(lido);
+  };
+
+  const confirmar = () => {
+    if (!pendente) return;
+    const n = contarDias(pendente.dados);
+    // A cópia foi feita antes de a data ser marcada: a "última cópia" é a data do próprio arquivo.
+    onRestaurar({
+      ...pendente.dados,
+      ultimaCopia: pendente.dados.ultimaCopia ?? pendente.exportadoEm,
+    });
+    setPendente(null);
+    setAviso({
+      tipo: "ok",
+      texto: `Cópia restaurada: ${n} ${n === 1 ? "dia" : "dias"} de registros.`,
+    });
+  };
+
+  return (
+    <section aria-labelledby="hab-copia">
+      <h2 id="hab-copia" className="font-serif-display text-xl text-foreground">
+        Cópia de segurança
+      </h2>
+      <p className="mt-1 text-pretty">
+        Seus registros ficam só neste celular. Guarde uma cópia de vez em quando: se o celular
+        apagar os dados do site ou você trocar de aparelho, é só restaurar.
+      </p>
+      <p className="mt-1 text-xs">
+        {ultima
+          ? `Última cópia: ${diaCurto(chaveDe(ultima))}.`
+          : "Você ainda não salvou nenhuma cópia."}
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button type="button" onClick={salvarCopia} className={classeBotao}>
+          <Download size={16} aria-hidden="true" />
+          Salvar cópia
+        </button>
+        <button type="button" onClick={() => entrada.current?.click()} className={classeBotao}>
+          <Upload size={16} aria-hidden="true" />
+          Restaurar cópia
+        </button>
+        <input
+          ref={entrada}
+          type="file"
+          accept="application/json,.json"
+          className="sr-only"
+          tabIndex={-1}
+          aria-hidden="true"
+          onChange={escolherArquivo}
+        />
+      </div>
+      {pendente && (
+        <div
+          role="alert"
+          className="mt-3 rounded-xl border border-gold/40 bg-gold/5 px-4 py-3 text-sm text-foreground"
+        >
+          <p className="text-pretty">
+            Restaurar a cópia
+            {pendente.exportadoEm
+              ? ` de ${diaCurto(chaveDe(new Date(pendente.exportadoEm)))}`
+              : ""}{" "}
+            ({contarDias(pendente.dados)} dias de registros)? O que está neste celular agora será
+            substituído.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={confirmar}
+              className="min-h-11 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+            >
+              Restaurar
+            </button>
+            <button type="button" onClick={() => setPendente(null)} className={classeBotao}>
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+      {aviso && (
+        <p
+          role="status"
+          className={`mt-3 text-sm text-pretty ${aviso.tipo === "erro" ? "text-destructive" : "text-[#FBE2A7]"}`}
+        >
+          {aviso.texto}
+        </p>
+      )}
+    </section>
+  );
+}
+
+/** "Seu nome no diário: Ana · Trocar" (link encaminhado para outra pessoa ou nome digitado errado). */
+function TrocarNome({ nome, onSalvar }: { nome: string; onSalvar: (nome: string) => void }) {
+  const [editando, setEditando] = useState(false);
+  const [valor, setValor] = useState(nome);
+  const campo = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (editando) campo.current?.focus();
+  }, [editando]);
+
+  if (!editando)
+    return (
+      <p className="text-pretty">
+        Seu nome no diário:{" "}
+        <strong className="font-semibold text-foreground">{nome || "não informado"}</strong>{" "}
+        <button
+          type="button"
+          onClick={() => {
+            setValor(nome);
+            setEditando(true);
+          }}
+          className="ml-1 text-gold underline underline-offset-2 hover:text-gold-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+        >
+          Trocar
+        </button>
+      </p>
+    );
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        const novo = limparNome(valor);
+        if (novo) onSalvar(novo);
+        setEditando(false);
+      }}
+      className="flex flex-wrap items-center gap-2"
+    >
+      <label htmlFor="hab-trocar-nome" className="w-full text-sm text-foreground">
+        Como você quer ser chamada?
+      </label>
+      <input
+        id="hab-trocar-nome"
+        ref={campo}
+        value={valor}
+        onChange={(e) => setValor(e.target.value)}
+        maxLength={40}
+        autoComplete="given-name"
+        className="min-h-11 min-w-0 flex-1 rounded-lg border border-border bg-card px-3 text-[16px] text-foreground focus:border-gold/60 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-gold"
+      />
+      <button
+        type="submit"
+        className="min-h-11 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+      >
+        Salvar
+      </button>
+      <button type="button" onClick={() => setEditando(false)} className={classeBotao}>
+        Cancelar
+      </button>
+    </form>
   );
 }
 
@@ -1228,6 +1520,10 @@ const revelarFoto: Variants = {
 
 function BoasVindas({ nome, onAbrir }: { nome: string; onAbrir: (nome: string) => void }) {
   const [digitado, setDigitado] = useState("");
+  // Link encaminhado por outra aluna ou nome digitado errado pela Lindy: "Não é você? Trocar nome".
+  const [trocando, setTrocando] = useState(false);
+  const nomeMostrado = trocando ? limparNome(digitado) : nome;
+  const pedirNome = !nome || trocando;
   const plataforma = usePlataforma();
   const reduzir = useReducedMotion();
   const dialogo = useRef<HTMLDivElement>(null);
@@ -1270,6 +1566,8 @@ function BoasVindas({ nome, onAbrir }: { nome: string; onAbrir: (nome: string) =
             >
               <img
                 src="/habitos-lindy.webp"
+                srcSet="/habitos-lindy-400.webp 400w, /habitos-lindy.webp 600w"
+                sizes="164px"
                 alt="Lindy Ribeiro, sua personal, na academia"
                 width={600}
                 height={800}
@@ -1290,9 +1588,9 @@ function BoasVindas({ nome, onAbrir }: { nome: string; onAbrir: (nome: string) =
             id="hab-presente-titulo"
             className="mt-9 font-serif-display text-[2.9rem] leading-[1.02] text-foreground"
           >
-            {nome ? (
+            {nomeMostrado ? (
               <>
-                {nome},
+                {nomeMostrado},
                 <br />
               </>
             ) : null}
@@ -1304,6 +1602,18 @@ function BoasVindas({ nome, onAbrir }: { nome: string; onAbrir: (nome: string) =
               />
             </span>
           </motion.h1>
+
+          {nome && !trocando && (
+            <motion.div variants={entrada} className="mt-6">
+              <button
+                type="button"
+                onClick={() => setTrocando(true)}
+                className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+              >
+                Não é você? Trocar nome
+              </button>
+            </motion.div>
+          )}
 
           <motion.p
             variants={entrada}
@@ -1320,10 +1630,10 @@ function BoasVindas({ nome, onAbrir }: { nome: string; onAbrir: (nome: string) =
             “{FRASE_LINDY}”
           </motion.blockquote>
 
-          {!nome && (
+          {pedirNome && (
             <motion.div variants={entrada} className="mt-8">
               <label htmlFor="hab-nome" className="block text-sm font-medium text-foreground">
-                Como você quer ser chamada?
+                {trocando ? "Qual é o seu nome?" : "Como você quer ser chamada?"}
               </label>
               <input
                 id="hab-nome"
@@ -1331,6 +1641,7 @@ function BoasVindas({ nome, onAbrir }: { nome: string; onAbrir: (nome: string) =
                 onChange={(e) => setDigitado(e.target.value)}
                 maxLength={40}
                 autoComplete="given-name"
+                autoFocus={trocando}
                 className="mt-2 min-h-12 w-full rounded-xl border border-border bg-card px-4 text-[16px] text-foreground focus:border-gold/60 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-gold"
                 placeholder="Seu primeiro nome"
               />

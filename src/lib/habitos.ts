@@ -119,33 +119,183 @@ export interface Fechamento {
 export interface Dados {
   versao: 1;
   nome: string;
+  /** a aluna trocou o nome à mão: o nome do link (#Nome) não sobrescreve mais */
+  nomeManual?: boolean;
   criadoEm: string;
   boasVindas: boolean;
   dias: Record<string, Dia>;
   semanas: Record<string, Fechamento>;
+  /** hora do lembrete diário escolhida (7, 12, 18 ou 21) */
+  lembreteHora?: number;
+  /** quando a aluna salvou a última cópia de segurança (ISO) */
+  ultimaCopia?: string;
 }
 
 export function novoDados(hoje: string): Dados {
   return { versao: 1, nome: "", criadoEm: hoje, boasVindas: false, dias: {}, semanas: {} };
 }
 
+const IDS_HABITOS = new Set<string>([
+  "alimentacao",
+  "proteina",
+  "agua",
+  "semtela",
+  "treino",
+  "foco",
+  "ativa",
+  "sono",
+  "afirmacoes",
+  "pele",
+  "financas",
+]);
+const SINAIS_VALIDOS = new Set<string>(["TPM", "Ansiedade", "Nervosismo", "Cansaço"]);
+const DATA_VALIDA = /^\d{4}-\d{2}-\d{2}$/;
+export const HORAS_LEMBRETE = [7, 12, 18, 21] as const;
+
+const texto = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
+
+/**
+ * Confere tudo o que vem do armazenamento ou de um arquivo de cópia: só passa o que tem o formato
+ * certo, para um arquivo estragado (ou editado à mão) não quebrar o diário.
+ */
+export function normalizar(entrada: unknown): Dados | null {
+  if (!entrada || typeof entrada !== "object") return null;
+  const d = entrada as Record<string, unknown>;
+  if (d.versao !== 1 || typeof d.criadoEm !== "string" || !DATA_VALIDA.test(d.criadoEm))
+    return null;
+
+  const dias: Record<string, Dia> = {};
+  if (d.dias && typeof d.dias === "object") {
+    for (const [chave, valor] of Object.entries(d.dias as Record<string, unknown>)) {
+      if (!DATA_VALIDA.test(chave) || !valor || typeof valor !== "object") continue;
+      const v = valor as Record<string, unknown>;
+      const dia: Dia = {
+        feitos: Array.isArray(v.feitos)
+          ? [
+              ...new Set(
+                v.feitos.filter((x): x is HabitoId => typeof x === "string" && IDS_HABITOS.has(x)),
+              ),
+            ]
+          : [],
+      };
+      if (v.treino === "feito" || v.treino === "descanso" || v.treino === "nao")
+        dia.treino = v.treino;
+      if (typeof v.humor === "number" && [1, 2, 3, 4, 5].includes(v.humor))
+        dia.humor = v.humor as Humor;
+      if (Array.isArray(v.sinais)) {
+        const sinais = v.sinais.filter(
+          (x): x is Sinal => typeof x === "string" && SINAIS_VALIDOS.has(x),
+        );
+        if (sinais.length) dia.sinais = [...new Set(sinais)];
+      }
+      dias[chave] = dia;
+    }
+  }
+
+  const semanas: Record<string, Fechamento> = {};
+  if (d.semanas && typeof d.semanas === "object") {
+    for (const [chave, valor] of Object.entries(d.semanas as Record<string, unknown>)) {
+      if (!DATA_VALIDA.test(chave) || !valor || typeof valor !== "object") continue;
+      const v = valor as Record<string, unknown>;
+      const f: Fechamento = {
+        dificuldades: texto(v.dificuldades, 600),
+        plano: texto(v.plano, 600),
+      };
+      if (typeof v.enviadoEm === "string" && !Number.isNaN(Date.parse(v.enviadoEm)))
+        f.enviadoEm = v.enviadoEm;
+      semanas[chave] = f;
+    }
+  }
+
+  const resultado: Dados = {
+    versao: 1,
+    nome: limparNome(texto(d.nome, 60)),
+    criadoEm: d.criadoEm,
+    boasVindas: !!d.boasVindas,
+    dias,
+    semanas,
+  };
+  if (d.nomeManual === true) resultado.nomeManual = true;
+  if (
+    typeof d.lembreteHora === "number" &&
+    (HORAS_LEMBRETE as readonly number[]).includes(d.lembreteHora)
+  ) {
+    resultado.lembreteHora = d.lembreteHora;
+  }
+  if (typeof d.ultimaCopia === "string" && !Number.isNaN(Date.parse(d.ultimaCopia)))
+    resultado.ultimaCopia = d.ultimaCopia;
+  return resultado;
+}
+
 export function carregar(): Dados | null {
   try {
     const bruto = localStorage.getItem(CHAVE);
-    if (!bruto) return null;
-    const d = JSON.parse(bruto) as Partial<Dados>;
-    if (!d || d.versao !== 1 || typeof d.criadoEm !== "string") return null;
-    return {
-      versao: 1,
-      nome: typeof d.nome === "string" ? d.nome : "",
-      criadoEm: d.criadoEm,
-      boasVindas: !!d.boasVindas,
-      dias: d.dias && typeof d.dias === "object" ? d.dias : {},
-      semanas: d.semanas && typeof d.semanas === "object" ? d.semanas : {},
-    };
+    return bruto ? normalizar(JSON.parse(bruto)) : null;
   } catch {
     return null;
   }
+}
+
+// ---------- Cópia de segurança (arquivo que fica com a aluna) ----------
+
+const APP_COPIA = "diario-de-habitos-personal-lindy";
+
+function semAcento(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+export function arquivoDeCopia(d: Dados, hoje: string): { nome: string; conteudo: string } {
+  const quem = d.nome ? `-${semAcento(d.nome)}` : "";
+  return {
+    nome: `diario-de-habitos${quem}-${hoje}.json`,
+    conteudo: JSON.stringify({
+      app: APP_COPIA,
+      versao: 1,
+      exportadoEm: new Date().toISOString(),
+      dados: d,
+    }),
+  };
+}
+
+/** Lê um arquivo de cópia. Devolve null se não for uma cópia válida do diário. */
+export function lerCopia(conteudo: string): { dados: Dados; exportadoEm?: string } | null {
+  try {
+    const o = JSON.parse(conteudo) as Record<string, unknown>;
+    if (!o || o.app !== APP_COPIA) return null;
+    const dados = normalizar(o.dados);
+    if (!dados) return null;
+    const data = typeof o.exportadoEm === "string" ? o.exportadoEm : "";
+    // data estragada (arquivo editado à mão) é ignorada, para não aparecer "NaN/NaN"
+    return { dados, exportadoEm: data && !Number.isNaN(Date.parse(data)) ? data : undefined };
+  } catch {
+    return null;
+  }
+}
+
+// ---------- Lembrete na agenda ----------
+
+/** Arquivo .ics estático (iPhone e computador) com o lembrete diário na hora escolhida. */
+export function arquivoLembrete(hora: number): string {
+  return `/lembrete-habitos-${String(hora).padStart(2, "0")}h.ics`;
+}
+
+/** Google Agenda (Android): abre o evento diário já preenchido, na hora escolhida. */
+export function linkGoogleAgenda(hoje: string, hora: number): string {
+  const d = hoje.replace(/-/g, "");
+  const h = String(hora).padStart(2, "0");
+  const p = new URLSearchParams({
+    action: "TEMPLATE",
+    text: "Marcar meus hábitos do dia",
+    details: "Abra o seu diário: https://personallindy.com.br/habitos",
+    dates: `${d}T${h}0000/${d}T${h}1000`,
+    recur: "RRULE:FREQ=DAILY",
+  });
+  return `https://calendar.google.com/calendar/render?${p.toString()}`;
 }
 
 /** Devolve false quando o navegador não deixa salvar (modo privado, armazenamento cheio). */
@@ -166,6 +316,19 @@ export function apagarTudo() {
   }
 }
 
+/** Deixa só letras, espaço, hífen e apóstrofo, com a primeira letra de cada nome maiúscula. */
+export function limparNome(bruto: string): string {
+  const limpo = bruto
+    .replace(/[^\p{L}\p{M}' -]/gu, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 40);
+  return limpo
+    .split(" ")
+    .map((p) => (p ? p.charAt(0).toLocaleUpperCase("pt-BR") + p.slice(1) : p))
+    .join(" ");
+}
+
 /** Nome que vem no link do presente: personallindy.com.br/habitos#Ana */
 export function nomeDoLink(hash: string): string {
   if (!hash || hash.length < 2) return "";
@@ -175,16 +338,7 @@ export function nomeDoLink(hash: string): string {
   } catch {
     /* mantém como veio */
   }
-  const limpo = bruto
-    .replace(/[+_-]/g, " ") // no link, espaço vai como hífen: #Ana-Paula
-    .replace(/[^\p{L}\p{M}' -]/gu, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 40);
-  return limpo
-    .split(" ")
-    .map((p) => (p ? p.charAt(0).toLocaleUpperCase("pt-BR") + p.slice(1) : p))
-    .join(" ");
+  return limparNome(bruto.replace(/[+_-]/g, " ")); // no link, espaço vai como hífen: #Ana-Paula
 }
 
 // ---------- Datas (sempre no fuso do aparelho) ----------

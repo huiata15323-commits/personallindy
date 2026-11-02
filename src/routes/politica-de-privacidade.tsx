@@ -26,7 +26,7 @@ function PrivacyPolicy() {
           <h1 className="font-serif-display text-4xl sm:text-5xl text-foreground mt-2 mb-3 leading-[1.1]">
             Política de <span className="text-gradient-gold italic">Privacidade</span>
           </h1>
-          <p className="text-sm text-muted-foreground mb-12">Última atualização: 2 de novembro de 2026 (v4 — diário de hábitos das alunas)</p>
+          <p className="text-sm text-muted-foreground mb-12">Última atualização: 2 de novembro de 2026 (v5 — cópia de segurança do diário de hábitos)</p>
 
           <div className="space-y-10 text-base text-muted-foreground leading-relaxed">
             <section>
@@ -68,6 +68,11 @@ function PrivacyPolicy() {
                 WhatsApp abre com o texto pronto e você decide se envia. Algumas dessas informações, como humor e
                 TPM, são dados de saúde; por isso elas nunca saem sem esse toque seu. O card para os stories também é
                 montado no próprio aparelho e mostra só os números da semana.
+              </p>
+              <p className="mb-3">
+                Se você tocar em "Salvar cópia", o diário monta no seu aparelho um arquivo com os seus registros,
+                para você guardar onde quiser (Arquivos, Drive, o seu próprio WhatsApp). Esse arquivo também não
+                passa por servidor nenhum: só volta para o diário quando você mesma toca em "Restaurar cópia".
               </p>
               <p>
                 O nome que vem no link do presente fica depois do "#" do endereço, parte que o navegador não envia ao

@@ -1,0 +1,3 @@
+# Lembretes da agenda (.ics): o padrão de calendário pede quebras de linha CRLF.
+# Sem isto, o Git trocava por LF ao gravar e alguns apps de agenda podiam recusar o arquivo.
+*.ics -text

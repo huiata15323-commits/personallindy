@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Personal Lindy//Diario de habitos//PT-BR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:lembrete-diario-de-habitos-07h@personallindy.com.br
+DTSTAMP:20261102T150000Z
+DTSTART:20261102T070000
+DTEND:20261102T071000
+RRULE:FREQ=DAILY
+SUMMARY:Marcar meus hábitos do dia
+DESCRIPTION:Abra o seu diário: https://personallindy.com.br/habitos
+URL:https://personallindy.com.br/habitos
+BEGIN:VALARM
+ACTION:DISPLAY
+DESCRIPTION:Marcar meus hábitos do dia
+TRIGGER:PT0M
+END:VALARM
+END:VEVENT
+END:VCALENDAR
